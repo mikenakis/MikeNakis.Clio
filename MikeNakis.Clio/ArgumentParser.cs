@@ -3,6 +3,7 @@ namespace MikeNakis.Clio;
 using System.Collections.Generic;
 using MikeNakis.Clio.Arguments;
 using MikeNakis.Clio.Exceptions;
+using MikeNakis.Kit.Collections;
 using Sys = System;
 
 ///<summary>Parses command-line arguments for a program.</summary>
@@ -75,14 +76,14 @@ public sealed class ArgumentParser : BaseArgumentParser
 
 		static IReadOnlyList<string> splitCombinedSingleLetterArguments( IReadOnlyList<string> tokens )
 		{
-			List<string> mutableTokens = new();
+			MutableList<string> mutableTokens = new();
 			foreach( string token in tokens )
 				if( isCombined( token ) )
 					foreach( char c in token.Skip( 1 ) )
 						mutableTokens.Add( $"-{c}" );
 				else
 					mutableTokens.Add( token );
-			return mutableTokens;
+			return mutableTokens.AsReadOnlyList;
 
 			static bool isCombined( string token ) => token[0] == '-' && token.Length > 2 && token[1] != '-' /* && token[1..].All( Helpers.ShortFormNameIsValid ) */ ;
 		}

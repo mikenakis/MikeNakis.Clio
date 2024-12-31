@@ -2,6 +2,7 @@ namespace MikeNakis.Clio;
 
 using System.Collections.Generic;
 using MikeNakis.Clio.Arguments;
+using MikeNakis.Kit.Collections;
 using Sys = System;
 using SysText = System.Text;
 
@@ -76,7 +77,7 @@ static class HelpGenerator
 
 			static void outputLongUsage( Sys.Action<string> lineOutputConsumer, int screenWidth, int maxShortUsageLength, Argument argument )
 			{
-				List<string> longUsageLines = new();
+				MutableList<string> longUsageLines = new();
 				argument.CollectLongUsageLines( longUsageLines.Add );
 				string prefix = argument.ShortUsage;
 				int availableWidth = screenWidth - (indentation.Length + maxShortUsageLength + 1);
@@ -107,7 +108,7 @@ static class HelpGenerator
 
 	static IReadOnlyList<string> wordBreak( string input, int width )
 	{
-		List<string> lines = new();
+		MutableList<string> lines = new();
 		string[] words = input.Split( ' ', Sys.StringSplitOptions.TrimEntries | Sys.StringSplitOptions.TrimEntries );
 		SysText.StringBuilder stringBuilder = new();
 		foreach( string word in words )
@@ -126,6 +127,6 @@ static class HelpGenerator
 		}
 		if( stringBuilder.Length > 0 )
 			lines.Add( stringBuilder.ToString() );
-		return lines;
+		return lines.AsReadOnlyList;
 	}
 }

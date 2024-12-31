@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using MikeNakis.Clio.Arguments;
 using MikeNakis.Clio.Codecs;
 using MikeNakis.Clio.Exceptions;
+using MikeNakis.Kit.Collections;
 using Sys = System;
 
 /// <summary>Common base class for command-line parsers.</summary>
@@ -17,8 +18,8 @@ public abstract class BaseArgumentParser
 	/// <summary>The name of the program or verb.</summary>
 	public string Name { get; }
 
-	readonly List<Argument> arguments = new();
-	internal IReadOnlyList<Argument> Arguments => arguments;
+	readonly MutableList<Argument> arguments = new();
+	internal IReadOnlyList<Argument> Arguments => arguments.AsReadOnlyList;
 
 	protected BaseArgumentParser( string name )
 	{
