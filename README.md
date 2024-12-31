@@ -1,11 +1,12 @@
 # Clio<br><sub><sup>A dotnet library for parsing command-line arguments.</sub></sup>
 
+<!--- Note: This image looks fine in most markdown renderers, 
+            but not in Visual Studio, whose built-in markdown renderer is broken nowadays. 
+			Someone has brought it to their attention, (https://developercommunity.visualstudio.com/t/10774870)
+			and last I checked they were "investigating". -->
 <p align="center">
   <img title="MikeNakis.Clio logo" src="MikeNakis.Clio-Logo.svg" width="256" />
 </p
-
-<sup>Note: The above image looks fine in most markdown renderers, but not in Visual Studio, whose built-in markdown renderer is broken nowadays.
-[Someone has brought it to their attention](https://developercommunity.visualstudio.com/t/10774870), and last I checked they were "investigating".</sup>
 
 ## Introduction
 

@@ -39,7 +39,7 @@ public abstract class BaseArgumentParser
 
 	///<summary>Adds an option.</summary>
 	///<param name="name">The name of the option.</param>
-	///<param name="codec">The <see cref="Codec{T}"/> of the option; specifies how to convert between string and
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between string and
 	///the actual type of the option.</param>
 	///<param name="singleLetterName">The (optional) single-letter name for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
@@ -54,7 +54,7 @@ public abstract class BaseArgumentParser
 
 	///<summary>Adds an option.</summary>
 	///<param name="name">The name of the option.</param>
-	///<param name="codec">The <see cref="Codec{T}"/> of the option; specifies how to convert between string and
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between string and
 	///the actual type of the option.</param>
 	///<param name="singleLetterName">The (optional) single-letter name for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
@@ -69,7 +69,7 @@ public abstract class BaseArgumentParser
 
 	///<summary>Adds an option with a default value.</summary>
 	///<param name="name">The name of the option.</param>
-	///<param name="codec">The <see cref="Codec{T}"/> of the option; specifies how to convert between
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between
 	///<c>string</c> and the actual type of the option.</param>
 	///<param name="defaultValue">The default value for the option, which will be the value of the option if the option
 	///is not supplied in the command-line.</param>
@@ -86,7 +86,7 @@ public abstract class BaseArgumentParser
 
 	///<summary>Adds an option with a default value.</summary>
 	///<param name="name">The name of the option.</param>
-	///<param name="codec">The <see cref="Codec{T}"/> of the option; specifies how to convert between
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between
 	///<c>string</c> and the actual type of the option.</param>
 	///<param name="defaultValue">The default value for the option, which will be the value of the option if the option
 	///is not supplied in the command-line.</param>
@@ -103,7 +103,7 @@ public abstract class BaseArgumentParser
 
 	///<summary>Adds a required option.</summary>
 	///<param name="name">The name of the option.</param>
-	///<param name="codec">The <see cref="Codec{T}"/> of the option; specifies how to convert between
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between
 	///<c>string</c> and the actual type of the option.</param>
 	///<param name="singleLetterName">The (optional) single-letter name for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
@@ -118,7 +118,7 @@ public abstract class BaseArgumentParser
 
 	///<summary>Adds a required option.</summary>
 	///<param name="name">The name of the option.</param>
-	///<param name="codec">The <see cref="Codec{T}"/> of the option; specifies how to convert between
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between
 	///<c>string</c> and the actual type of the option.</param>
 	///<param name="singleLetterName">The (optional) single-letter name for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
@@ -174,7 +174,7 @@ public abstract class BaseArgumentParser
 
 	///<summary>Adds a positional argument.</summary>
 	///<param name="name">The name of the positional argument, for use when displaying help.</param>
-	///<param name="codec">The <see cref="Codec{T}"/> of the positional argument; provides conversions between
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the positional argument; provides conversions between
 	///<c>string</c> and the type of the argument.</param>
 	///<param name="description">The description of the positional argument, for use when displaying help.</param>
 	public IPositionalArgument<T?> AddPositional<T>( string name, StructCodec<T> codec, string? description = null ) where T : struct
@@ -184,7 +184,7 @@ public abstract class BaseArgumentParser
 
 	///<summary>Adds a positional argument.</summary>
 	///<param name="name">The name of the positional argument, for use when displaying help.</param>
-	///<param name="codec">The <see cref="Codec{T}"/> of the positional argument; provides conversions between
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the positional argument; provides conversions between
 	///<c>string</c> and the type of the argument.</param>
 	///<param name="description">The description of the positional argument, for use when displaying help.</param>
 	public IPositionalArgument<T?> AddPositional<T>( string name, ClassCodec<T> codec, string? description = null ) where T : class
@@ -194,7 +194,7 @@ public abstract class BaseArgumentParser
 
 	///<summary>Adds a positional argument with a default value.</summary>
 	///<param name="name">The name of the positional argument, for use when displaying help.</param>
-	///<param name="codec">The <see cref="Codec{T}"/> of the positional argument; provides conversions between
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the positional argument; provides conversions between
 	///<c>string</c> and the type of the argument.</param>
 	///<param name="description">The description of the positional argument, for use when displaying help.</param>
 	///<param name="defaultValue">The default value for the positional argument, which will be the value of the argument
@@ -206,7 +206,7 @@ public abstract class BaseArgumentParser
 
 	///<summary>Adds a positional argument with a default value.</summary>
 	///<param name="name">The name of the positional argument, for use when displaying help.</param>
-	///<param name="codec">The <see cref="Codec{T}"/> of the positional argument; provides conversions between
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the positional argument; provides conversions between
 	///<c>string</c> and the type of the argument.</param>
 	///<param name="description">The description of the positional argument, for use when displaying help.</param>
 	///<param name="defaultValue">The default value for the positional argument, which will be the value of the argument
@@ -218,7 +218,7 @@ public abstract class BaseArgumentParser
 
 	///<summary>Adds a required positional argument.</summary>
 	///<param name="name">The name of the positional argument, for use when displaying help.</param>
-	///<param name="codec">The <see cref="Codec{T}"/> of the positional argument; provides conversions between
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the positional argument; provides conversions between
 	///<c>string</c> and the type of the argument.</param>
 	///<param name="description">The description of the parameter, for use when displaying help.</param>
 	public IPositionalArgument<T> AddRequiredPositional<T>( string name, StructCodec<T> codec, string? description = null ) where T : struct
@@ -228,7 +228,7 @@ public abstract class BaseArgumentParser
 
 	///<summary>Adds a required positional argument.</summary>
 	///<param name="name">The name of the positional argument, for use when displaying help.</param>
-	///<param name="codec">The <see cref="Codec{T}"/> of the positional argument; provides conversions between
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the positional argument; provides conversions between
 	///<c>string</c> and the type of the argument.</param>
 	///<param name="description">The description of the parameter, for use when displaying help.</param>
 	public IPositionalArgument<T> AddRequiredPositional<T>( string name, ClassCodec<T> codec, string? description = null ) where T : class

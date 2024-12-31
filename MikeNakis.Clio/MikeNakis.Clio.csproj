@@ -1,44 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<!--<TargetFrameworks>net8.0</TargetFrameworks>-->
 		<TargetFramework>net8.0</TargetFramework>
-		<LangVersion>12</LangVersion>
-		<ImplicitUsings>Disable</ImplicitUsings>
-		<Nullable>Enable</Nullable>
-
-		<AnalysisLevel>latest-Recommended</AnalysisLevel>
-		<RunAnalyzersDuringBuild>True</RunAnalyzersDuringBuild>
-		<RunAnalyzersDuringLiveAnalysis>True</RunAnalyzersDuringLiveAnalysis>
-
-		<WarningLevel>9999</WarningLevel>
-
-		<!-- PEARL: if TreatWarningsAsErrors is set to true, then any .editorconfig inspections that are configured to
-		            appear as warnings will appear as errors instead. -->
-		<!-- <TreatWarningsAsErrors>True</TreatWarningsAsErrors> -->
-
-		<!-- Magical incantations necessary for the magic to work -->
-		<IsPackable>false</IsPackable>
-		<PreserveCompilationContext>false</PreserveCompilationContext>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-		<CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-	</PropertyGroup>
-
-	<ItemGroup Condition="'$(Configuration)'=='Debug'">
-		<PackageReference Include="coverlet.collector" Version="6.0.0" />
+	<ItemGroup>
+		<PackageReference Include="MikeNakis.CommonFiles" Version="1.*" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\MikeNakis.Kit\MikeNakis.Kit\MikeNakis.Kit.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<!-- PEARL: if any .globalconfig files are not found, we get silent failure. -->
-		<PackageReference Include="MikeNakis.AnalysisRules" Version="1.0.*" />
-		<GlobalAnalyzerConfigFiles Include="$(MikeNakisAnalysisRules)AllCode.globalconfig" />
-		<GlobalAnalyzerConfigFiles Include="$(MikeNakisAnalysisRules)ProductionCode.globalconfig" />
 	</ItemGroup>
 
 </Project>

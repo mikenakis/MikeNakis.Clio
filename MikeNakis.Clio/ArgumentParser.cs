@@ -16,6 +16,7 @@ public sealed class ArgumentParser : BaseArgumentParser
 	public bool OutputArgumentNamesAndValues { get; set; }
 
 	/// <summary>Constructor.</summary>
+	/// <param name="verbTerm" >Specifies the term to use in place of 'verb' when displaying help.</param>
 	/// <param name="testingOptions" >Supplies options used for testing.</param>
 	public ArgumentParser( string? verbTerm = null, TestingOptions? testingOptions = null )
 		: base( testingOptions?.ProgramName ?? Sys.AppDomain.CurrentDomain.FriendlyName )
