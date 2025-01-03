@@ -1,5 +1,6 @@
 namespace MikeNakis.Clio_Test;
 
+using MikeNakis.Kit.FileSystem;
 using Sys = System;
 using SysCompiler = System.Runtime.CompilerServices;
 using SysDiag = System.Diagnostics;
@@ -9,16 +10,17 @@ using SysText = System.Text;
 sealed class Audit
 {
 	public const string FileExtension = ".audit";
-	static readonly Dictionary<string, Audit> auditsByPathName = new();
+	static readonly Dictionary<FilePath, Audit> auditsByPathName = new();
 
 	public static void With( Sys.Action<Sys.Action<string>> procedure, //
-		[SysCompiler.CallerFilePath] string? callerFilePathName = null, //
+		[SysCompiler.CallerFilePath] string? callerFileName = null, //
 		[SysCompiler.CallerMemberName] string? callerMemberName = null )
 	{
-		Assert( callerFilePathName != null );
+		Assert( callerFileName != null );
 		Assert( callerMemberName != null );
-		string auditFilePathName = SysIo.Path.ChangeExtension( callerFilePathName, FileExtension );
-		Audit audit = getOrCreateAuditFile( auditFilePathName );
+		FilePath callerFilePath = FilePath.FromAbsolutePath( callerFileName );
+		FilePath auditFilePath = callerFilePath.WithReplacedExtension( FileExtension );
+		Audit audit = getOrCreateAuditFile( auditFilePath );
 		using( AuditFile auditFile = audit.newFile() )
 		{
 			auditFile.WriteLine( new string( '-', 80 ) );
@@ -28,18 +30,18 @@ sealed class Audit
 		}
 	}
 
-	readonly string auditFilePathName;
+	readonly FilePath auditFilePath;
 	bool isNew = true;
 
-	Audit( string auditFilePathName )
+	Audit( FilePath auditFilePath )
 	{
-		this.auditFilePathName = auditFilePathName;
-		truncate( auditFilePathName );
+		this.auditFilePath = auditFilePath;
+		auditFilePath.Truncate();
 	}
 
 	AuditFile newFile()
 	{
-		AuditFile auditFile = new( auditFilePathName );
+		AuditFile auditFile = new( auditFilePath );
 		if( isNew )
 			isNew = false;
 		else
@@ -47,11 +49,9 @@ sealed class Audit
 		return auditFile;
 	}
 
-	static void truncate( string pathName ) => SysIo.File.WriteAllText( pathName, "" );
-
-	static Audit getOrCreateAuditFile( string auditFilePathName )
+	static Audit getOrCreateAuditFile( FilePath auditFilePath )
 	{
-		return getOrCreate( auditsByPathName, auditFilePathName, () => new Audit( auditFilePathName ) );
+		return getOrCreate( auditsByPathName, auditFilePath, () => new Audit( auditFilePath ) );
 	}
 
 	static V getOrCreate<K, V>( IDictionary<K, V> dictionary, K key, Sys.Func<V> valueFactory )
@@ -69,11 +69,11 @@ sealed class Audit
 	[SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
 	sealed class AuditFile : Sys.IDisposable
 	{
-		readonly string outputFilePath;
+		readonly FilePath outputFilePath;
 		readonly string endOfLine;
 		readonly SysIo.StreamWriter streamWriter;
 
-		public AuditFile( string outputFilePath, string endOfLine = "\n" )
+		public AuditFile( FilePath outputFilePath, string endOfLine = "\n" )
 		{
 			this.outputFilePath = outputFilePath;
 			this.endOfLine = endOfLine;
@@ -82,7 +82,7 @@ sealed class Audit
 			fileStreamOptions.Mode = SysIo.FileMode.Truncate;
 			fileStreamOptions.Share = SysIo.FileShare.Read;
 			fileStreamOptions.Options = SysIo.FileOptions.WriteThrough | SysIo.FileOptions.SequentialScan;
-			SysIo.FileStream stream = new( outputFilePath, SysIo.FileMode.Append, SysIo.FileAccess.Write, SysIo.FileShare.Read, 4096, SysIo.FileOptions.WriteThrough | SysIo.FileOptions.SequentialScan );
+			SysIo.Stream stream = outputFilePath.OpenBinary( SysIo.FileMode.Append, SysIo.FileAccess.Write, SysIo.FileShare.Read, fileOptions: SysIo.FileOptions.WriteThrough | SysIo.FileOptions.SequentialScan );
 			streamWriter = new SysIo.StreamWriter( stream, SysText.Encoding.UTF8 );
 		}
 
@@ -97,6 +97,6 @@ sealed class Audit
 			streamWriter.Dispose();
 		}
 
-		public override string ToString() => outputFilePath;
+		public override string ToString() => outputFilePath.Path;
 	}
 }

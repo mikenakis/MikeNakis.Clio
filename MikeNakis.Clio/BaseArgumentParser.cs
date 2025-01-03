@@ -329,9 +329,9 @@ public abstract class BaseArgumentParser
 
 		void reportMissingVerb()
 		{
-			Assert( arguments.OfType<VerbArgument>().ToArray(),
-				verb => verb.Length == 0 || verb.Where( verb => verb.IsSupplied ).Any(),
-				verb => throw new VerbExpectedException( GetRootArgumentParser().VerbTerm ) );
+			Assert( arguments.OfType<VerbArgument>().Collect(),
+				verbs => verbs.Count == 0 || verbs.Where( verb => verb.IsSupplied ).Any(),
+				_ => throw new VerbExpectedException( GetRootArgumentParser().VerbTerm ) );
 		}
 	}
 

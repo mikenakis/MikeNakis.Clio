@@ -113,7 +113,7 @@ abstract class NamedArgument : Argument
 			: base( argumentParser, name, description, isRequired )
 	{
 		//TODO: revise the usefulness of this.
-		Assert( Helpers.ArgumentMustPrecedeVerbAssertion( argumentParser, name, argumentParser.GetRootArgumentParser().VerbTerm ) );
+		Assert( Helpers.ArgumentMustPrecedeVerbAssertion( argumentParser, name ) );
 		//TODO: revise the usefulness of this.
 		Assert( argumentParser.Arguments.OfType<PositionalArgument>().FirstOrDefault(), //
 			positionalArgument => positionalArgument == null, //

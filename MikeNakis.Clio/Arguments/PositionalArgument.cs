@@ -2,7 +2,6 @@ namespace MikeNakis.Clio.Arguments;
 
 using MikeNakis.Clio.Codecs;
 using MikeNakis.Clio.Exceptions;
-using MikeNakis.Kit;
 using Sys = System;
 using SysDiag = System.Diagnostics;
 
@@ -19,7 +18,7 @@ abstract class PositionalArgument : Argument
 	{
 		Assert( Helpers.ParameterNameIsValidAssertion( name ) );
 		//TODO: revise the usefulness of this.
-		Assert( Helpers.ArgumentMustPrecedeVerbAssertion( argumentParser, name, argumentParser.GetRootArgumentParser().VerbTerm ) );
+		Assert( Helpers.ArgumentMustPrecedeVerbAssertion( argumentParser, name ) );
 		//TODO: revise the usefulness of this.
 		if( !IsOptional )
 			Assert( argumentParser.Arguments.OfType<PositionalArgument>().Where( positionalArgument => positionalArgument.IsOptional ).FirstOrDefault(), //
@@ -107,7 +106,7 @@ sealed class NonNullableClassPositionalArgument<T> : PositionalArgument, IPositi
 		get
 		{
 			Assert( HasBeenParsedAssertion() );
-			return (IsSupplied ? value : defaultValue) ?? throw new AssertionFailureException();
+			return (IsSupplied ? value : defaultValue) ?? throw Failure();
 		}
 	}
 

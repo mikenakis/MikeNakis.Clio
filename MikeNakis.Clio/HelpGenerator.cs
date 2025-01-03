@@ -36,7 +36,7 @@ static class HelpGenerator
 		static string buildShortUsageString( IEnumerable<Argument> arguments, string verbTerm )
 		{
 			SysText.StringBuilder stringBuilder = new();
-			IReadOnlyList<NamedArgument> optionalNamedArguments = arguments.OfType<NamedArgument>().Where( argument => argument.IsOptional ).ToArray();
+			IReadOnlyList<NamedArgument> optionalNamedArguments = arguments.OfType<NamedArgument>().Where( argument => argument.IsOptional ).Collect();
 			switch( optionalNamedArguments.Count )
 			{
 				case 0:
@@ -96,7 +96,7 @@ static class HelpGenerator
 		static void outputInformationalMessageAboutCombiningSingleLetters( Sys.Action<string> lineOutputConsumer, IEnumerable<Argument> arguments )
 		{
 			//TODO: recursively search for single-letter switches in verbs
-			IReadOnlyList<NamedArgument> singleLetterSwitches = arguments.OfType<NamedArgument>().Where( argument => argument.SingleLetterName is not null and not 'h' ).ToArray();
+			IReadOnlyList<NamedArgument> singleLetterSwitches = arguments.OfType<NamedArgument>().Where( argument => argument.SingleLetterName is not null and not 'h' ).Collect();
 			if( singleLetterSwitches.Count > 1 )
 			{
 				char a = singleLetterSwitches[0].SingleLetterName!.Value;

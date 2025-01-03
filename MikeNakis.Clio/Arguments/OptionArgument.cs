@@ -150,7 +150,7 @@ sealed class NonNullableStructOption<T> : OptionArgument, IOptionArgument<T> whe
 		get
 		{
 			Assert( HasBeenParsedAssertion() );
-			return value ?? defaultValue ?? throw new AssertionFailureException();
+			return value ?? defaultValue ?? throw Failure();
 		}
 	}
 
@@ -181,7 +181,7 @@ sealed class NonNullableClassOption<T> : OptionArgument, IOptionArgument<T> wher
 		get
 		{
 			Assert( HasBeenParsedAssertion() );
-			return value ?? defaultValue ?? throw new AssertionFailureException();
+			return value ?? defaultValue ?? throw Failure();
 		}
 	}
 

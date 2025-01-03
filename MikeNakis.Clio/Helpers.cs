@@ -69,7 +69,7 @@ static partial class Helpers
 	internal static bool IsTerminator( char c ) => !shortFormNameValidationRegex.IsMatch( new string( c, 1 ) );
 
 	//TODO: revise the usefulness of this.
-	internal static bool ArgumentMustPrecedeVerbAssertion( BaseArgumentParser argumentParser, string name, string verbTerm )
+	internal static bool ArgumentMustPrecedeVerbAssertion( BaseArgumentParser argumentParser, string name )
 	{
 		Assert( argumentParser.Arguments.OfType<VerbArgument>().FirstOrDefault(), //
 			verb => verb == null, //
