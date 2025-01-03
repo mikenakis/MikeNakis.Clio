@@ -18,7 +18,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="$(ProjectDir)..\MikeNakis.Clio\MikeNakis.Clio.csproj" />
+		<PackageReference Include="MikeNakis.Kit" Version="1.*" Condition="!Exists('..\..\MikeNakis.Kit\MikeNakis.Kit\MikeNakis.Kit.csproj')" />
+		<ProjectReference Include="..\..\MikeNakis.Kit\MikeNakis.Kit\MikeNakis.Kit.csproj" Condition="Exists('..\..\MikeNakis.Kit\MikeNakis.Kit\MikeNakis.Kit.csproj')" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="$(MSBuildProjectDirectory)\..\MikeNakis.Clio\MikeNakis.Clio.csproj" />
 	</ItemGroup>
 
 </Project>
