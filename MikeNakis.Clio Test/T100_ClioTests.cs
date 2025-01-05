@@ -579,7 +579,9 @@ public sealed class T100_ClioTests
 					{
 					} )
 				);
+		Sys.Console.WriteLine( $"caughtException type: {caughtException?.GetType()}" );
 		NotNullCast( caughtException, out TryParseWasNotInvokedException exception );
+		Sys.Console.WriteLine( $"exception type: {exception.GetType()}" );
 		Assert( exception.VerbName == "juliet" );
 	}
 
