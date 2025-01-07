@@ -1,5 +1,10 @@
 name: Build
 
+# PEARL: GitHub supplies some retarded default parameters to 'dotnet build' which make the output look completely
+#        different from what it looks when building locally.
+#        For example, the output of "Message" tasks is not shown, even when "Importance" is set to "High". 
+#        The "-ConsoleLoggerParameters:off" magical incantation is necessary to correct this.
+
 on:
   push:
     branches: [ "master" ]
@@ -40,18 +45,12 @@ jobs:
       run: dotnet restore
 
     - name: "build: Debug"
-# PEARL: GitHub supplies some retarded default parameters to 'dotnet build' which make the output look completely different from what it looks when building locally.
-#        For example, the output of "Message" tasks is not shown, even when "Importance" is set to "High". 
-#        The "-ConsoleLoggerParameters:off" magical incantation is necessary to correct this.
       run: dotnet build --configuration Debug --no-restore -ConsoleLoggerParameters:off
 
     - name: "test"
       run: dotnet test --configuration Debug --no-build --verbosity normal
 
     - name: "build: Release"
-# PEARL: GitHub supplies some retarded default parameters to 'dotnet build' which make the output look completely different from what it looks when building locally.
-#        For example, the output of "Message" tasks is not shown, even when "Importance" is set to "High". 
-#        The "-ConsoleLoggerParameters:off" magical incantation is necessary to correct this.
       run: dotnet build --configuration Release --no-restore -ConsoleLoggerParameters:off
 
     - name: "pack"
@@ -61,4 +60,6 @@ jobs:
       run: echo ${{ github.event.repository.name }} - ${GITHUB_REPOSITORY#*/} - ${{ github.run_number }} - ${{ github.run_attempt }}
 
     - name: "push"
-      run: dotnet nuget push "MikeNakis.Kit/bin/Release/${{ github.event.repository.name }}.${{ env.RELEASE_VERSION }}.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
+      run: |
+        find . -name "*.nupkg"
+        dotnet nuget push "MikeNakis.Clio/bin/Release/${{ github.event.repository.name }}.${{ env.RELEASE_VERSION }}.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}

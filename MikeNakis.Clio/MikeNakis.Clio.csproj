@@ -1,7 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+	<!-- PEARL: PackageReference version wildcards are a nasty mean bitch!
+		    - You cannot use "1.*.*"; there must be only one wildcard in the prefix. This is not documented anywhere.
+			- You cannot use "1.*-Debug"; if the prefix has a wildcard, then the suffix must be a wildcard. This is
+			  also not documented anywhere.
+			- If you make a mistake in the version string wildcard:
+			- When building from within Visual Studio, it fails with a bunch of "failed to restore" messages that
+				do not tell you why it failed to restore, followed by something entirely nonsensical, like "error
+				NETSDK1005: Assets file '<...>\obj\project.assets.json' doesn't have a target for 'net8.0'".
+			- When building using "dotnet restore", it tells you that this is not a valid version string, but it
+				still does not tell you what the fucking problem is. -->
+
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
+		<Deterministic>False</Deterministic>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -13,9 +25,27 @@
 		</PackageReference>
 	</ItemGroup>
 
+	<!--<Choose>
+		<When Condition="Exists('..\..\MikeNakis.Kit\MikeNakis.Kit\MikeNakis.Kit.csproj')">
+			<ItemGroup>
+				<ProjectReference Include="..\..\MikeNakis.Kit\MikeNakis.Kit\MikeNakis.Kit.csproj" />
+			</ItemGroup>
+		</When>
+		<When Condition="'$(Configuration)' == 'Debug'">
+			<ItemGroup>
+				<PackageReference Include="MikeNakis.Kit-Debug" Version="*" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup>
+				<PackageReference Include="MikeNakis.Kit" Version="*" />
+			</ItemGroup>
+		</Otherwise>
+	</Choose>-->
 	<ItemGroup>
-		<PackageReference Include="MikeNakis.Kit" Version="1.*" Condition="!Exists('..\..\MikeNakis.Kit\MikeNakis.Kit\MikeNakis.Kit.csproj')" />
 		<ProjectReference Include="..\..\MikeNakis.Kit\MikeNakis.Kit\MikeNakis.Kit.csproj" Condition="Exists('..\..\MikeNakis.Kit\MikeNakis.Kit\MikeNakis.Kit.csproj')" />
+		<PackageReference Include="MikeNakis.Kit-Debug" Version="*" Condition="'$(Configuration)' == 'Debug' And !Exists('..\..\MikeNakis.Kit\MikeNakis.Kit\MikeNakis.Kit.csproj')" />
+		<PackageReference Include="MikeNakis.Kit"       Version="*" Condition="'$(Configuration)' != 'Debug' And !Exists('..\..\MikeNakis.Kit\MikeNakis.Kit\MikeNakis.Kit.csproj')" />
 	</ItemGroup>
 
 </Project>

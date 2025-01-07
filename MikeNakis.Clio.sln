@@ -9,9 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MikeNakis.Clio Test", "Mike
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solution Items", "{AEECC592-BD5E-4512-B613-4197A37ED3E7}"
 	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		.github\workflows\github-workflow.yml = .github\workflows\github-workflow.yml
 		MikeNakis.Clio-Logo.svg = MikeNakis.Clio-Logo.svg
-		exclusion.dic = exclusion.dic
 		LICENSE.md = LICENSE.md
 		README.md = README.md
 	EndProjectSection
