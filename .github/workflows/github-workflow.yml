@@ -25,6 +25,7 @@ env:
 #          The result of all this is that the whole prefix-suffix mechanism serves a very narrowly scoped purpose and
 #          is entirely useless for any other scenario.
   RELEASE_VERSION: 1.1.${{github.run_number}}${{github.run_attempt}}
+  BUILD_SERVER_BUILD: True
 
 jobs:
   build:
@@ -56,8 +57,7 @@ jobs:
       run: dotnet pack --configuration Debug --no-build --version-suffix Debug
 
     - name: "Debug: push"
-      # run: dotnet nuget push "MikeNakis.Clio/bin/Debug/${{ github.event.repository.name }}-Debug.${{ env.RELEASE_VERSION }}-Debug.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
-      run: dotnet nuget push "MikeNakis.Clio/bin/Debug/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
+      run: dotnet nuget push "${{ github.event.repository.name }}/bin/Debug/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
 
     - name: "Release: build"
       run: dotnet build --configuration Release --no-restore -ConsoleLoggerParameters:off
@@ -66,4 +66,4 @@ jobs:
       run: dotnet pack --configuration Release --no-build
 
     - name: "Release: push"
-      run: dotnet nuget push "MikeNakis.Clio/bin/Release/${{ github.event.repository.name }}.${{ env.RELEASE_VERSION }}.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
+      run: dotnet nuget push "${{ github.event.repository.name }}/bin/Release/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}

@@ -1,0 +1,99 @@
+<Project>
+
+	<!-- PEARL: PackageReference version wildcards are a nasty bitch!
+		    - You cannot use "1.*.*"; there must be only one wildcard in the prefix. This is not documented anywhere.
+			- You cannot use "1.*-Debug"; if the prefix has a wildcard, then the suffix must be a wildcard. This is
+			  also not documented anywhere.
+			- If you make a mistake in the version string wildcard:
+			- When building from within Visual Studio, it fails with a bunch of "failed to restore" messages that
+				do not tell you why it failed to restore, followed by something entirely nonsensical, like "error
+				NETSDK1005: Assets file '<...>\obj\project.assets.json' doesn't have a target for 'net8.0'".
+			- When building using "dotnet restore", it tells you that this is not a valid version string, but it
+				still does not tell you what the fucking problem is. -->
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<!-- AssemblyName: The default is $(MSBuildProjectName) -->
+		<AssemblyName>$(MSBuildProjectName)-$(Configuration)</AssemblyName>
+	</PropertyGroup>
+
+	<!-- PEARL: Visual Studio suffers from a monstrous, insidious bug where the spell checker goes haywire if you happen
+		to have	two files with the same name in the solution.
+		To work around this bug, every single file in the entire solution must have a unique filename. -->
+	<!-- PEARL: GitHub requires the README file to be named README, so we cannot give it a unique filename.
+		To work around this capriciousness of GitHub, we prefix the name of our README file with the name of the
+		project, (incidentally, this also makes it easier to locate it among editor tabs,) and we create a symbolic
+		link called README.md which points to the actual README file. -->
+	<PropertyGroup>
+		<!-- NOTE: when creating a symbolic link, the 'SourceFiles' should always be a relative path! -->
+		<SourceReadMe>..\$(MSBuildProjectName).README.md</SourceReadMe>
+		<DestinationReadMe>..\README.md</DestinationReadMe>
+	</PropertyGroup>
+	<Target Name="CreateSymbolicLinkForReadme" BeforeTargets="BeforeBuild"
+			Condition="!Exists('$(DestinationReadMe)') OR $([System.IO.File]::GetLastWriteTime('$(SourceReadMe)').Ticks) &gt; $([System.IO.File]::GetLastWriteTime('$(DestinationReadMe)').Ticks)">
+		<Warning Text="Creating (or re-creating) symbolic link '$(DestinationReadMe)' targeting '$(SourceReadMe)'" />
+		<Error Condition="!Exists('$(SourceReadMe)')" Text="Source does not exist: '$(SourceReadMe)'" />
+		<Copy SourceFiles="$(SourceReadMe)" DestinationFiles="$(DestinationReadMe)" SkipUnchangedFiles="True"
+			  UseSymboliclinksIfPossible="True" ErrorIfLinkFails="True" />
+		<Error Condition="!Exists('$(DestinationReadMe)')" Text="Destination does not exist: '$(DestinationReadMe)'" />
+	</Target>
+
+	<ItemGroup>
+		<PackageReference Include="MikeNakis.CommonFiles" Version="1.*" PrivateAssets="all" />
+		<PackageReference Include="coverlet.collector" Version="6.0.0" Condition="'$(Configuration)' == 'Debug'"/>
+		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" Condition="'$(Configuration)' == 'Debug'">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<Choose>
+		<When Condition="'$(BUILD_SERVER_BUILD)' == 'True' OR '$(Configuration)' == 'Release'">
+			<ItemGroup>
+				<PackageReference Include="MikeNakis.Kit-$(Configuration)" Version="*" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup>
+				<ProjectReference Include="..\..\MikeNakis.Kit\MikeNakis.Kit\MikeNakis.Kit.csproj" />
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
+
+	<!-- NuGet Packaging ******************************************************************************************* -->
+
+	<PropertyGroup>
+		<!-- Do not generate package on build because we want to have it as a separate github action step. -->
+		<!--<GeneratePackageOnBuild>True</GeneratePackageOnBuild>-->
+		<!-- PackageId: the default is $(MSBuildProjectName) -->
+		<!--<PackageId>$(AssemblyName)</PackageId>-->
+		<!-- Get version from environment variable, because it is computed by the build server script. -->
+		<Version>$(RELEASE_VERSION)</Version>
+		<!-- Get version prefix from environment variable, because it is computed by the build server script. -->
+		<!--<VersionPrefix>$(VERSION_PREFIX)</VersionPrefix>-->
+		<!-- Title: the default appears to be $(MSBuildProjectName) if equal to $(AssemblyName), blank otherwise. -->
+		<Title>$(MSBuildProjectName) ($(Configuration))</Title>
+		<Authors>MikeNakis</Authors>
+		<Description>A library for parsing command-line arguments</Description>
+		<Copyright>Copyright © Mike Nakis. All rights reserved.</Copyright>
+		<PackageIcon>MikeNakis.Clio-Logo.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/mikenakis/MikeNakis.Clio.git</RepositoryUrl>
+		<PublishRepositoryUrl>True</PublishRepositoryUrl>
+		<PackageTags>dotnet; dotnet-core; class-libraries; utilities; command-line</PackageTags>
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<PackageReleaseNotes>initial release</PackageReleaseNotes>
+		<IncludeSymbols Condition="'$(Configuration)' == 'Release'">True</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<!--<PackRelease Condition="'$(Configuration)' == 'Debug'">False</PackRelease>-->
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\LICENSE.md" Pack="True" PackagePath="/" />
+		<None Include="..\MikeNakis.Clio-Logo.png" Pack="True" PackagePath="/" />
+		<None Include="..\MikeNakis.Clio-Logo.svg" Pack="True" PackagePath="/" />
+		<None Include="README-for-nuget.md" Pack="True" PackagePath="/README.md" />
+	</ItemGroup>
+
+</Project>
