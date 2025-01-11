@@ -224,6 +224,11 @@ _**Verb**_: A special kind of argument which is identified by a word and has an 
 - TODO: Introduce hidden arguments. (Arguments which are excluded from help.)
 - TODO: Introduce argument categories, so that they can be grouped by category when displaying usage help, as grep does.
 - TODO: Introduce verb categories, so that they can be grouped by category when displaying usage help, as git does.
+- TODO: Add replacement variables to description strings. For example, $(ProgramName)
+- TODO: Add a double codec
+- TODO: Add a duration codec which allows supplying durations like 1s or 200ms
+- TODO: Rename codecs to converters
+- TODO: Refrain from **ever** writing to the console and from **ever** exiting the current process. I had an issue where I was using Clio for parsing strings within a WPF application, and a malformed string would cause the WPF application to inexplicably exit, this must be avoided.
 
 ## Will not do:
 
