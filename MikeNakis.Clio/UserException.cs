@@ -1,4 +1,4 @@
-namespace MikeNakis.Clio.Exceptions;
+namespace MikeNakis.Clio;
 
 using Sys = System;
 

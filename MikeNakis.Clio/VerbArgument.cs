@@ -1,6 +1,4 @@
-namespace MikeNakis.Clio.Arguments;
-
-using MikeNakis.Clio.Exceptions;
+namespace MikeNakis.Clio;
 using Sys = System;
 using SysDiag = System.Diagnostics;
 

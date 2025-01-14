@@ -1,8 +1,6 @@
 namespace MikeNakis.Clio_Test;
 
 using MikeNakis.Clio;
-using MikeNakis.Clio.Arguments;
-using MikeNakis.Clio.Codecs;
 using Sys = System;
 using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 

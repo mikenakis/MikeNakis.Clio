@@ -1,9 +1,6 @@
 namespace MikeNakis.Clio;
 
 using System.Collections.Generic;
-using MikeNakis.Clio.Arguments;
-using MikeNakis.Clio.Codecs;
-using MikeNakis.Clio.Exceptions;
 using Sys = System;
 
 /// <summary>Common base class for command-line parsers.</summary>

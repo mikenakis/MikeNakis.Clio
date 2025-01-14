@@ -1,5 +1,4 @@
-namespace MikeNakis.Clio.Codecs;
-
+namespace MikeNakis.Clio;
 public sealed class StringCodec : ClassCodec<string>
 {
 	public static readonly ClassCodec<string> Instance = new StringCodec();

@@ -1,7 +1,5 @@
-namespace MikeNakis.Clio.Arguments;
+namespace MikeNakis.Clio;
 
-using MikeNakis.Clio.Codecs;
-using MikeNakis.Clio.Exceptions;
 using Sys = System;
 using SysText = System.Text;
 

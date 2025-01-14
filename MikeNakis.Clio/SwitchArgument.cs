@@ -1,6 +1,4 @@
-namespace MikeNakis.Clio.Arguments;
-
-using MikeNakis.Clio.Exceptions;
+namespace MikeNakis.Clio;
 
 sealed class SwitchArgument : NamedArgument, ISwitchArgument
 {

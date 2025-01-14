@@ -1,4 +1,4 @@
-namespace MikeNakis.Clio.Codecs;
+namespace MikeNakis.Clio;
 
 using Sys = System;
 using SysGlob = System.Globalization;

@@ -1,5 +1,4 @@
-namespace MikeNakis.Clio.Codecs;
-
+namespace MikeNakis.Clio;
 public abstract class RawCodec
 {
 	public abstract string Name { get; }
