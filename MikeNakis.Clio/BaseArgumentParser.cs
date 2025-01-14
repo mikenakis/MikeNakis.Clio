@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using MikeNakis.Clio.Arguments;
 using MikeNakis.Clio.Codecs;
 using MikeNakis.Clio.Exceptions;
-using MikeNakis.Kit.Collections;
 using Sys = System;
 
 /// <summary>Common base class for command-line parsers.</summary>
@@ -18,8 +17,8 @@ public abstract class BaseArgumentParser
 	/// <summary>The name of the program or verb.</summary>
 	public string Name { get; }
 
-	readonly MutableList<Argument> arguments = new();
-	internal IReadOnlyList<Argument> Arguments => arguments.AsReadOnlyList;
+	readonly List<Argument> arguments = new();
+	internal IReadOnlyList<Argument> Arguments => arguments;
 
 	protected BaseArgumentParser( string name )
 	{
@@ -329,8 +328,8 @@ public abstract class BaseArgumentParser
 
 		void reportMissingVerb()
 		{
-			Assert( arguments.OfType<VerbArgument>().Collect(),
-				verbs => verbs.Count == 0 || verbs.Where( verb => verb.IsSupplied ).Any(),
+			Assert( arguments.OfType<VerbArgument>().ToArray(),
+				verbs => verbs.Length == 0 || verbs.Where( verb => verb.IsSupplied ).Any(),
 				_ => throw new VerbExpectedException( GetRootArgumentParser().VerbTerm ) );
 		}
 	}

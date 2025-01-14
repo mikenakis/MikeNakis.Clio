@@ -2,7 +2,6 @@ namespace MikeNakis.Clio;
 
 using System.Collections.Generic;
 using MikeNakis.Clio.Arguments;
-using MikeNakis.Kit.Collections;
 using Sys = System;
 using SysText = System.Text;
 
@@ -36,7 +35,7 @@ static class HelpGenerator
 		static string buildShortUsageString( IEnumerable<Argument> arguments, string verbTerm )
 		{
 			SysText.StringBuilder stringBuilder = new();
-			IReadOnlyList<NamedArgument> optionalNamedArguments = arguments.OfType<NamedArgument>().Where( argument => argument.IsOptional ).Collect();
+			IReadOnlyList<NamedArgument> optionalNamedArguments = arguments.OfType<NamedArgument>().Where( argument => argument.IsOptional ).ToArray();
 			switch( optionalNamedArguments.Count )
 			{
 				case 0:
@@ -77,7 +76,7 @@ static class HelpGenerator
 
 			static void outputLongUsage( Sys.Action<string> lineOutputConsumer, int screenWidth, int maxShortUsageLength, Argument argument )
 			{
-				MutableList<string> longUsageLines = new();
+				List<string> longUsageLines = new();
 				argument.CollectLongUsageLines( longUsageLines.Add );
 				string prefix = argument.ShortUsage;
 				int availableWidth = screenWidth - (indentation.Length + maxShortUsageLength + 1);
@@ -96,7 +95,7 @@ static class HelpGenerator
 		static void outputInformationalMessageAboutCombiningSingleLetters( Sys.Action<string> lineOutputConsumer, IEnumerable<Argument> arguments )
 		{
 			//TODO: recursively search for single-letter switches in verbs
-			IReadOnlyList<NamedArgument> singleLetterSwitches = arguments.OfType<NamedArgument>().Where( argument => argument.SingleLetterName is not null and not 'h' ).Collect();
+			IReadOnlyList<NamedArgument> singleLetterSwitches = arguments.OfType<NamedArgument>().Where( argument => argument.SingleLetterName is not null and not 'h' ).ToArray();
 			if( singleLetterSwitches.Count > 1 )
 			{
 				char a = singleLetterSwitches[0].SingleLetterName!.Value;
@@ -108,8 +107,8 @@ static class HelpGenerator
 
 	static IReadOnlyList<string> wordBreak( string input, int width )
 	{
-		MutableList<string> lines = new();
-		string[] words = input.Split( ' ', Sys.StringSplitOptions.TrimEntries | Sys.StringSplitOptions.TrimEntries );
+		List<string> lines = new();
+		string[] words = input.Split( ' ' ).Select( s => s.Trim() ).ToArray();
 		SysText.StringBuilder stringBuilder = new();
 		foreach( string word in words )
 		{
@@ -127,6 +126,6 @@ static class HelpGenerator
 		}
 		if( stringBuilder.Length > 0 )
 			lines.Add( stringBuilder.ToString() );
-		return lines.AsReadOnlyList;
+		return lines;
 	}
 }

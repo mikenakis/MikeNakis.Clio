@@ -12,7 +12,7 @@
 				still does not tell you what the fucking problem is. -->
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net472</TargetFramework>
 		<!-- AssemblyName: The default is $(MSBuildProjectName) -->
 		<AssemblyName>$(MSBuildProjectName)-$(Configuration)</AssemblyName>
 	</PropertyGroup>
@@ -41,13 +41,9 @@
 	<ItemGroup>
 		<PackageReference Include="MikeNakis.CommonFiles" Version="1.*" PrivateAssets="all" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0" Condition="'$(Configuration)' == 'Debug'"/>
-		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" Condition="'$(Configuration)' == 'Debug'">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-		</PackageReference>
 	</ItemGroup>
 
-	<Choose>
+	<!--<Choose>
 		<When Condition="'$(BUILD_SERVER_BUILD)' == 'True' OR '$(Configuration)' == 'Release'">
 			<ItemGroup>
 				<PackageReference Include="MikeNakis.Kit-$(Configuration)" Version="*" />
@@ -58,7 +54,7 @@
 				<ProjectReference Include="..\..\MikeNakis.Kit\MikeNakis.Kit\MikeNakis.Kit.csproj" />
 			</ItemGroup>
 		</Otherwise>
-	</Choose>
+	</Choose>-->
 
 	<!-- NuGet Packaging ******************************************************************************************* -->
 

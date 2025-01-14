@@ -1,9 +1,8 @@
 namespace MikeNakis.Clio.Exceptions;
 
-using MikeNakis.Kit;
 using Sys = System;
 
-abstract class UserException( Sys.Exception? cause = null ) : SaneException( cause );
+public abstract class UserException( Sys.Exception? cause = null ) : Sys.Exception( "", cause );
 
 sealed class HelpException( BaseArgumentParser argumentParser ) : UserException
 {

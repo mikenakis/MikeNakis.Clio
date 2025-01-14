@@ -1,18 +1,9 @@
 namespace MikeNakis.Clio.Exceptions;
 
-using MikeNakis.Kit;
 using Sys = System;
 
-/// <summary>Represent a mistake made by the programmer.</summary>
-public abstract class ProgrammerException : SaneException
-{
-	private protected ProgrammerException()
-	{ }
-
-	private protected ProgrammerException( Sys.Exception cause )
-		: base( cause )
-	{ }
-}
+/// <summary>Represents a mistake made by the programmer.</summary>
+public abstract class ProgrammerException : Sys.Exception;
 
 /// <summary>Thrown when an attempt is made to add an argument after the command-line has been parsed.</summary>
 public sealed class CommandLineHasAlreadyBeenParsedException() : ProgrammerException;
@@ -52,30 +43,6 @@ public sealed class InvalidArgumentOrderingException( ArgumentOrderingRule argum
 	public ArgumentOrderingRule ArgumentOrderingRule => argumentOrderingRule;
 	public string ViolatingArgumentName => violatingArgumentName;
 	public string PrecedingArgumentName => precedingArgumentName;
-}
-
-/// <summary>Thrown when an attempt is made to re-specify the single-letter name of an argument.</summary>
-public sealed class SingleLetterNameAlreadyGivenException( string argumentName, char existingShortFormName, char newShortFormName ) : ProgrammerException
-{
-	public string ArgumentName => argumentName;
-	public char ExistingSingleLetterName => existingShortFormName;
-	public char NewSingleLetterName => newShortFormName;
-}
-
-/// <summary>Thrown when an attempt is made to re-specify the parameter name of an option.</summary>
-public sealed class OptionParameterNameAlreadyGivenException( string argumentName, string existingParameterName, string newParameterName ) : ProgrammerException
-{
-	public string ArgumentName => argumentName;
-	public string ExistingParameterName => existingParameterName;
-	public string NewParameterName => newParameterName;
-}
-
-/// <summary>Thrown when an attempt is made to re-specify the description of an argument.</summary>
-public sealed class DescriptionAlreadyGivenException( string argumentName, string existingDescription, string newDescription ) : ProgrammerException
-{
-	public string ArgumentName => argumentName;
-	public string ExistingDescription => existingDescription;
-	public string NewDescription => newDescription;
 }
 
 public sealed class TryParseWasNotInvokedException( string verbName ) : ProgrammerException

@@ -3,22 +3,20 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<IsTestProject>True</IsTestProject>
+		<NoWarn>$(NoWarn);NU1702</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="MikeNakis.CommonFiles" Version="1.*" />
+		<PackageReference Include="MikeNakis.Kit" Version="1.*" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0" Condition="'$(Configuration)' == 'Debug'"/>
-		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" Condition="'$(Configuration)' == 'Debug'">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-		</PackageReference>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" Condition="'$(IsTestProject)' == 'True'" />
 		<PackageReference Include="MSTest.TestAdapter" Version="3.6.2" Condition="'$(IsTestProject)' == 'True'" />
 		<PackageReference Include="MSTest.TestFramework" Version="3.6.2" Condition="'$(IsTestProject)' == 'True'" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="$(MSBuildProjectDirectory)\..\MikeNakis.Clio\MikeNakis.Clio.csproj" />
+		<ProjectReference Include="..\MikeNakis.Clio\MikeNakis.Clio.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -18,13 +18,13 @@ sealed class Audit
 	{
 		Assert( callerFileName != null );
 		Assert( callerMemberName != null );
-		FilePath callerFilePath = FilePath.FromAbsolutePath( callerFileName );
+		FilePath callerFilePath = FilePath.FromAbsolutePath( NotNull( callerFileName ) );
 		FilePath auditFilePath = callerFilePath.WithReplacedExtension( FileExtension );
 		Audit audit = getOrCreateAuditFile( auditFilePath );
 		using( AuditFile auditFile = audit.newFile() )
 		{
 			auditFile.WriteLine( new string( '-', 80 ) );
-			auditFile.WriteLine( callerMemberName );
+			auditFile.WriteLine( NotNull( callerMemberName ) );
 			auditFile.WriteLine( "" );
 			procedure.Invoke( auditFile.WriteLine );
 		}
