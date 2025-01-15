@@ -6,10 +6,10 @@ using SysDiag = System.Diagnostics;
 sealed class VerbArgument : Argument, IVerbArgument
 {
 	readonly Sys.Action<ChildArgumentParser> handler;
-	bool supplied;
-	public bool Value => IsSupplied;
+	VerbExecutionArgumentParser? verbExecutionArgumentParser;
+	public BaseArgumentParser? Value => verbExecutionArgumentParser;
 	public override object? RawValue => Value;
-	public override bool IsSupplied => supplied;
+	public override bool IsSupplied => verbExecutionArgumentParser != null;
 	internal sealed override string ShortUsage => Name; //TODO: add ellipsis if it accepts arguments.
 
 	internal VerbArgument( BaseArgumentParser argumentParser, string name, string? description, Sys.Action<ChildArgumentParser> handler )
@@ -29,11 +29,10 @@ sealed class VerbArgument : Argument, IVerbArgument
 
 	public sealed override int TryParse( int tokenIndex, IReadOnlyList<string> tokens )
 	{
-		Assert( !supplied ); //cannot happen
+		Assert( verbExecutionArgumentParser == null ); //cannot happen
 		if( tokens[tokenIndex] != Name )
 			return tokenIndex;
-		supplied = true;
-		VerbExecutionArgumentParser verbExecutionArgumentParser = new( ArgumentParser, Name, tokenIndex + 1, tokens );
+		verbExecutionArgumentParser = new( ArgumentParser, Name, tokenIndex + 1, tokens );
 		handler.Invoke( verbExecutionArgumentParser );
 		return tokens.Count;
 	}

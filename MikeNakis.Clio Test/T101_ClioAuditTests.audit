@@ -97,7 +97,6 @@ juliet = "juliet-default"
 kilo = "kilo-value"
 help = False
 lima = "lima-value"
-mike = True
 mike.november = True
 mike.oscar = False
 mike.help = False

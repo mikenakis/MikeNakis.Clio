@@ -15,7 +15,7 @@ public abstract class BaseArgumentParser
 	public string Name { get; }
 
 	readonly List<Argument> arguments = new();
-	internal IReadOnlyList<Argument> Arguments => arguments;
+	public IEnumerable<IArgument> Arguments => arguments;
 
 	protected BaseArgumentParser( string name )
 	{
@@ -300,8 +300,6 @@ public abstract class BaseArgumentParser
 			throw new HelpException( this );
 		reportAnyMissingRequiredArguments();
 		reportMissingVerb();
-		if( GetRootArgumentParser().OutputArgumentNamesAndValues && !arguments.Where( a => a is VerbArgument ).Any() )
-			DumpArguments();
 		return;
 
 		int tryParseArgument( int tokenIndex, IReadOnlyList<string> tokens )
@@ -329,24 +327,5 @@ public abstract class BaseArgumentParser
 				verbs => verbs.Length == 0 || verbs.Where( verb => verb.IsSupplied ).Any(),
 				_ => throw new VerbExpectedException( GetRootArgumentParser().VerbTerm ) );
 		}
-	}
-
-	internal void DumpArguments()
-	{
-		Parent?.DumpArguments();
-		Sys.Action<string> lineOutputConsumer = GetRootArgumentParser().LineOutputConsumer;
-		string parserName = getParserName( this );
-		foreach( Argument argument in arguments )
-			lineOutputConsumer.Invoke( $"{dotSeparated( parserName, argument.Name )} = {argument.ValueToString()}" );
-
-		static string getParserName( BaseArgumentParser argumentParser )
-		{
-			if( argumentParser.Parent == null )
-				return "";
-			string parentName = getParserName( argumentParser.Parent );
-			return dotSeparated( parentName, argumentParser.Name );
-		}
-
-		static string dotSeparated( string a, string b ) => a == "" ? b : $"{a}.{b}";
 	}
 }

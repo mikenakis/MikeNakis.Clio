@@ -54,7 +54,7 @@ public interface IPositionalArgument<T> : IArgument<T>
 ///<summary>Represents a verb argument.</summary>
 ///<remarks>A verb is a word followed by a new set of arguments. For example: <c>AcmeCli create ...</c>
 ///or <c>AcmeCli list ...</c>.</remarks>
-public interface IVerbArgument : IArgument<bool>
+public interface IVerbArgument : IArgument<BaseArgumentParser?>
 {
 }
 

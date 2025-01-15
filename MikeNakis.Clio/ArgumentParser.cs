@@ -11,7 +11,6 @@ public sealed class ArgumentParser : BaseArgumentParser
 	internal override ArgumentParser GetRootArgumentParser() => this;
 	internal Sys.Action<string> LineOutputConsumer { get; }
 	readonly int screenWidth;
-	public bool OutputArgumentNamesAndValues { get; set; }
 
 	/// <summary>Constructor.</summary>
 	/// <param name="verbTerm" >Specifies the term to use in place of 'verb' when displaying help.</param>

@@ -1,6 +1,7 @@
 namespace MikeNakis.Clio_Test;
 
 using MikeNakis.Clio;
+using MikeNakis.Kit;
 using Sys = System;
 using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -177,7 +178,6 @@ public sealed class T101_ClioAuditTests
 					Assert( romeo.Value == null );
 					mikeHandlerWasInvoked = true;
 				} );
-			argumentParser.OutputArgumentNamesAndValues = true;
 			bool ok = argumentParser.TryParse( "-a --echo=echo-value --hotel=Value2 --india --kilo=kilo-value lima-value mike --november papa-value" );
 			Assert( ok );
 			Assert( alpha.Value == true );
@@ -192,9 +192,31 @@ public sealed class T101_ClioAuditTests
 			Assert( juliet.Value == "juliet-default" );
 			Assert( kilo.Value == "kilo-value" );
 			Assert( lima.Value == "lima-value" );
-			Assert( mike.Value == true );
+			Assert( mike.Value != null );
 			Assert( mikeHandlerWasInvoked );
+
+			dumpArguments( lineConsumer, argumentParser );
 		} );
+	}
+
+	static void dumpArguments( Sys.Action<string> lineConsumer, BaseArgumentParser argumentParser )
+	{
+		recurse( lineConsumer, "", argumentParser );
+		return;
+
+		static void recurse( Sys.Action<string> lineConsumer, string prefix, BaseArgumentParser argumentParser )
+		{
+			foreach( IArgument argument in argumentParser.Arguments )
+			{
+				string fullArgumentName = dotSeparated( prefix, argument.Name );
+				if( argument.RawValue is BaseArgumentParser childArgumentParser )
+					recurse( lineConsumer, fullArgumentName, childArgumentParser );
+				else
+					lineConsumer.Invoke( $"{fullArgumentName} = {KitHelpers.SafeToString( argument.RawValue )}" );
+			}
+
+			static string dotSeparated( string a, string b ) => a == "" ? b : $"{a}.{b}";
+		}
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
