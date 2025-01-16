@@ -19,9 +19,16 @@ sealed class SwitchArgument : NamedArgument, ISwitchArgument
 
 	public sealed override int TryParse( int tokenIndex, IReadOnlyList<string> tokens )
 	{
-		string? remainder = TryParseNameAndGetRemainder( tokens[tokenIndex] );
-		if( remainder == null )
+		string token = tokens[tokenIndex];
+		int skip = shortFormNameMatch( token, SingleLetterName );
+		if( skip == 0 )
+			skip = longFormNameMatch( token, Name );
+		if( skip == 0 )
 			return tokenIndex;
+		if( IsSupplied )
+			throw new ArgumentSuppliedMoreThanOnceException( Name );
+		Supplied = true;
+		string remainder = token[skip..];
 		if( remainder != "" )
 			throw new UnexpectedCharactersAfterNamedArgumentException( Name, remainder );
 		return tokenIndex + 1;

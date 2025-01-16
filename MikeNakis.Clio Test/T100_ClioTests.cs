@@ -7,10 +7,21 @@ using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 [VSTesting.TestClass]
 public sealed class T100_ClioTests
 {
-	static ArgumentParser newArgumentParser()
+	static ArgumentParser newArgumentParser( Sys.Func<string, string>? fileReader = null )
 	{
-		TestingOptions testingOptions = new( "TestApp" );
-		return new ArgumentParser( "subcommand", null, testingOptions );
+		TestingOptions testingOptions = new( "TestApp", fileReader );
+		return new ArgumentParser( null, null, testingOptions );
+	}
+
+	static bool tryParse( ArgumentParser self, string commandLine )
+	{
+		string[] tokens = commandLine.Split( ' ', Sys.StringSplitOptions.RemoveEmptyEntries | Sys.StringSplitOptions.TrimEntries );
+		return self.TryParse( tokens, lineOutputConsumer );
+	}
+
+	static void lineOutputConsumer( string text )
+	{
+		Assert( false ); //we do not expect the line-output-consumer to ever be invoked.
 	}
 
 	enum Enum1
@@ -359,6 +370,44 @@ public sealed class T100_ClioTests
 		Assert( verbHandlerInvoked );
 	}
 
+	[VSTesting.TestMethod]
+	public void T132_Positional_Argument_Can_Be_Used_As_Named_Argument()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IArgument<string?> mike = argumentParser.AddStringPositional( "mike", "mike-description" );
+		IArgument<string> papa = argumentParser.AddStringPositionalWithDefault( "papa", "papa-default", description: "papa-description" );
+		bool ok = tryParse( argumentParser, "--mike=mike-value" );
+		Assert( ok );
+		Assert( mike.Value == "mike-value" );
+		Assert( papa.Value == "papa-default" );
+	}
+
+	[VSTesting.TestMethod]
+	public void T133_Response_Files_Work()
+	{
+		const string responseFilename = "responseFilename.txt";
+		ArgumentParser argumentParser = newArgumentParser( fileReader );
+		IArgument<string?> alpha = argumentParser.AddStringOption( "alpha" );
+		IArgument<string?> mike = argumentParser.AddStringOption( "mike" );
+		IArgument<string?> papa = argumentParser.AddStringPositional( "papa" );
+		IArgument<string?> zulu = argumentParser.AddStringPositional( "zulu" );
+		bool ok = tryParse( argumentParser, $"--alpha=alpha-value @{responseFilename} zulu-value" );
+		Assert( ok );
+		Assert( alpha.Value == "alpha-value" );
+		Assert( mike.Value == "mike-value" );
+		Assert( papa.Value == "papa-value" );
+		Assert( zulu.Value == "zulu-value" );
+		return;
+
+		static string fileReader( string filename )
+		{
+			Assert( filename == Sys.IO.Path.GetFullPath( responseFilename ) );
+			return @"mike=mike-value
+				#this is a comment
+				papa=papa-value";
+		}
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Tests for programmer mistakes
 
@@ -596,12 +645,6 @@ public sealed class T100_ClioTests
 				);
 		NotNullCast( caughtException, out TryParseInvokedMoreThanOnceException exception );
 		Assert( exception.VerbName == "juliet" );
-	}
-
-	public static bool tryParse( ArgumentParser self, string commandLine )
-	{
-		string[] tokens = commandLine.Split( ' ', Sys.StringSplitOptions.RemoveEmptyEntries | Sys.StringSplitOptions.TrimEntries );
-		return self.TryParse( tokens, s => Assert( false ) );
 	}
 }
 

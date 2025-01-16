@@ -10,6 +10,7 @@ public sealed class ArgumentParser : BaseArgumentParser
 	internal override BaseArgumentParser? Parent => null;
 	internal override ArgumentParser GetRootArgumentParser() => this;
 	internal int ScreenWidth { get; }
+	Sys.Func<string, string> fileReader;
 
 	/// <summary>Constructor.</summary>
 	/// <param name="verbTerm" >Specifies the term to use in place of 'verb' when displaying help.</param>
@@ -21,6 +22,7 @@ public sealed class ArgumentParser : BaseArgumentParser
 	{
 		VerbTerm = verbTerm ?? "verb";
 		ScreenWidth = screenWidth ?? 120;
+		fileReader = testingOptions?.FileReader ?? Sys.IO.File.ReadAllText;
 	}
 
 	///<summary>Adds a verb.</summary>
@@ -41,7 +43,9 @@ public sealed class ArgumentParser : BaseArgumentParser
 	/// <returns><c>true</c> if successful; <c>false</c> otherwise.</returns>
 	public bool TryParse( string[] arrayOfToken, Sys.Action<string>? lineOutputConsumer = null )
 	{
-		IReadOnlyList<string> tokens = splitCombinedSingleLetterArguments( arrayOfToken );
+		List<string> tokens = new( arrayOfToken );
+		splitCombinedSingleLetterArguments( tokens );
+		addArgumentsFromResponseFiles( tokens );
 		try
 		{
 			ParseRemainingTokens( 0, tokens );
@@ -67,18 +71,42 @@ public sealed class ArgumentParser : BaseArgumentParser
 			lineOutputConsumer.Invoke( $"Try '{fullName} --help' for more information." );
 		}
 
-		static IReadOnlyList<string> splitCombinedSingleLetterArguments( IReadOnlyList<string> tokens )
+		static void splitCombinedSingleLetterArguments( List<string> tokens )
 		{
-			List<string> mutableTokens = new();
-			foreach( string token in tokens )
-				if( isCombined( token ) )
+			for( int i = 0; i < tokens.Count; i++ )
+			{
+				string token = tokens[i];
+				if( token == "--" )
+					break;
+				if( token[0] == '-' && token.Length > 2 && token[1] != '-' )
+				{
+					tokens.RemoveAt( i );
 					foreach( char c in token.Skip( 1 ) )
-						mutableTokens.Add( $"-{c}" );
-				else
-					mutableTokens.Add( token );
-			return mutableTokens;
+						tokens.Insert( i++, $"-{c}" );
+				}
+			}
+		}
 
-			static bool isCombined( string token ) => token[0] == '-' && token.Length > 2 && token[1] != '-' /* && token[1..].All( Helpers.ShortFormNameIsValid ) */ ;
+		void addArgumentsFromResponseFiles( List<string> tokens )
+		{
+			for( int i = 0; i < tokens.Count; i++ )
+			{
+				string token = tokens[i];
+				if( token == "--" )
+					break;
+				if( token[0] == '@' )
+				{
+					tokens.RemoveAt( i );
+					string responseFileName = Sys.IO.Path.GetFullPath( token[1..] );
+					IEnumerable<string> lines = fileReader.Invoke( responseFileName ) //
+						.Split( '\n' )
+						.Select( s => s.Trim() )
+						.Where( s => s.Length > 0 )
+						.Where( s => s[0] != '#' );
+					foreach( string line in lines )
+						tokens.Insert( i++, "--" + line );
+				}
+			}
 		}
 	}
 }

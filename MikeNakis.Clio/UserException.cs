@@ -19,9 +19,9 @@ sealed class UnexpectedCharactersAfterNamedArgumentException( string argumentNam
 	public override string Message => $"Unexpected characters found after '{argumentName}' : '{unexpectedCharacters}'.";
 }
 
-sealed class OptionRequiresValueException( string argumentName ) : UserException
+sealed class EqualsSignExpectedException( string argumentName ) : UserException
 {
-	public override string Message => $"Option '{argumentName}' was supplied without a value, but it requires a value.";
+	public override string Message => $"Argument '{argumentName}' must be followed by an equals sign ('=').";
 }
 
 sealed class RequiredArgumentNotSuppliedException( string argumentName ) : UserException

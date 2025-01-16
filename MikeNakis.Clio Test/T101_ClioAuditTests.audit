@@ -113,7 +113,7 @@ Try 'TestApp --help' for more information.
 --------------------------------------------------------------------------------
 T108_Option_Value_Not_Supplied_Is_Caught
 
-Option 'alpha' was supplied without a value, but it requires a value.
+Argument 'alpha' must be followed by an equals sign ('=').
 Try 'TestApp --help' for more information.
 
 --------------------------------------------------------------------------------

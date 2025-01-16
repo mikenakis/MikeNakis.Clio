@@ -99,13 +99,39 @@ abstract class Argument : IArgument
 		Assert( ArgumentParser.HasBeenParsed, () => throw new CommandLineHasNotBeenParsedException() );
 		return true;
 	}
+
+	protected static int shortFormNameMatch( string token, char? shortFormName )
+	{
+		if( !shortFormName.HasValue )
+			return 0;
+		if( token.Length != 2 )
+			return 0;
+		if( token[0] != '-' )
+			return 0;
+		if( token[1] != shortFormName.Value )
+			return 0;
+		return 2;
+	}
+
+	protected static int longFormNameMatch( string token, string name )
+	{
+		if( token.Length < 2 + name.Length )
+			return 0;
+		if( !(token[0] == '-' && token[1] == '-') )
+			return 0;
+		if( !token[2..].StartsWith( name, Sys.StringComparison.Ordinal ) )
+			return 0;
+		if( token.Length > 2 + name.Length && !Helpers.IsTerminator( token[2 + name.Length] ) )
+			return 0;
+		return 2 + name.Length;
+	}
 }
 
 abstract class NamedArgument : Argument
 {
 	public char? SingleLetterName { get; }
-	bool supplied;
-	public override bool IsSupplied => supplied;
+	protected bool Supplied { get; set; }
+	public override bool IsSupplied => Supplied;
 
 	private protected NamedArgument( BaseArgumentParser argumentParser, string name, char? singleLetterName, string? description, bool isRequired )
 			: base( argumentParser, name, description, isRequired )
@@ -128,35 +154,9 @@ abstract class NamedArgument : Argument
 			skip = longFormNameMatch( token, Name );
 		if( skip == 0 )
 			return null;
-		if( supplied )
+		if( Supplied )
 			throw new ArgumentSuppliedMoreThanOnceException( Name );
-		supplied = true;
+		Supplied = true;
 		return token[skip..];
-
-		static int shortFormNameMatch( string token, char? shortFormName )
-		{
-			if( !shortFormName.HasValue )
-				return 0;
-			if( token.Length != 2 )
-				return 0;
-			if( token[0] != '-' )
-				return 0;
-			if( token[1] != shortFormName.Value )
-				return 0;
-			return 2;
-		}
-
-		static int longFormNameMatch( string token, string name )
-		{
-			if( token.Length < 2 + name.Length )
-				return 0;
-			if( !(token[0] == '-' && token[1] == '-') )
-				return 0;
-			if( !token[2..].StartsWith( name, Sys.StringComparison.Ordinal ) )
-				return 0;
-			if( token.Length > 2 + name.Length && !Helpers.IsTerminator( token[2 + name.Length] ) )
-				return 0;
-			return 2 + name.Length;
-		}
 	}
 }
