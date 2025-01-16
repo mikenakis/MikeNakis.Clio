@@ -15,9 +15,7 @@ abstract class PositionalArgument : Argument
 		: base( argumentParser, name, description, isRequired )
 	{
 		Assert( Helpers.ParameterNameIsValidAssertion( name ) );
-		//TODO: revise the usefulness of this.
 		Assert( Helpers.ArgumentMustPrecedeVerbAssertion( argumentParser, name ) );
-		//TODO: revise the usefulness of this.
 		if( !IsOptional )
 			Assert( argumentParser.Arguments.OfType<PositionalArgument>().Where( positionalArgument => positionalArgument.IsOptional ).FirstOrDefault(), //
 				optionalPositionalArgument => optionalPositionalArgument == null, //

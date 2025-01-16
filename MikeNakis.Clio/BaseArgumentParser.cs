@@ -17,6 +17,8 @@ public abstract class BaseArgumentParser
 	readonly List<Argument> arguments = new();
 	public IEnumerable<IArgument> Arguments => arguments;
 
+	ISwitchArgument? helpSwitch;
+
 	protected BaseArgumentParser( string name )
 	{
 		Name = name;
@@ -267,45 +269,41 @@ public abstract class BaseArgumentParser
 		arguments.Add( argument );
 	}
 
-	internal void OutputHelp( int screenWidth )
+	internal void OutputHelp( Sys.Action<string> lineOutputConsumer )
 	{
-		Sys.Action<string> lineOutputConsumer = GetRootArgumentParser().LineOutputConsumer;
+		int screenWidth = GetRootArgumentParser().ScreenWidth;
 		string fullName = GetFullName( ' ' );
 		HelpGenerator.OutputHelp( lineOutputConsumer, screenWidth, fullName, arguments, GetRootArgumentParser().VerbTerm );
 		return;
 	}
 
-	ISwitchArgument? helpSwitch;
-
-	void addHelpSwitch()
+	ISwitchArgument addHelpSwitch()
 	{
 		Assert( helpSwitch == null );
 		helpSwitch = AddSwitch( "help", 'h', "Display this help" );
+		return helpSwitch;
 	}
 
 	private protected void ParseRemainingTokens( int tokenIndex, IReadOnlyList<string> tokens )
 	{
 		Assert( !HasBeenParsed );
-		if( helpSwitch == null )
-			addHelpSwitch();
+		ISwitchArgument helpSwitch = this.helpSwitch ?? addHelpSwitch();
 		HasBeenParsed = true;
 		while( tokenIndex < tokens.Count )
 		{
-			int newTokenIndex = tryParseArgument( tokenIndex, tokens );
+			int newTokenIndex = tryParseArgument( tokenIndex, tokens, arguments );
 			if( newTokenIndex == tokenIndex )
 				throw new UnexpectedTokenException( tokens[tokenIndex] );
 			tokenIndex = newTokenIndex;
 		}
-		if( helpSwitch!.Value )
+		if( helpSwitch.Value )
 			throw new HelpException( this );
 		reportAnyMissingRequiredArguments();
 		reportMissingVerb();
 		return;
 
-		int tryParseArgument( int tokenIndex, IReadOnlyList<string> tokens )
+		static int tryParseArgument( int tokenIndex, IReadOnlyList<string> tokens, IEnumerable<Argument> orderedArguments )
 		{
-			IEnumerable<Argument> orderedArguments = arguments.Where( a => a is NamedArgument ).Concat( arguments.Where( a => a is PositionalArgument ) ).Concat( arguments.Where( a => a is VerbArgument ) );
-			Assert( orderedArguments.Count() == arguments.Count );
 			foreach( Argument argument in orderedArguments )
 			{
 				int newTokenIndex = argument.TryParse( tokenIndex, tokens );

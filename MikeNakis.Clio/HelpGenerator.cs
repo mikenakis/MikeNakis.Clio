@@ -43,19 +43,22 @@ static class HelpGenerator
 					stringBuilder.Append( " [" ).Append( optionalNamedArguments[0].ShortUsage ).Append( ']' );
 					break;
 				default:
-					stringBuilder.Append( " [<options>]" );
+					stringBuilder.Append( " [<option>...]" );
 					break;
 			}
 			foreach( Argument argument in arguments.OfType<NamedArgument>().Where( argument => argument.IsRequired ) )
 				stringBuilder.Append( ' ' ).Append( argument.ShortUsage );
-			foreach( Argument argument in arguments.Where( argument => argument is not NamedArgument ).Where( argument => argument.IsRequired ) )
+			IEnumerable<Argument> positionalArguments = arguments.Where( argument => argument is PositionalArgument );
+			IEnumerable<Argument> requiredPositionalArguments = positionalArguments.Where( argument => argument.IsRequired );
+			IEnumerable<Argument> optionalPositionalArguments = positionalArguments.Where( argument => argument.IsOptional );
+			foreach( Argument argument in requiredPositionalArguments )
 				stringBuilder.Append( ' ' ).Append( argument.ShortUsage );
-			foreach( Argument argument in arguments.Where( argument => argument is not NamedArgument ).Where( argument => argument.IsOptional ) )
+			foreach( Argument argument in optionalPositionalArguments )
 				stringBuilder.Append( " [" ).Append( argument.ShortUsage );
-			foreach( Argument argument in arguments.Where( argument => argument is not NamedArgument ).Where( argument => argument.IsOptional ) )
+			foreach( Argument argument in optionalPositionalArguments )
 				stringBuilder.Append( ']' );
 			if( arguments.OfType<VerbArgument>().Any() )
-				stringBuilder.Append( " <" ).Append( verbTerm ).Append( "> ..." );
+				stringBuilder.Append( " <" ).Append( verbTerm ).Append( ">..." );
 			return stringBuilder.ToString();
 		}
 

@@ -31,9 +31,9 @@ public sealed class InvalidArgumentNameException( string argumentName ) : Progra
 
 public enum ArgumentOrderingRule
 {
-	NamedArgumentMustPrecedePositional, //TODO: revise the usefulness of this.
-	RequiredPositionalMustPrecedeOptionalPositional, //TODO: revise the usefulness of this.
-	ArgumentMustPrecedeVerb, //TODO: revise the usefulness of this.
+	NamedArgumentMustPrecedePositional,
+	RequiredPositionalMustPrecedeOptionalPositional,
+	ArgumentMustPrecedeVerb,
 	VerbMayNotBePrecededByOptionalPositional
 }
 

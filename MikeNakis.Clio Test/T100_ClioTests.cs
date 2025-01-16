@@ -9,8 +9,8 @@ public sealed class T100_ClioTests
 {
 	static ArgumentParser newArgumentParser()
 	{
-		TestingOptions testingOptions = new( s => Assert( false ), "TestApp", screenWidth: null );
-		return new ArgumentParser( "subcommand", testingOptions );
+		TestingOptions testingOptions = new( "TestApp" );
+		return new ArgumentParser( "subcommand", null, testingOptions );
 	}
 
 	enum Enum1
@@ -32,7 +32,8 @@ public sealed class T100_ClioTests
 	public void T101_Empty_Clio_Works()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
-		argumentParser.TryParse( "" );
+		bool ok = tryParse( argumentParser, "" );
+		Assert( ok );
 	}
 
 	[VSTesting.TestMethod]
@@ -40,7 +41,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha" );
-		bool ok = argumentParser.TryParse( "" );
+		bool ok = tryParse( argumentParser, "" );
 		Assert( ok );
 		Assert( !alpha.Value );
 	}
@@ -50,7 +51,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha" );
-		bool ok = argumentParser.TryParse( "--alpha" );
+		bool ok = tryParse( argumentParser, "--alpha" );
 		Assert( ok );
 		Assert( alpha.Value );
 	}
@@ -60,7 +61,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string?> alpha = argumentParser.AddStringOption( "alpha" );
-		bool ok = argumentParser.TryParse( "" );
+		bool ok = tryParse( argumentParser, "" );
 		Assert( ok );
 		Assert( alpha.Value == null );
 	}
@@ -70,7 +71,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string?> alpha = argumentParser.AddStringOption( "alpha" );
-		bool ok = argumentParser.TryParse( "--alpha=alpha-value" );
+		bool ok = tryParse( argumentParser, "--alpha=alpha-value" );
 		Assert( ok );
 		Assert( alpha.Value == "alpha-value" );
 	}
@@ -80,7 +81,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string> alpha = argumentParser.AddStringOptionWithDefault( "alpha", "alpha-default" );
-		bool ok = argumentParser.TryParse( "" );
+		bool ok = tryParse( argumentParser, "" );
 		Assert( ok );
 		Assert( alpha.Value == "alpha-default" );
 	}
@@ -90,7 +91,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string> alpha = argumentParser.AddStringOptionWithDefault( "alpha", "alpha-default" );
-		bool ok = argumentParser.TryParse( "--alpha=alpha-value" );
+		bool ok = tryParse( argumentParser, "--alpha=alpha-value" );
 		Assert( ok );
 		Assert( alpha.Value == "alpha-value" );
 	}
@@ -100,7 +101,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string?> alpha = argumentParser.AddStringOption( "alpha", presetValue: "alpha-preset" );
-		bool ok = argumentParser.TryParse( "" );
+		bool ok = tryParse( argumentParser, "" );
 		Assert( ok );
 		Assert( alpha.Value == null );
 	}
@@ -110,7 +111,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string?> alpha = argumentParser.AddStringOption( "alpha", presetValue: "alpha-preset" );
-		bool ok = argumentParser.TryParse( "--alpha=alpha-value" );
+		bool ok = tryParse( argumentParser, "--alpha=alpha-value" );
 		Assert( ok );
 		Assert( alpha.Value == "alpha-value" );
 	}
@@ -120,7 +121,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string?> alpha = argumentParser.AddStringOption( "alpha", presetValue: "alpha-preset" );
-		bool ok = argumentParser.TryParse( "--alpha" );
+		bool ok = tryParse( argumentParser, "--alpha" );
 		Assert( ok );
 		Assert( alpha.Value == "alpha-preset" );
 	}
@@ -130,7 +131,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string> alpha = argumentParser.AddRequiredStringOption( "alpha", presetValue: "alpha-preset" );
-		bool ok = argumentParser.TryParse( "--alpha=alpha-value" );
+		bool ok = tryParse( argumentParser, "--alpha=alpha-value" );
 		Assert( ok );
 		Assert( alpha.Value == "alpha-value" );
 	}
@@ -140,7 +141,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string> alpha = argumentParser.AddRequiredStringOption( "alpha", presetValue: "alpha-preset" );
-		bool ok = argumentParser.TryParse( "--alpha" );
+		bool ok = tryParse( argumentParser, "--alpha" );
 		Assert( ok );
 		Assert( alpha.Value == "alpha-preset" );
 	}
@@ -150,7 +151,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<Enum1?> alpha = argumentParser.AddOption( "alpha", EnumCodec<Enum1>.Instance );
-		bool ok = argumentParser.TryParse( $"--alpha={nameof( Enum1.Value2 )}" );
+		bool ok = tryParse( argumentParser, $"--alpha={nameof( Enum1.Value2 )}" );
 		Assert( ok );
 		Assert( alpha.Value == Enum1.Value2 );
 	}
@@ -160,7 +161,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<int> alpha = argumentParser.AddOptionWithDefault( "alpha", IntCodec.Instance, 42 );
-		bool ok = argumentParser.TryParse( $"--alpha=5" );
+		bool ok = tryParse( argumentParser, $"--alpha=5" );
 		Assert( ok );
 		Assert( alpha.Value == 5 );
 	}
@@ -170,7 +171,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string?> alpha = argumentParser.AddStringPositional( "alpha" );
-		bool ok = argumentParser.TryParse( "alpha-value" );
+		bool ok = tryParse( argumentParser, "alpha-value" );
 		Assert( ok );
 		Assert( alpha.Value == "alpha-value" );
 	}
@@ -180,7 +181,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string?> alpha = argumentParser.AddStringPositional( "alpha" );
-		bool ok = argumentParser.TryParse( "" );
+		bool ok = tryParse( argumentParser, "" );
 		Assert( ok );
 		Assert( alpha.Value == null );
 	}
@@ -190,7 +191,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string> alpha = argumentParser.AddStringPositionalWithDefault( "alpha", "alpha-default" );
-		bool ok = argumentParser.TryParse( "alpha-value" );
+		bool ok = tryParse( argumentParser, "alpha-value" );
 		Assert( ok );
 		Assert( alpha.Value == "alpha-value" );
 	}
@@ -200,7 +201,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string> alpha = argumentParser.AddStringPositionalWithDefault( "alpha", "alpha-default" );
-		bool ok = argumentParser.TryParse( "" );
+		bool ok = tryParse( argumentParser, "" );
 		Assert( ok );
 		Assert( alpha.Value == "alpha-default" );
 	}
@@ -210,7 +211,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string> alpha = argumentParser.AddRequiredStringPositional( "alpha" );
-		bool ok = argumentParser.TryParse( "alpha-value" );
+		bool ok = tryParse( argumentParser, "alpha-value" );
 		Assert( ok );
 		Assert( alpha.Value == "alpha-value" );
 	}
@@ -220,7 +221,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<Enum1?> alpha = argumentParser.AddPositional( "alpha", EnumCodec<Enum1>.Instance );
-		bool ok = argumentParser.TryParse( nameof( Enum1.Value3 ) );
+		bool ok = tryParse( argumentParser, nameof( Enum1.Value3 ) );
 		Assert( ok );
 		Assert( alpha.Value == Enum1.Value3 );
 	}
@@ -230,7 +231,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<Enum1?> alpha = argumentParser.AddPositional( "alpha", EnumCodec<Enum1>.Instance );
-		bool ok = argumentParser.TryParse( "" );
+		bool ok = tryParse( argumentParser, "" );
 		Assert( ok );
 		Assert( alpha.Value == null );
 	}
@@ -240,7 +241,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<Enum1> alpha = argumentParser.AddPositionalWithDefault( "alpha", EnumCodec<Enum1>.Instance, Enum1.Value2 );
-		bool ok = argumentParser.TryParse( nameof( Enum1.Value3 ) );
+		bool ok = tryParse( argumentParser, nameof( Enum1.Value3 ) );
 		Assert( ok );
 		Assert( alpha.Value == Enum1.Value3 );
 	}
@@ -250,7 +251,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<Enum1> alpha = argumentParser.AddPositionalWithDefault( "alpha", EnumCodec<Enum1>.Instance, Enum1.Value2 );
-		bool ok = argumentParser.TryParse( "" );
+		bool ok = tryParse( argumentParser, "" );
 		Assert( ok );
 		Assert( alpha.Value == Enum1.Value2 );
 	}
@@ -260,7 +261,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<Enum1> alpha = argumentParser.AddRequiredPositional( "alpha", EnumCodec<Enum1>.Instance );
-		bool ok = argumentParser.TryParse( nameof( Enum1.Value3 ) );
+		bool ok = tryParse( argumentParser, nameof( Enum1.Value3 ) );
 		Assert( ok );
 		Assert( alpha.Value == Enum1.Value3 );
 	}
@@ -270,7 +271,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha", 'a' );
-		bool ok = argumentParser.TryParse( "-a" );
+		bool ok = tryParse( argumentParser, "-a" );
 		Assert( ok );
 		Assert( alpha.Value );
 	}
@@ -281,7 +282,7 @@ public sealed class T100_ClioTests
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha", 'a' );
 		IArgument<bool> bravo = argumentParser.AddSwitch( "bravo", 'b' );
-		bool ok = argumentParser.TryParse( "-ab" );
+		bool ok = tryParse( argumentParser, "-ab" );
 		Assert( ok );
 		Assert( alpha.Value );
 		Assert( bravo.Value );
@@ -293,7 +294,7 @@ public sealed class T100_ClioTests
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha" );
 		IArgument<string?> bravo = argumentParser.AddStringPositional( "bravo" );
-		bool ok = argumentParser.TryParse( "bravo-value --alpha" );
+		bool ok = tryParse( argumentParser, "bravo-value --alpha" );
 		Assert( ok );
 		Assert( alpha.Value );
 		Assert( bravo.Value == "bravo-value" );
@@ -305,7 +306,7 @@ public sealed class T100_ClioTests
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string?> mike = argumentParser.AddStringPositional( "mike", "mike-description" );
 		IArgument<string> papa = argumentParser.AddStringPositionalWithDefault( "papa", "papa-default", description: "papa-description" );
-		bool ok = argumentParser.TryParse( "mike-value" );
+		bool ok = tryParse( argumentParser, "mike-value" );
 		Assert( ok );
 		Assert( mike.Value == "mike-value" );
 		Assert( papa.Value == "papa-default" );
@@ -318,7 +319,7 @@ public sealed class T100_ClioTests
 		IArgument<bool> alphaBravo = argumentParser.AddSwitch( "alphaBravo" );
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha" );
 		IArgument<bool> alphaBravoCharlie = argumentParser.AddSwitch( "alphaBravoCharlie" );
-		bool ok = argumentParser.TryParse( "--alpha --alphaBravo --alphaBravoCharlie" );
+		bool ok = tryParse( argumentParser, "--alpha --alphaBravo --alphaBravoCharlie" );
 		Assert( ok );
 		Assert( alpha.Value == true );
 		Assert( alphaBravo.Value == true );
@@ -330,7 +331,7 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string?> alpha = argumentParser.AddStringOption( "alpha" );
-		bool ok = argumentParser.TryParse( "--alpha=" );
+		bool ok = tryParse( argumentParser, "--alpha=" );
 		Assert( ok );
 		Assert( alpha.Value == "" );
 	}
@@ -353,7 +354,7 @@ public sealed class T100_ClioTests
 				verbHandlerInvoked = true;
 			} );
 		argumentParser.AddVerb( "kilo", "kilo-description", emptyVerbHandler );
-		bool ok = argumentParser.TryParse( "-a juliet --lima india-value" );
+		bool ok = tryParse( argumentParser, "-a juliet --lima india-value" );
 		Assert( ok );
 		Assert( verbHandlerInvoked );
 	}
@@ -430,7 +431,7 @@ public sealed class T100_ClioTests
 	public void T207_Argument_Cannot_Be_Added_After_Parsing()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
-		argumentParser.TryParse( "" );
+		tryParse( argumentParser, "" );
 		Sys.Exception? caughtException = TryCatch( () => //
 						argumentParser.AddRequiredStringPositional( "alpha" ) );
 		NotNullCast( caughtException, out CommandLineHasAlreadyBeenParsedException _ );
@@ -596,13 +597,11 @@ public sealed class T100_ClioTests
 		NotNullCast( caughtException, out TryParseInvokedMoreThanOnceException exception );
 		Assert( exception.VerbName == "juliet" );
 	}
-}
 
-static class Extensions
-{
-	public static bool TryParse( this ArgumentParser self, string commandLine )
+	public static bool tryParse( ArgumentParser self, string commandLine )
 	{
 		string[] tokens = commandLine.Split( ' ', Sys.StringSplitOptions.RemoveEmptyEntries | Sys.StringSplitOptions.TrimEntries );
-		return self.TryParse( tokens );
+		return self.TryParse( tokens, s => Assert( false ) );
 	}
 }
+

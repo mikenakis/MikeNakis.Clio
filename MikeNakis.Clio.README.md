@@ -104,9 +104,7 @@ class Program
 - Adjustable help output width.
   - When showing usage help, Clio performs line-wrapping with word-break on the 120th column by default, but the programmer can specify a different column number to wrap at.
 - Fully taken-care-of failure.
-  - When Clio determines that there is something wrong with the formulation of the command-line, (or if the `--help` option is supplied,) Clio shows all necessary messages to the user; then:
-	- If the `TryParse()` method was invoked, it returns `false`, in which case all the programmer needs to do is terminate the program.
-	- If the `Parse()` method was invoked, it terminates the current process, so there is nothing else for the programmer to do.
+  - When Clio determines that there is something wrong with the formulation of the command-line, (or if the `--help` option is supplied,) Clio shows all necessary messages to the user and returns `false`, in which case all the programmer needs to do is terminate the program.
 - Custom term for "verb".
   - The programmer can specify a custom term to appear in usage help instead of "verb". (e.g. "command" or "subcommand".)
 - Extensive error checking.

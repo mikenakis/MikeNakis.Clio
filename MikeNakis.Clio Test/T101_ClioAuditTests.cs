@@ -10,9 +10,9 @@ public sealed class T101_ClioAuditTests
 {
 	const string verbTerm = "subcommand";
 
-	static TestingOptions getTestingOptions( Sys.Action<string> textConsumer, int? screenWidth = null )
+	static TestingOptions getTestingOptions()
 	{
-		return new TestingOptions( textConsumer, "TestApp", screenWidth );
+		return new TestingOptions( "TestApp" );
 	}
 
 	enum Enum1
@@ -33,12 +33,12 @@ public sealed class T101_ClioAuditTests
 	[VSTesting.TestMethod]
 	public void T101_No_Optional_Named_Arguments_Help_Audit()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer );
-			ArgumentParser argumentParser = new( verbTerm, testingOptions );
+			TestingOptions testingOptions = getTestingOptions();
+			ArgumentParser argumentParser = new( verbTerm, null, testingOptions );
 			argumentParser.AddRequiredStringPositional( "india", "This is the description of india" );
-			bool ok = argumentParser.TryParse( "--help" );
+			bool ok = tryParse( argumentParser, lineOutputConsumer, "--help" );
 			Assert( !ok ); //because help was requested.
 		} );
 	}
@@ -46,10 +46,10 @@ public sealed class T101_ClioAuditTests
 	[VSTesting.TestMethod]
 	public void T102_Simple_Help_Audit()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer );
-			ArgumentParser argumentParser = new( verbTerm, testingOptions );
+			TestingOptions testingOptions = getTestingOptions();
+			ArgumentParser argumentParser = new( verbTerm, null, testingOptions );
 			argumentParser.AddSwitch( "alpha", 'a', "This is the description of alpha" );
 			argumentParser.AddSwitch( "bravo", 'b' );
 			argumentParser.AddStringOptionWithDefault( "charlie", "charlie-default", singleLetterName: 'c', description: "This is the description of charlie", parameterName: "charlie-parameter" );
@@ -64,7 +64,7 @@ public sealed class T101_ClioAuditTests
 			argumentParser.AddRequiredStringPositional( "india", "This is the description of india" );
 			argumentParser.AddStringPositional( "juliet", "This is the description of juliet" );
 			argumentParser.AddStringPositionalWithDefault( "papa", "papa-default", description: "This is the description of papa" );
-			bool ok = argumentParser.TryParse( "--help" );
+			bool ok = tryParse( argumentParser, lineOutputConsumer, "--help" );
 			Assert( !ok ); //because help was requested.
 		} );
 	}
@@ -72,15 +72,15 @@ public sealed class T101_ClioAuditTests
 	[VSTesting.TestMethod]
 	public void T103_Option_With_Long_Usage_Help_Audit()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer, screenWidth: 80 );
-			ArgumentParser argumentParser = new( verbTerm, testingOptions );
+			TestingOptions testingOptions = getTestingOptions();
+			ArgumentParser argumentParser = new( verbTerm, screenWidth: 80, testingOptions );
 			argumentParser.AddSwitch( "alpha", 'a', "This is the description of alpha" );
 			argumentParser.AddRequiredStringOption( "echo", description: "This is the description of echo", parameterName: "rather-lengthy-echo-parameter" );
 			argumentParser.AddRequiredOption( "hotel", EnumCodec<Enum1>.Instance, description: "This is the description of hotel", parameterName: "rather-lengthy-hotel-parameter" );
 			argumentParser.AddStringOptionWithDefault( "mike", "this is mike-default", description: "This is the description of mike, which is a very long description in order to test word-breaking", presetValue: "this is mike-preset" );
-			bool ok = argumentParser.TryParse( "--help" );
+			bool ok = tryParse( argumentParser, lineOutputConsumer, "--help" );
 			Assert( ok == false ); //because help was requested.
 		} );
 	}
@@ -88,26 +88,25 @@ public sealed class T101_ClioAuditTests
 	[VSTesting.TestMethod]
 	public void T104_Root_With_Verbs_Help_Audit()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer );
-			setupAndParse( testingOptions, "--help" );
+			setupAndParse( lineOutputConsumer, "--help" );
 		} );
 	}
 
 	[VSTesting.TestMethod]
 	public void T105_Verb_Help_Audit()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer );
-			setupAndParse( testingOptions, "juliet --help" );
+			setupAndParse( lineOutputConsumer, "juliet --help" );
 		} );
 	}
 
-	static void setupAndParse( TestingOptions testingOptions, string commandLine )
+	static void setupAndParse( Sys.Action<string> lineOutputConsumer, string commandLine )
 	{
-		ArgumentParser argumentParser = new( verbTerm, testingOptions );
+		TestingOptions testingOptions = getTestingOptions();
+		ArgumentParser argumentParser = new( verbTerm, null, testingOptions );
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha", 'a', "This is the description of alpha" );
 		IArgument<string> echo = argumentParser.AddRequiredStringOption( "echo", description: "This is the description of echo", parameterName: "echo-parameter" );
 		IArgument juliet = argumentParser.AddVerb( "juliet", "This is the description of juliet", argumentParser => //
@@ -126,17 +125,17 @@ public sealed class T101_ClioAuditTests
 				Assert( lima.Value == false );
 				Assert( mike.Value == null );
 			} );
-		bool ok = argumentParser.TryParse( commandLine );
+		bool ok = tryParse( argumentParser, lineOutputConsumer, commandLine );
 		Assert( !ok ); //because help was requested.
 	}
 
 	[VSTesting.TestMethod]
 	public void T106_Argument_Dump_Audit()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer );
-			ArgumentParser argumentParser = new( verbTerm, testingOptions );
+			TestingOptions testingOptions = getTestingOptions();
+			ArgumentParser argumentParser = new( verbTerm, null, testingOptions );
 			ISwitchArgument alpha = argumentParser.AddSwitch( "alpha", 'a' );
 			ISwitchArgument bravo = argumentParser.AddSwitch( "bravo", 'b' );
 			IOptionArgument<string> charlie = argumentParser.AddStringOptionWithDefault( "charlie", "charlie-default", singleLetterName: 'c' );
@@ -178,7 +177,7 @@ public sealed class T101_ClioAuditTests
 					Assert( romeo.Value == null );
 					mikeHandlerWasInvoked = true;
 				} );
-			bool ok = argumentParser.TryParse( "-a --echo=echo-value --hotel=Value2 --india --kilo=kilo-value lima-value mike --november papa-value" );
+			bool ok = tryParse( argumentParser, lineOutputConsumer, "-a --echo=echo-value --hotel=Value2 --india --kilo=kilo-value lima-value mike --november papa-value" );
 			Assert( ok );
 			Assert( alpha.Value == true );
 			Assert( bravo.Value == false );
@@ -195,24 +194,24 @@ public sealed class T101_ClioAuditTests
 			Assert( mike.Value != null );
 			Assert( mikeHandlerWasInvoked );
 
-			dumpArguments( lineConsumer, argumentParser );
+			dumpArguments( lineOutputConsumer, argumentParser );
 		} );
 	}
 
-	static void dumpArguments( Sys.Action<string> lineConsumer, BaseArgumentParser argumentParser )
+	static void dumpArguments( Sys.Action<string> lineOutputConsumer, BaseArgumentParser argumentParser )
 	{
-		recurse( lineConsumer, "", argumentParser );
+		recurse( lineOutputConsumer, "", argumentParser );
 		return;
 
-		static void recurse( Sys.Action<string> lineConsumer, string prefix, BaseArgumentParser argumentParser )
+		static void recurse( Sys.Action<string> lineOutputConsumer, string prefix, BaseArgumentParser argumentParser )
 		{
 			foreach( IArgument argument in argumentParser.Arguments )
 			{
 				string fullArgumentName = dotSeparated( prefix, argument.Name );
 				if( argument.RawValue is BaseArgumentParser childArgumentParser )
-					recurse( lineConsumer, fullArgumentName, childArgumentParser );
+					recurse( lineOutputConsumer, fullArgumentName, childArgumentParser );
 				else
-					lineConsumer.Invoke( $"{fullArgumentName} = {KitHelpers.SafeToString( argument.RawValue )}" );
+					lineOutputConsumer.Invoke( $"{fullArgumentName} = {KitHelpers.SafeToString( argument.RawValue )}" );
 			}
 
 			static string dotSeparated( string a, string b ) => a == "" ? b : $"{a}.{b}";
@@ -225,12 +224,12 @@ public sealed class T101_ClioAuditTests
 	[VSTesting.TestMethod]
 	public void T107_Argument_Supplied_More_Than_Once_Is_Caught()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer );
-			ArgumentParser argumentParser = new( verbTerm, testingOptions );
+			TestingOptions testingOptions = getTestingOptions();
+			ArgumentParser argumentParser = new( verbTerm, null, testingOptions );
 			argumentParser.AddSwitch( "alpha" );
-			bool ok = argumentParser.TryParse( "--alpha --alpha" );
+			bool ok = tryParse( argumentParser, lineOutputConsumer, "--alpha --alpha" );
 			Assert( !ok );
 		} );
 	}
@@ -238,12 +237,12 @@ public sealed class T101_ClioAuditTests
 	[VSTesting.TestMethod]
 	public void T108_Option_Value_Not_Supplied_Is_Caught()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer );
-			ArgumentParser argumentParser = new( verbTerm, testingOptions );
+			TestingOptions testingOptions = getTestingOptions();
+			ArgumentParser argumentParser = new( verbTerm, null, testingOptions );
 			argumentParser.AddStringOption( "alpha" );
-			bool ok = argumentParser.TryParse( "--alpha" );
+			bool ok = tryParse( argumentParser, lineOutputConsumer, "--alpha" );
 			Assert( !ok );
 		} );
 	}
@@ -251,12 +250,12 @@ public sealed class T101_ClioAuditTests
 	[VSTesting.TestMethod]
 	public void T109_Required_Option_Not_Supplied_Is_Caught()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer );
-			ArgumentParser argumentParser = new( verbTerm, testingOptions );
+			TestingOptions testingOptions = getTestingOptions();
+			ArgumentParser argumentParser = new( verbTerm, null, testingOptions );
 			argumentParser.AddRequiredStringOption( "alpha" );
-			bool ok = argumentParser.TryParse( "" );
+			bool ok = tryParse( argumentParser, lineOutputConsumer, "" );
 			Assert( !ok );
 		} );
 	}
@@ -264,12 +263,12 @@ public sealed class T101_ClioAuditTests
 	[VSTesting.TestMethod]
 	public void T110_Required_Positional_Not_Supplied_Is_Caught()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer );
-			ArgumentParser argumentParser = new( verbTerm, testingOptions );
+			TestingOptions testingOptions = getTestingOptions();
+			ArgumentParser argumentParser = new( verbTerm, null, testingOptions );
 			argumentParser.AddRequiredStringPositional( "alpha" );
-			bool ok = argumentParser.TryParse( "" );
+			bool ok = tryParse( argumentParser, lineOutputConsumer, "" );
 			Assert( !ok );
 		} );
 	}
@@ -277,12 +276,12 @@ public sealed class T101_ClioAuditTests
 	[VSTesting.TestMethod]
 	public void T111_Unparsable_Option_Value_Is_Caught()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer );
-			ArgumentParser argumentParser = new( verbTerm, testingOptions );
+			TestingOptions testingOptions = getTestingOptions();
+			ArgumentParser argumentParser = new( verbTerm, null, testingOptions );
 			argumentParser.AddOption( "alpha", EnumCodec<Enum1>.Instance );
-			bool ok = argumentParser.TryParse( "--alpha=Unparsable" );
+			bool ok = tryParse( argumentParser, lineOutputConsumer, "--alpha=Unparsable" );
 			Assert( !ok );
 		} );
 	}
@@ -290,12 +289,12 @@ public sealed class T101_ClioAuditTests
 	[VSTesting.TestMethod]
 	public void T112_Unparsable_Positional_Value_Is_Caught()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer );
-			ArgumentParser argumentParser = new( verbTerm, testingOptions );
+			TestingOptions testingOptions = getTestingOptions();
+			ArgumentParser argumentParser = new( verbTerm, null, testingOptions );
 			argumentParser.AddPositional( "alpha", IntCodec.Instance );
-			bool ok = argumentParser.TryParse( "X" );
+			bool ok = tryParse( argumentParser, lineOutputConsumer, "X" );
 			Assert( !ok );
 		} );
 	}
@@ -303,11 +302,11 @@ public sealed class T101_ClioAuditTests
 	[VSTesting.TestMethod]
 	public void T113_Unexpected_Token_Is_Caught()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer );
-			ArgumentParser argumentParser = new( verbTerm, testingOptions );
-			bool ok = argumentParser.TryParse( "unexpected" );
+			TestingOptions testingOptions = getTestingOptions();
+			ArgumentParser argumentParser = new( verbTerm, null, testingOptions );
+			bool ok = tryParse( argumentParser, lineOutputConsumer, "unexpected" );
 			Assert( !ok );
 		} );
 	}
@@ -315,13 +314,13 @@ public sealed class T101_ClioAuditTests
 	[VSTesting.TestMethod]
 	public void T114_Unknown_Single_Letter_Name_Is_Caught()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer );
-			ArgumentParser argumentParser = new( verbTerm, testingOptions );
+			TestingOptions testingOptions = getTestingOptions();
+			ArgumentParser argumentParser = new( verbTerm, null, testingOptions );
 			argumentParser.AddSwitch( "alpha", 'a' );
 			argumentParser.AddSwitch( "bravo", 'b' );
-			bool ok = argumentParser.TryParse( "-abc" );
+			bool ok = tryParse( argumentParser, lineOutputConsumer, "-abc" );
 			Assert( !ok );
 		} );
 	}
@@ -329,12 +328,12 @@ public sealed class T101_ClioAuditTests
 	[VSTesting.TestMethod]
 	public void T115_Non_String_Option_Value_Cannot_Be_Empty()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer );
-			ArgumentParser argumentParser = new( verbTerm, testingOptions );
+			TestingOptions testingOptions = getTestingOptions();
+			ArgumentParser argumentParser = new( verbTerm, null, testingOptions );
 			argumentParser.AddOption( "alpha", IntCodec.Instance );
-			bool ok = argumentParser.TryParse( "--alpha=" );
+			bool ok = tryParse( argumentParser, lineOutputConsumer, "--alpha=" );
 			Assert( !ok );
 		} );
 	}
@@ -342,13 +341,19 @@ public sealed class T101_ClioAuditTests
 	[VSTesting.TestMethod]
 	public void T116_Missing_Verb_Is_Caught()
 	{
-		Audit.With( lineConsumer =>
+		Audit.With( lineOutputConsumer =>
 		{
-			TestingOptions testingOptions = getTestingOptions( lineConsumer );
-			ArgumentParser argumentParser = new( verbTerm, testingOptions );
+			TestingOptions testingOptions = getTestingOptions();
+			ArgumentParser argumentParser = new( verbTerm, null, testingOptions );
 			argumentParser.AddVerb( "alpha", "This is the description of alpha", emptyVerbHandler );
-			bool ok = argumentParser.TryParse( "" );
+			bool ok = tryParse( argumentParser, lineOutputConsumer, "" );
 			Assert( !ok );
 		} );
+	}
+
+	static bool tryParse( ArgumentParser argumentParser, Sys.Action<string> lineOutputConsumer, string commandLine )
+	{
+		string[] tokens = commandLine.Split( ' ', Sys.StringSplitOptions.RemoveEmptyEntries | Sys.StringSplitOptions.TrimEntries );
+		return argumentParser.TryParse( tokens, lineOutputConsumer );
 	}
 }

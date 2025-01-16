@@ -83,7 +83,8 @@ sealed class Audit
 			fileStreamOptions.Share = SysIo.FileShare.Read;
 			fileStreamOptions.Options = SysIo.FileOptions.WriteThrough | SysIo.FileOptions.SequentialScan;
 			SysIo.Stream stream = outputFilePath.OpenBinary( SysIo.FileMode.Append, SysIo.FileAccess.Write, SysIo.FileShare.Read, fileOptions: SysIo.FileOptions.WriteThrough | SysIo.FileOptions.SequentialScan );
-			streamWriter = new SysIo.StreamWriter( stream, SysText.Encoding.UTF8 );
+			SysText.Encoding utfBomlessEncoding = new SysText.UTF8Encoding( false );
+			streamWriter = new SysIo.StreamWriter( stream, utfBomlessEncoding );
 		}
 
 		public void WriteLine( string text )
