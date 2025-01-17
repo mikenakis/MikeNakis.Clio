@@ -10,7 +10,7 @@ public sealed class BoolCodec : StructCodec<bool>
 	BoolCodec()
 	{ }
 
-	public override string Name => "integer";
+	public override string Name => "boolean";
 
 	public override bool ValueFromText( string text )
 	{
