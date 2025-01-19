@@ -20,9 +20,9 @@ sealed class SwitchArgument : NamedArgument, ISwitchArgument
 	public sealed override int TryParse( int tokenIndex, IReadOnlyList<string> tokens )
 	{
 		string token = tokens[tokenIndex];
-		int skip = shortFormNameMatch( token, SingleLetterName );
+		int skip = Helpers.ShortFormNameMatch( token, SingleLetterName );
 		if( skip == 0 )
-			skip = longFormNameMatch( token, Name );
+			skip = Helpers.LongFormNameMatch( token, Name );
 		if( skip == 0 )
 			return tokenIndex;
 		if( IsSupplied )

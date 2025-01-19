@@ -29,37 +29,37 @@ static class HelpGenerator
 				lineOutputConsumer.Invoke( stringBuilder.ToString() );
 				prefix = new( ' ', prefix.Length );
 			}
-		}
 
-		static string buildShortUsageString( IEnumerable<Argument> arguments, string verbTerm )
-		{
-			SysText.StringBuilder stringBuilder = new();
-			IReadOnlyList<NamedArgument> optionalNamedArguments = arguments.OfType<NamedArgument>().Where( argument => argument.IsOptional ).ToArray();
-			switch( optionalNamedArguments.Count )
+			static string buildShortUsageString( IEnumerable<Argument> arguments, string verbTerm )
 			{
-				case 0:
-					break;
-				case 1:
-					stringBuilder.Append( " [" ).Append( optionalNamedArguments[0].ShortUsage ).Append( ']' );
-					break;
-				default:
-					stringBuilder.Append( " [<option>...]" );
-					break;
+				SysText.StringBuilder stringBuilder = new();
+				IReadOnlyList<NamedArgument> optionalNamedArguments = arguments.OfType<NamedArgument>().Where( argument => argument.IsOptional ).ToArray();
+				switch( optionalNamedArguments.Count )
+				{
+					case 0:
+						break;
+					case 1:
+						stringBuilder.Append( " [" ).Append( optionalNamedArguments[0].ShortUsage ).Append( ']' );
+						break;
+					default:
+						stringBuilder.Append( " [<option>...]" );
+						break;
+				}
+				foreach( Argument argument in arguments.OfType<NamedArgument>().Where( argument => argument.IsRequired ) )
+					stringBuilder.Append( ' ' ).Append( argument.ShortUsage );
+				IEnumerable<Argument> positionalArguments = arguments.Where( argument => argument is PositionalArgument );
+				IEnumerable<Argument> requiredPositionalArguments = positionalArguments.Where( argument => argument.IsRequired );
+				IEnumerable<Argument> optionalPositionalArguments = positionalArguments.Where( argument => argument.IsOptional );
+				foreach( Argument argument in requiredPositionalArguments )
+					stringBuilder.Append( ' ' ).Append( argument.ShortUsage );
+				foreach( Argument argument in optionalPositionalArguments )
+					stringBuilder.Append( " [" ).Append( argument.ShortUsage );
+				foreach( Argument argument in optionalPositionalArguments )
+					stringBuilder.Append( ']' );
+				if( arguments.OfType<VerbArgument>().Any() )
+					stringBuilder.Append( " <" ).Append( verbTerm ).Append( ">..." );
+				return stringBuilder.ToString();
 			}
-			foreach( Argument argument in arguments.OfType<NamedArgument>().Where( argument => argument.IsRequired ) )
-				stringBuilder.Append( ' ' ).Append( argument.ShortUsage );
-			IEnumerable<Argument> positionalArguments = arguments.Where( argument => argument is PositionalArgument );
-			IEnumerable<Argument> requiredPositionalArguments = positionalArguments.Where( argument => argument.IsRequired );
-			IEnumerable<Argument> optionalPositionalArguments = positionalArguments.Where( argument => argument.IsOptional );
-			foreach( Argument argument in requiredPositionalArguments )
-				stringBuilder.Append( ' ' ).Append( argument.ShortUsage );
-			foreach( Argument argument in optionalPositionalArguments )
-				stringBuilder.Append( " [" ).Append( argument.ShortUsage );
-			foreach( Argument argument in optionalPositionalArguments )
-				stringBuilder.Append( ']' );
-			if( arguments.OfType<VerbArgument>().Any() )
-				stringBuilder.Append( " <" ).Append( verbTerm ).Append( ">..." );
-			return stringBuilder.ToString();
 		}
 
 		static void outputLongUsages( Sys.Action<string> lineOutputConsumer, int screenWidth, string programName, IEnumerable<Argument> arguments, string verbTerm )

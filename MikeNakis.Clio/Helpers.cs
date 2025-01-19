@@ -1,10 +1,12 @@
 namespace MikeNakis.Clio;
+
 using RegEx = System.Text.RegularExpressions;
+using Sys = System;
 
 static partial class Helpers
 {
 	static readonly RegEx.Regex namedArgumentNameValidationRegex = new( "^[a-zA-Z][a-zA-Z0-9-]+$", RegEx.RegexOptions.CultureInvariant );
-	static readonly RegEx.Regex shortFormNameValidationRegex = new( "^[a-zA-Z0-9]+$", RegEx.RegexOptions.CultureInvariant );
+	static readonly RegEx.Regex singleLetterNameValidationRegex = new( "^[a-zA-Z0-9]+$", RegEx.RegexOptions.CultureInvariant );
 	static readonly RegEx.Regex optionParameterNameValidationRegex = new( "^[a-zA-Z0-9-]+$", RegEx.RegexOptions.CultureInvariant );
 	static readonly RegEx.Regex parameterNameValidationRegex = new( "^[a-zA-Z][a-zA-Z0-9-]+$", RegEx.RegexOptions.CultureInvariant );
 	static readonly RegEx.Regex verbNameValidationRegex = new( "^[a-zA-Z0-9-]+$", RegEx.RegexOptions.CultureInvariant );
@@ -35,14 +37,9 @@ static partial class Helpers
 		return true;
 	}
 
-	internal static bool ShortFormNameIsValid( char shortFormName )
+	internal static bool SingleLetterNameIsValidAssertion( char singleLetterName )
 	{
-		return nameIsValid( new string( shortFormName, 1 ), shortFormNameValidationRegex );
-	}
-
-	internal static bool ShortFormNameIsValidAssertion( char shortFormName )
-	{
-		Assert( nameIsValidAssertion( new string( shortFormName, 1 ), shortFormNameValidationRegex ) );
+		Assert( nameIsValidAssertion( new string( singleLetterName, 1 ), singleLetterNameValidationRegex ) );
 		return true;
 	}
 
@@ -63,7 +60,7 @@ static partial class Helpers
 		return regex.IsMatch( shortFormName );
 	}
 
-	internal static bool IsTerminator( char c ) => !shortFormNameValidationRegex.IsMatch( new string( c, 1 ) );
+	internal static bool IsTerminator( char c ) => !singleLetterNameValidationRegex.IsMatch( new string( c, 1 ) );
 
 	internal static bool ArgumentMustPrecedeVerbAssertion( BaseArgumentParser argumentParser, string name )
 	{
@@ -71,5 +68,76 @@ static partial class Helpers
 			verb => verb == null, //
 			verb => throw new InvalidArgumentOrderingException( ArgumentOrderingRule.ArgumentMustPrecedeVerb, name, verb!.Name ) );
 		return true;
+	}
+
+	internal static int ShortFormNameMatch( string token, char? shortFormName )
+	{
+		if( !shortFormName.HasValue )
+			return 0;
+		if( token.Length != 2 )
+			return 0;
+		if( token[0] != '-' )
+			return 0;
+		if( token[1] != shortFormName.Value )
+			return 0;
+		return 2;
+	}
+
+	internal static int LongFormNameMatch( string token, string name )
+	{
+		if( token.Length < 2 + name.Length )
+			return 0;
+		if( !(token[0] == '-' && token[1] == '-') )
+			return 0;
+		if( !token[2..].StartsWith( name, Sys.StringComparison.Ordinal ) )
+			return 0;
+		if( token.Length > 2 + name.Length && !IsTerminator( token[2 + name.Length] ) )
+			return 0;
+		return 2 + name.Length;
+	}
+
+	internal static void SplitCombinedSingleLetterArguments( List<string> tokens )
+	{
+		for( int i = 0; i < tokens.Count; i++ )
+		{
+			string token = tokens[i];
+			if( token == "--" )
+				break;
+			if( token[0] == '-' && token.Length > 2 && token[1] != '-' )
+			{
+				tokens.RemoveAt( i );
+				foreach( char c in token.Skip( 1 ) )
+					tokens.Insert( i++, $"-{c}" );
+			}
+		}
+	}
+
+	internal static void AddArgumentsFromResponseFiles( List<string> tokens, Sys.Func<string, string> fileReader )
+	{
+		for( int i = 0; i < tokens.Count; i++ )
+		{
+			string token = tokens[i];
+			if( token == "--" )
+				break;
+			if( token[0] == '@' )
+			{
+				tokens.RemoveAt( i );
+				string responseFileName = Sys.IO.Path.GetFullPath( token[1..] );
+				IEnumerable<string> lines = fileReader.Invoke( responseFileName ) //
+					.Split( '\n' )
+					.Select( s => s.Trim() )
+					.Where( s => s.Length > 0 )
+					.Where( s => s[0] != '#' );
+				foreach( string line in lines )
+					tokens.Insert( i++, "--" + line );
+			}
+		}
+	}
+
+	internal static void OutputExceptionMessage( Sys.Exception userException, Sys.Action<string> lineOutputConsumer )
+	{
+		lineOutputConsumer.Invoke( userException.Message );
+		for( Sys.Exception? innerException = userException.InnerException; innerException != null; innerException = innerException.InnerException )
+			lineOutputConsumer.Invoke( "Because: " + innerException.Message );
 	}
 }

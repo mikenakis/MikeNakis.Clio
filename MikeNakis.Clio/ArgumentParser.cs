@@ -10,7 +10,7 @@ public sealed class ArgumentParser : BaseArgumentParser
 	internal override BaseArgumentParser? Parent => null;
 	internal override ArgumentParser GetRootArgumentParser() => this;
 	internal int ScreenWidth { get; }
-	Sys.Func<string, string> fileReader;
+	readonly Sys.Func<string, string> fileReader;
 
 	/// <summary>Constructor.</summary>
 	/// <param name="verbTerm" >Specifies the term to use in place of 'verb' when displaying help.</param>
@@ -44,69 +44,30 @@ public sealed class ArgumentParser : BaseArgumentParser
 	public bool TryParse( string[] arrayOfToken, Sys.Action<string>? lineOutputConsumer = null )
 	{
 		List<string> tokens = new( arrayOfToken );
-		splitCombinedSingleLetterArguments( tokens );
-		addArgumentsFromResponseFiles( tokens );
-		try
-		{
-			ParseRemainingTokens( 0, tokens );
-		}
-		catch( HelpException helpException )
-		{
-			helpException.ArgumentParser.OutputHelp( lineOutputConsumer ?? Sys.Console.Error.WriteLine );
-			return false;
-		}
-		catch( UserException userException )
-		{
-			string fullName = GetFullName( ' ' );
-			outputExceptionMessage( fullName, userException, lineOutputConsumer ?? Sys.Console.Error.WriteLine );
-			return false;
-		}
-		return true;
+		return tryParse( tokens, lineOutputConsumer ?? Sys.Console.Error.WriteLine );
 
-		static void outputExceptionMessage( string fullName, UserException userException, Sys.Action<string> lineOutputConsumer )
+		bool tryParse( List<string> tTokens, Sys.Action<string> lineOutputConsumer )
 		{
-			lineOutputConsumer.Invoke( userException.Message );
-			for( Sys.Exception? innerException = userException.InnerException; innerException != null; innerException = innerException.InnerException )
-				lineOutputConsumer.Invoke( "Because: " + innerException.Message );
-			lineOutputConsumer.Invoke( $"Try '{fullName} --help' for more information." );
-		}
-
-		static void splitCombinedSingleLetterArguments( List<string> tokens )
-		{
-			for( int i = 0; i < tokens.Count; i++ )
+			List<string> tokens = new( arrayOfToken );
+			Helpers.SplitCombinedSingleLetterArguments( tokens );
+			Helpers.AddArgumentsFromResponseFiles( tokens, fileReader );
+			try
 			{
-				string token = tokens[i];
-				if( token == "--" )
-					break;
-				if( token[0] == '-' && token.Length > 2 && token[1] != '-' )
-				{
-					tokens.RemoveAt( i );
-					foreach( char c in token.Skip( 1 ) )
-						tokens.Insert( i++, $"-{c}" );
-				}
+				ParseRemainingTokens( 0, tokens );
 			}
-		}
-
-		void addArgumentsFromResponseFiles( List<string> tokens )
-		{
-			for( int i = 0; i < tokens.Count; i++ )
+			catch( HelpException helpException )
 			{
-				string token = tokens[i];
-				if( token == "--" )
-					break;
-				if( token[0] == '@' )
-				{
-					tokens.RemoveAt( i );
-					string responseFileName = Sys.IO.Path.GetFullPath( token[1..] );
-					IEnumerable<string> lines = fileReader.Invoke( responseFileName ) //
-						.Split( '\n' )
-						.Select( s => s.Trim() )
-						.Where( s => s.Length > 0 )
-						.Where( s => s[0] != '#' );
-					foreach( string line in lines )
-						tokens.Insert( i++, "--" + line );
-				}
+				helpException.ArgumentParser.OutputHelp( lineOutputConsumer );
+				return false;
 			}
+			catch( UserException userException )
+			{
+				Helpers.OutputExceptionMessage( userException, lineOutputConsumer );
+				string fullName = GetFullName( ' ' );
+				lineOutputConsumer.Invoke( $"Try '{fullName} --help' for more information." );
+				return false;
+			}
+			return true;
 		}
 	}
 }

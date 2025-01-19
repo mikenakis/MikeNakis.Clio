@@ -26,7 +26,7 @@ public abstract class BaseArgumentParser
 
 	///<summary>Adds a switch.</summary>
 	///<remarks>A switch is a named argument without a parameter, e.g. <c>AcmeCli --verbose</c>. The value of a
-	/// switch is of type <c>bool</c>, indicating whether the switch was supplied in the command-line or not.</remarks>
+	/// switch is of type <c>bool</c>, indicating whether the switch was supplied or not.</remarks>
 	///<param name="name">The name of the switch.</param>
 	///<param name="singleLetterName">The (optional) single-letter name for the switch.</param>
 	///<param name="description">The description of the switch, for use when displaying help.</param>
@@ -44,7 +44,7 @@ public abstract class BaseArgumentParser
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
-	///option is specified in the command-line without an equals-sign and a value.</param>
+	///option is specified without an equals-sign and a value.</param>
 	public IOptionArgument<T?> AddOption<T>( string name, StructCodec<T> codec, char? singleLetterName = null, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
 	{
@@ -59,7 +59,7 @@ public abstract class BaseArgumentParser
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
-	///option is specified in the command-line without an equals-sign and a value.</param>
+	///option is specified without an equals-sign and a value.</param>
 	public IOptionArgument<T?> AddOption<T>( string name, ClassCodec<T> codec, char? singleLetterName = null, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
 	{
@@ -71,12 +71,12 @@ public abstract class BaseArgumentParser
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between
 	///<c>string</c> and the actual type of the option.</param>
 	///<param name="defaultValue">The default value for the option, which will be the value of the option if the option
-	///is not supplied in the command-line.</param>
+	///is not supplied.</param>
 	///<param name="singleLetterName">The (optional) single-letter name for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
-	///option is supplied in the command-line without an equals-sign and a value.</param>
+	///option is supplied without an equals-sign and a value.</param>
 	public IOptionArgument<T> AddOptionWithDefault<T>( string name, StructCodec<T> codec, T defaultValue, char? singleLetterName = null, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
 	{
@@ -88,12 +88,12 @@ public abstract class BaseArgumentParser
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between
 	///<c>string</c> and the actual type of the option.</param>
 	///<param name="defaultValue">The default value for the option, which will be the value of the option if the option
-	///is not supplied in the command-line.</param>
+	///is not supplied.</param>
 	///<param name="singleLetterName">The (optional) single-letter name for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
-	///option is supplied in the command-line without an equals-sign and a value.</param>
+	///option is supplied without an equals-sign and a value.</param>
 	public IOptionArgument<T> AddOptionWithDefault<T>( string name, ClassCodec<T> codec, T defaultValue, char? singleLetterName = null, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
 	{
@@ -108,7 +108,7 @@ public abstract class BaseArgumentParser
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
-	///option is supplied in the command-line without an equals-sign and a value.</param>
+	///option is supplied without an equals-sign and a value.</param>
 	public IOptionArgument<T> AddRequiredOption<T>( string name, StructCodec<T> codec, char? singleLetterName = null, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
 	{
@@ -123,7 +123,7 @@ public abstract class BaseArgumentParser
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
-	///option is supplied in the command-line without an equals-sign and a value.</param>
+	///option is supplied without an equals-sign and a value.</param>
 	public IOptionArgument<T> AddRequiredOption<T>( string name, ClassCodec<T> codec, char? singleLetterName = null, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
 	{
@@ -136,7 +136,7 @@ public abstract class BaseArgumentParser
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
-	///option is specified in the command-line without an equals-sign and a value.</param>
+	///option is specified without an equals-sign and a value.</param>
 	public IOptionArgument<string?> AddStringOption( string name, char? singleLetterName = null, //
 		string? description = null, string? parameterName = null, string? presetValue = null )
 	{
@@ -146,12 +146,12 @@ public abstract class BaseArgumentParser
 	///<summary>Adds an option of type <c>string</c> with a default value.</summary>
 	///<param name="name">The name of the option.</param>
 	///<param name="defaultValue">The default value for the option, which will be the value of the option if the option
-	///is not supplied in the command-line.</param>
+	///is not supplied.</param>
 	///<param name="singleLetterName">The (optional) single-letter name for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
-	///option is supplied in the command-line without an equals-sign and a value.</param>
+	///option is supplied without an equals-sign and a value.</param>
 	public IOptionArgument<string> AddStringOptionWithDefault( string name, string defaultValue, char? singleLetterName = null, //
 		string? description = null, string? parameterName = null, string? presetValue = null )
 	{
@@ -164,7 +164,7 @@ public abstract class BaseArgumentParser
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
-	///option is supplied in the command-line without an equals-sign and a value.</param>
+	///option is supplied without an equals-sign and a value.</param>
 	public IOptionArgument<string> AddRequiredStringOption( string name, char? singleLetterName = null, //
 		string? description = null, string? parameterName = null, string? presetValue = null )
 	{
@@ -172,7 +172,7 @@ public abstract class BaseArgumentParser
 	}
 
 	///<summary>Adds a positional argument.</summary>
-	///<param name="name">The name of the positional argument, for use when displaying help.</param>
+	///<param name="name">The name of the positional argument, for use in response files, and when displaying help.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the positional argument; provides conversions between
 	///<c>string</c> and the type of the argument.</param>
 	///<param name="description">The description of the positional argument, for use when displaying help.</param>
@@ -182,7 +182,7 @@ public abstract class BaseArgumentParser
 	}
 
 	///<summary>Adds a positional argument.</summary>
-	///<param name="name">The name of the positional argument, for use when displaying help.</param>
+	///<param name="name">The name of the positional argument, for use in response files, and when displaying help.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the positional argument; provides conversions between
 	///<c>string</c> and the type of the argument.</param>
 	///<param name="description">The description of the positional argument, for use when displaying help.</param>
@@ -192,31 +192,31 @@ public abstract class BaseArgumentParser
 	}
 
 	///<summary>Adds a positional argument with a default value.</summary>
-	///<param name="name">The name of the positional argument, for use when displaying help.</param>
+	///<param name="name">The name of the positional argument, for use in response files, and when displaying help.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the positional argument; provides conversions between
 	///<c>string</c> and the type of the argument.</param>
 	///<param name="description">The description of the positional argument, for use when displaying help.</param>
 	///<param name="defaultValue">The default value for the positional argument, which will be the value of the argument
-	///if the argument is not supplied in the command-line.</param>
+	///if the argument is not supplied.</param>
 	public IPositionalArgument<T> AddPositionalWithDefault<T>( string name, StructCodec<T> codec, T defaultValue, string? description = null ) where T : struct
 	{
 		return new NonNullableStructPositionalArgument<T>( this, name, codec, description, defaultValue );
 	}
 
 	///<summary>Adds a positional argument with a default value.</summary>
-	///<param name="name">The name of the positional argument, for use when displaying help.</param>
+	///<param name="name">The name of the positional argument, for use in response files, and when displaying help.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the positional argument; provides conversions between
 	///<c>string</c> and the type of the argument.</param>
 	///<param name="description">The description of the positional argument, for use when displaying help.</param>
 	///<param name="defaultValue">The default value for the positional argument, which will be the value of the argument
-	///if the argument is not supplied in the command-line.</param>
+	///if the argument is not supplied.</param>
 	public IPositionalArgument<T> AddPositionalWithDefault<T>( string name, ClassCodec<T> codec, T defaultValue, string? description = null ) where T : class
 	{
 		return new NonNullableClassPositionalArgument<T>( this, name, codec, description, defaultValue );
 	}
 
 	///<summary>Adds a required positional argument.</summary>
-	///<param name="name">The name of the positional argument, for use when displaying help.</param>
+	///<param name="name">The name of the positional argument, for use in response files, and when displaying help.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the positional argument; provides conversions between
 	///<c>string</c> and the type of the argument.</param>
 	///<param name="description">The description of the parameter, for use when displaying help.</param>
@@ -226,7 +226,7 @@ public abstract class BaseArgumentParser
 	}
 
 	///<summary>Adds a required positional argument.</summary>
-	///<param name="name">The name of the positional argument, for use when displaying help.</param>
+	///<param name="name">The name of the positional argument, for use in response files, and when displaying help.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the positional argument; provides conversions between
 	///<c>string</c> and the type of the argument.</param>
 	///<param name="description">The description of the parameter, for use when displaying help.</param>
@@ -236,7 +236,7 @@ public abstract class BaseArgumentParser
 	}
 
 	///<summary>Adds a positional argument of type <c>string</c>.</summary>
-	///<param name="name">The name of the positional argument, for use when displaying help.</param>
+	///<param name="name">The name of the positional argument, for use in response files, and when displaying help.</param>
 	///<param name="description">The description of the positional argument, for use when displaying help.</param>
 	public IPositionalArgument<string?> AddStringPositional( string name, string? description = null )
 	{
@@ -244,9 +244,9 @@ public abstract class BaseArgumentParser
 	}
 
 	///<summary>Adds a positional argument of type <c>string</c> with a default value.</summary>
-	///<param name="name">The name of the positional argument, for use when displaying help.</param>
+	///<param name="name">The name of the positional argument, for use in response files, and when displaying help.</param>
 	///<param name="defaultValue">The default value for the positional argument, which will be the value of the argument
-	///if the argument is not supplied in the command-line.</param>
+	///if the argument is not supplied.</param>
 	///<param name="description">The description of the positional argument, for use when displaying help.</param>
 	public IPositionalArgument<string> AddStringPositionalWithDefault( string name, string defaultValue, string? description = null )
 	{
@@ -254,7 +254,7 @@ public abstract class BaseArgumentParser
 	}
 
 	///<summary>Adds a required positional argument of type <c>string</c>.</summary>
-	///<param name="name">The name of the positional argument, for use when displaying help.</param>
+	///<param name="name">The name of the positional argument, for use in response files, and when displaying help.</param>
 	///<param name="description">The description of the positional argument, for use when displaying help.</param>
 	public IPositionalArgument<string> AddRequiredStringPositional( string name, string? description = null )
 	{

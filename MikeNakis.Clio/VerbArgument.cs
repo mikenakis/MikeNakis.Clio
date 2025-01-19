@@ -15,13 +15,14 @@ sealed class VerbArgument : Argument, IVerbArgument
 	internal VerbArgument( BaseArgumentParser argumentParser, string name, string? description, Sys.Action<ChildArgumentParser> handler )
 			: base( argumentParser, name, description, isRequired: false ) //each individual verb is not required; the parser sees to it that if any verbs have been added, then one must be supplied.
 	{
+		Assert( Helpers.VerbNameIsValidAssertion( name ) );
 		Assert( argumentParser.Arguments.OfType<PositionalArgument>().Where( positionalArgument => positionalArgument.IsOptional ).FirstOrDefault(), //
 			optionalPositionalArgument => optionalPositionalArgument == null, //
-			optionalPositionalArgument => throw new InvalidArgumentOrderingException( ArgumentOrderingRule.VerbMayNotBePrecededByOptionalPositional, Name, optionalPositionalArgument!.Name ) );
+			optionalPositionalArgument => throw new InvalidArgumentOrderingException( ArgumentOrderingRule.VerbMayNotBePrecededByOptionalPositional, name, optionalPositionalArgument!.Name ) );
 		this.handler = handler;
 		if( DebugMode )
 		{
-			VerbInitializationArgumentParser verbInitializationArgumentParser = new( argumentParser, Name );
+			VerbInitializationArgumentParser verbInitializationArgumentParser = new( argumentParser, name );
 			handler.Invoke( verbInitializationArgumentParser );
 			Assert( verbInitializationArgumentParser.TryParseWasInvoked, () => throw new TryParseWasNotInvokedException( Name ) );
 		}

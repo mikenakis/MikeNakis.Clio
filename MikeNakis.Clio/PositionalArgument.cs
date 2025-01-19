@@ -27,7 +27,7 @@ abstract class PositionalArgument : Argument
 		if( supplied )
 			return tokenIndex;
 		string token = tokens[tokenIndex];
-		int skip = longFormNameMatch( token, Name );
+		int skip = Helpers.LongFormNameMatch( token, Name );
 		string valueToken;
 		if( skip != 0 )
 		{

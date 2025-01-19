@@ -1,12 +1,8 @@
 # Clio<br><sub><sup>A dotnet library for parsing command-line arguments.</sub></sup>
 
-<!--- Note: This image looks fine in most markdown renderers, 
-            but not in Visual Studio, whose built-in markdown renderer is broken nowadays. 
-			Someone has brought it to their attention, (https://developercommunity.visualstudio.com/t/10774870)
-			and last I checked they were "investigating". -->
 <p align="center">
   <img title="MikeNakis.Clio logo" src="MikeNakis.Clio-Logo.svg" width="256" />
-</p
+</p>
 
 ## Introduction
 
@@ -27,7 +23,8 @@ class Program
     {
         Clio.ArgumentParser parser = new();
         Clio.IArgument<string> name = parser.AddStringOption( "name", defaultValue: "world" );
-        parser.Parse( tokens );
+        if( !parser.TryParse( tokens ) )
+            System.Environment.Exit( -1 );
         System.Console.WriteLine( $"Hello, {name.Value}!" );
     }
 }
@@ -71,7 +68,8 @@ class Program
                     System.Console.WriteLine( $"Listing all items..." );
                 ...
             } );
-        parser.Parse( tokens );
+        if( !parser.TryParse( tokens ) )
+            System.Environment.Exit( -1 );
     }
 }
 ```
@@ -89,6 +87,8 @@ class Program
 - Single-letter argument grouping.
   - Multiple single-letter argument names can be grouped into one.
   - For example `-latr` is the same as `-l -a -t -r`.
+- Response files.
+  -	If `@<file>` is supplied in the command-line, then Clio reads `<file>` and interprets each line as a command-line argument. In this file, argument names must _**not**_ be prefixed with '--', and positional arguments must be supplied in name=value format, like options. Single-letter argument names are not allowed. Lines starting with `#` are comments.
 - Argument data types make sense from a programmatic point of view.
   - The value of a switch is of type `bool`, indicating whether the switch was supplied.
   - The value of an option or positional is commonly of type `string`, but it can be of any type, even some `enum` defined by the programmer.
@@ -104,7 +104,7 @@ class Program
 - Adjustable help output width.
   - When showing usage help, Clio performs line-wrapping with word-break on the 120th column by default, but the programmer can specify a different column number to wrap at.
 - Fully taken-care-of failure.
-  - When Clio determines that there is something wrong with the formulation of the command-line, (or if the `--help` option is supplied,) Clio shows all necessary messages to the user and returns `false`, in which case all the programmer needs to do is terminate the program.
+  - When Clio determines that there is something wrong with the formulation of the command-line, (or if the `--help` option is supplied,) Clio shows all necessary messages to the user and returns `false`, in which case all that the programmer typically needs to do is to terminate the program.
 - Custom term for "verb".
   - The programmer can specify a custom term to appear in usage help instead of "verb". (e.g. "command" or "subcommand".)
 - Extensive error checking.
@@ -118,10 +118,6 @@ class Program
 
 - No support (yet) for the end-of-named-arguments argument (`--`) to signify that everything after that point in the command line is a positional argument.
   - Support for the end-of-named-arguments argument will be added soon.
-- No support (yet) for the more-arguments-in-file argument (`@file`) to specify a file containing additional command-line arguments, one argument per line.
-  - Support for the more-arguments-in-file argument will be added soon.
-- No support (yet) for space as the separator between a named argument and its value: only the equals sign (`=`) can be used. This makes it impossible to have command-line autocompletion, e.g. typing `mycmd --file ` and then pressing tab to cycle through files in the current directory.
-  - Support for space as the separator between a named argument and its value will be added soon.
 
 ### Limitations with a workaround
 
@@ -152,24 +148,24 @@ class Program
 
 ### Limitations that are so by design.
 
-- No support for fault tolerance: if the slightest thing goes wrong with the formulation of the command-line, an error message gets printed, and any attempt to read the value of any argument after that results in an exception.
-  - There is no such thing as "fault tolerance"; it is just a euphemism for _**silent failure**_. I do not engage in, endorse, or facilitate, any form of silent failure.
+- No support for space as the separator between a named argument and its value: only the equals sign (`=`) can be used.
+  - This is so by design.
 - No support for case-insensitive argument names: all argument names must be supplied exactly as specified.
   - This is so by design.
+- No support for fault tolerance: if the slightest thing goes wrong with the formulation of the command-line, an error message gets printed, and any attempt to read the value of any argument after that results in an exception.
+  - This is so by design. (There is no such thing as "fault tolerance"; it is just a euphemism for _**silent failure**_. I do not engage in, endorse, or facilitate, any form of silent failure.)
 
 ## License
 
-This will probably change soon, but for now, this is what it is:
+Published under the MIT license. Do whatever you want with it.
 
-_**All rights reserved.**_
-
-For more information, see [LICENSE.md](LICENSE.md)
+More information: see [LICENSE.md](LICENSE.md)
 
 ## Coding style
 
 This project uses _**my very own™**_ coding style.
 
-More information: [michael.gr - On Coding Style](https://blog.michael.gr/2018/04/on-coding-style.html)
+More information: see [michael.gr - On Coding Style](https://blog.michael.gr/2018/04/on-coding-style.html)
 
 ## Glossary
 
@@ -205,10 +201,10 @@ _**Verb**_: A special kind of argument which is identified by a word and has an 
 
 ## To do:
 
+- TODO: Add help message about response files.
 - TODO: Add support for including some free text in usage help: a short help prefix and a number of help footnotes.
 - TODO: Remove all strictly-speaking-unnecessary functionality from the Clio interface, move it to extension methods.
 - TODO: Add support for the end-of-options switch (`--`).
-- TODO: Add support for the more-arguments-in-file argument.
 - TODO: Add more functionality for creating enum arguments.
 - TODO: Clarify the message about combining short-form options into one argument by mentioning that it applies to switches and to options with a preset. Give a correct example by searching for either switches or options with a preset.  (As it stands, the example will include any named options with a short-form name, and this may include an option without a preset, which cannot really be combined.)
 - TODO: Improve user-exception messages.
