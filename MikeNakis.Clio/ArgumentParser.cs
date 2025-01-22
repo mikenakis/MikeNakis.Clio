@@ -39,7 +39,7 @@ public sealed class ArgumentParser : BaseArgumentParser
 	/// and returns <c>false</c>, meaning that the current process should terminate.</remarks>
 	/// <param name="arrayOfToken">The command-line tokens to parse.</param>
 	/// <param name="lineOutputConsumer">A consumer for text output.
-	/// If omitted, it defaults to the <see cref="Sys.IO.TextWriter.WriteLine( string )"/> methof of <see cref="Sys.Console.Error"/>.</param>
+	/// If omitted, it defaults to the <see cref="Sys.IO.TextWriter.WriteLine( string )"/> method of <see cref="Sys.Console.Error"/>.</param>
 	/// <returns><c>true</c> if successful; <c>false</c> otherwise.</returns>
 	public bool TryParse( string[] arrayOfToken, Sys.Action<string>? lineOutputConsumer = null )
 	{

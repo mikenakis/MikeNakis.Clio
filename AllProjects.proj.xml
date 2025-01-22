@@ -66,11 +66,17 @@
 	</Target>-->
 
 	<ItemGroup Condition="'$(Configuration)'=='Debug'">
-		<AdditionalFiles Include="$(MSBuildThisFileDirectory)\BannedSymbols.txt" />
 		<!-- PEARL: if a globalconfig file is not found, we get silent failure. -->
 		<GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)\AllCode.globalconfig" />
 		<GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)\ProductionCode.globalconfig" Condition="'$(IsTestProject)' != 'True'" />
 		<GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)\TestCode.globalconfig" Condition="'$(IsTestProject)' == 'True'" />
+		<PackageReference Include="coverlet.collector" Version="6.0.0"/>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(IsTestProject)'=='True'">
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+		<PackageReference Include="MSTest.TestAdapter" Version="3.6.2" />
+		<PackageReference Include="MSTest.TestFramework" Version="3.6.2" />
 	</ItemGroup>
 
 	<ItemGroup>
