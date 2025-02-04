@@ -67,7 +67,7 @@ public sealed class T101_ClioAuditTests
 			argumentParser.AddStringOptionWithDefault( "november", "november-default", description: "This is the description of november", presetValue: "november-preset" );
 			argumentParser.AddStringOptionWithDefault( "oscar", "oscar-default", description: "This is the description of oscar", presetValue: "oscar-preset" );
 			argumentParser.AddRequiredStringPositional( "india", "This is the description of india" );
-			argumentParser.AddStringPositional( "juliet", "This is the description of juliet" );
+			argumentParser.AddStringPositional( "juliett", "This is the description of juliett" );
 			argumentParser.AddStringPositionalWithDefault( "papa", "papa-default", description: "This is the description of papa" );
 			bool ok = tryParse( argumentParser, lineOutputConsumer, "--help" );
 			Assert( !ok ); //because help was requested.
@@ -103,7 +103,7 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			setupAndParse( lineOutputConsumer, "juliet --help" );
+			setupAndParse( lineOutputConsumer, "juliett --help" );
 		} );
 	}
 
@@ -112,7 +112,7 @@ public sealed class T101_ClioAuditTests
 		ArgumentParser argumentParser = newArgumentParser( screenWidth: 80 );
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha", 'a', "This is the description of alpha" );
 		IArgument<string> echo = argumentParser.AddRequiredStringOption( "echo", description: "This is the description of echo", parameterName: "echo-parameter" );
-		IArgument juliet = argumentParser.AddVerb( "juliet", "This is the description of juliet", argumentParser => //
+		IArgument juliett = argumentParser.AddVerb( "juliett", "This is the description of juliett", argumentParser => //
 			{
 				IArgument<bool> lima = argumentParser.AddSwitch( "lima", description: "This is the description of lima" );
 				IArgument<string> papa = argumentParser.AddStringPositionalWithDefault( "papa", "papa-default", description: "This is the description of papa" );
@@ -147,7 +147,7 @@ public sealed class T101_ClioAuditTests
 			IOptionArgument<Enum1?> golf = argumentParser.AddOption( "golf", EnumCodec<Enum1>.Instance );
 			IOptionArgument<Enum1> hotel = argumentParser.AddRequiredOption( "hotel", EnumCodec<Enum1>.Instance );
 			IOptionArgument<string> india = argumentParser.AddStringOptionWithDefault( "india", "india-default", presetValue: "india-preset" );
-			IOptionArgument<string> juliet = argumentParser.AddStringOptionWithDefault( "juliet", "juliet-default", presetValue: "juliet-preset" );
+			IOptionArgument<string> juliett = argumentParser.AddStringOptionWithDefault( "juliett", "juliett-default", presetValue: "juliett-preset" );
 			IOptionArgument<string> kilo = argumentParser.AddStringOptionWithDefault( "kilo", "kilo-default", presetValue: "kilo-preset" );
 			IPositionalArgument<string> lima = argumentParser.AddRequiredStringPositional( "lima" );
 			bool mikeHandlerWasInvoked = false;
@@ -169,7 +169,7 @@ public sealed class T101_ClioAuditTests
 					Assert( golf.Value == null );
 					Assert( hotel.Value == Enum1.Value2 );
 					Assert( india.Value == "india-preset" );
-					Assert( juliet.Value == "juliet-default" );
+					Assert( juliett.Value == "juliett-default" );
 					Assert( kilo.Value == "kilo-value" );
 					Assert( lima.Value == "lima-value" );
 					Assert( november.Value == true );
@@ -190,7 +190,7 @@ public sealed class T101_ClioAuditTests
 			Assert( golf.Value == null );
 			Assert( hotel.Value == Enum1.Value2 );
 			Assert( india.Value == "india-preset" );
-			Assert( juliet.Value == "juliet-default" );
+			Assert( juliett.Value == "juliett-default" );
 			Assert( kilo.Value == "kilo-value" );
 			Assert( lima.Value == "lima-value" );
 			Assert( mike.Value != null );

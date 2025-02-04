@@ -11,7 +11,7 @@ Options:
 T102_Simple_Help_Audit
 
 Usage:
-    TestApp [<option>...] --echo=<echo-parameter> --hotel=<hotel-parameter> <india> [<juliet> [<papa>]]
+    TestApp [<option>...] --echo=<echo-parameter> --hotel=<hotel-parameter> <india> [<juliett> [<papa>]]
 Options:
     -a, --alpha                       This is the description of alpha.
     -b, --bravo                       See user's manual.
@@ -34,7 +34,7 @@ Options:
                                       If supplied without a value, the preset is "oscar-preset".
     -h, --help                        Display this help.
     <india>                           This is the description of india.
-    <juliet>                          This is the description of juliet.
+    <juliett>                         This is the description of juliett.
     <papa>                            This is the description of papa.
 Single-letter arguments can be combined. For example, -a -b can be replaced with -ab.
 
@@ -67,7 +67,7 @@ Options:
     --echo=<echo-parameter> This is the description of echo.
     -h, --help              Display this help.
 Where <subcommand> is one of:
-    juliet                  This is the description of juliet.
+    juliett                 This is the description of juliett.
     kilo                    This is the description of kilo.
 Try 'TestApp <subcommand> --help' for more information on a specific subcommand.
 
@@ -75,7 +75,7 @@ Try 'TestApp <subcommand> --help' for more information on a specific subcommand.
 T105_Verb_Help_Audit
 
 Usage:
-    TestApp juliet [<option>...] [<papa>]
+    TestApp juliett [<option>...] [<papa>]
 Options:
     --lima     This is the description of lima.
     -h, --help Display this help.
@@ -93,7 +93,7 @@ foxtrot = Value3
 golf = null
 hotel = Value2
 india = "india-preset"
-juliet = "juliet-default"
+juliett = "juliett-default"
 kilo = "kilo-value"
 help = False
 lima = "lima-value"

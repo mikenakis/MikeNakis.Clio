@@ -353,7 +353,7 @@ public sealed class T100_ClioTests
 		ArgumentParser argumentParser = newArgumentParser();
 		bool verbHandlerInvoked = false;
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha", 'a', "alpha-description" );
-		argumentParser.AddVerb( "juliet", "juliet-description", argumentParser => //
+		argumentParser.AddVerb( "juliett", "juliett-description", argumentParser => //
 			{
 				IArgument<bool> lima = argumentParser.AddSwitch( "lima", description: "lima-description" );
 				IArgument<string> india = argumentParser.AddRequiredStringPositional( "india", "india-description" );
@@ -365,7 +365,7 @@ public sealed class T100_ClioTests
 				verbHandlerInvoked = true;
 			} );
 		argumentParser.AddVerb( "kilo", "kilo-description", emptyVerbHandler );
-		bool ok = tryParse( argumentParser, "-a juliet --lima india-value" );
+		bool ok = tryParse( argumentParser, "-a juliett --lima india-value" );
 		Assert( ok );
 		Assert( verbHandlerInvoked );
 	}
@@ -622,14 +622,14 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		Sys.Exception? caughtException = TryCatch( () => //
-				argumentParser.AddVerb( "juliet", "juliet-description", argumentParser => //
+				argumentParser.AddVerb( "juliett", "juliett-description", argumentParser => //
 					{
 					} )
 				);
 		Sys.Console.WriteLine( $"caughtException type: {caughtException?.GetType()}" );
 		NotNullCast( caughtException, out TryParseWasNotInvokedException exception );
 		Sys.Console.WriteLine( $"exception type: {exception.GetType()}" );
-		Assert( exception.VerbName == "juliet" );
+		Assert( exception.VerbName == "juliett" );
 	}
 
 	[VSTesting.TestMethod]
@@ -637,14 +637,14 @@ public sealed class T100_ClioTests
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		Sys.Exception? caughtException = TryCatch( () => //
-				argumentParser.AddVerb( "juliet", "juliet-description", argumentParser => //
+				argumentParser.AddVerb( "juliett", "juliett-description", argumentParser => //
 					{
 						argumentParser.TryParse();
 						argumentParser.TryParse();
 					} )
 				);
 		NotNullCast( caughtException, out TryParseInvokedMoreThanOnceException exception );
-		Assert( exception.VerbName == "juliet" );
+		Assert( exception.VerbName == "juliett" );
 	}
 }
 
