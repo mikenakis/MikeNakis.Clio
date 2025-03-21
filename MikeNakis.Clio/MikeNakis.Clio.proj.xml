@@ -12,8 +12,8 @@
 				still does not tell you what the fucking problem is. -->
 
 	<PropertyGroup>
-		<TargetFrameworks>net472</TargetFrameworks>
-		<TargetFramework>net472</TargetFramework>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+		<TargetFramework>netstandard2.0</TargetFramework>
 		<!-- AssemblyName: The default is $(MSBuildProjectName) -->
 		<AssemblyName>$(MSBuildProjectName)-$(Configuration)</AssemblyName>
 	</PropertyGroup>
