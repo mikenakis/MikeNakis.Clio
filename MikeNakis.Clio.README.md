@@ -4,6 +4,8 @@
   <img title="MikeNakis.Clio logo" src="MikeNakis.Clio-Logo.svg" width="256" />
 </p>
 
+[![Build](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/github-workflow.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/github-workflow.yml)
+
 ## Introduction
 
 The main thing to know about Clio is that you can always start with `new Clio.ArgumentParser()`, 
