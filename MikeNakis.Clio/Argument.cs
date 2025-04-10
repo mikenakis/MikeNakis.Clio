@@ -30,7 +30,7 @@ public interface IArgument<T> : IArgument
 }
 
 ///<summary>Represents a switch argument.</summary>
-///<remarks>A switch is a named argument without a parameter, e.g. <c>AcmeCli --verbose</c>. The value of a switch
+///<remarks>A switch is a named argument without a parameter, e.g. <c>Acme.Cli --verbose</c>. The value of a switch
 ///argument is of type <c>bool</c>, and it is <c>true</c> if the switch was supplied in the command-line, <c>false</c>
 ///otherwise.</remarks>
 public interface ISwitchArgument : IArgument<bool>
@@ -39,21 +39,21 @@ public interface ISwitchArgument : IArgument<bool>
 }
 
 ///<summary>Represents an option argument.</summary>
-///<remarks>An option is a named argument with a parameter, e.g. <c>AcmeCli --verbosity quiet</c>.</remarks>
+///<remarks>An option is a named argument with a parameter, e.g. <c>Acme.Cli --verbosity quiet</c>.</remarks>
 public interface IOptionArgument<T> : IArgument<T>
 {
 }
 
 ///<summary>Represents a positional argument.</summary>
 ///<remarks>A positional argument is a free-standing value in the command-line, identified by its position relative
-///to other positional arguments. For example: <c>AcmeCli InputFile.txt</c>.</remarks>
+///to other positional arguments. For example: <c>Acme.Cli InputFile.txt</c>.</remarks>
 public interface IPositionalArgument<T> : IArgument<T>
 {
 }
 
 ///<summary>Represents a verb argument.</summary>
-///<remarks>A verb is a word followed by a new set of arguments. For example: <c>AcmeCli create ...</c>
-///or <c>AcmeCli list ...</c>.</remarks>
+///<remarks>A verb is a word followed by a new set of arguments. For example: <c>Acme.Cli create ...</c>
+///or <c>Acme.Cli list ...</c>.</remarks>
 public interface IVerbArgument : IArgument<BaseArgumentParser?>
 {
 }

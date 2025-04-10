@@ -31,7 +31,7 @@ public sealed class T100_ClioTests
 		Value3
 	}
 
-	static readonly Sys.Action<ChildArgumentParser> emptyVerbHandler = argumentParser => //
+	static readonly VerbHandler emptyVerbHandler = argumentParser => //
 			{
 				argumentParser.TryParse(); //must be invoked because by design, failure to invoke causes exception.
 			};

@@ -313,17 +313,22 @@ public abstract class BaseArgumentParser
 			return tokenIndex;
 		}
 
-		void reportAnyMissingRequiredArguments()
-		{
-			foreach( Argument argument in arguments.Where( argument => argument.IsRequired && !argument.IsSupplied ) )
-				throw new RequiredArgumentNotSuppliedException( argument.Name );
-		}
-
 		void reportMissingVerb()
 		{
 			Assert( arguments.OfType<VerbArgument>().ToArray(),
 				verbs => verbs.Length == 0 || verbs.Where( verb => verb.IsSupplied ).Any(),
 				_ => throw new VerbExpectedException( GetRootArgumentParser().VerbTerm ) );
 		}
+	}
+
+	internal void VerbFound()
+	{
+		reportAnyMissingRequiredArguments();
+	}
+
+	void reportAnyMissingRequiredArguments()
+	{
+		foreach( Argument argument in arguments.Where( argument => argument.IsRequired && !argument.IsSupplied ) )
+			throw new RequiredArgumentNotSuppliedException( argument.Name );
 	}
 }

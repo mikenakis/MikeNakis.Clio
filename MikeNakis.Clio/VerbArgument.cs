@@ -1,29 +1,29 @@
 namespace MikeNakis.Clio;
-using Sys = System;
+
 using SysDiag = System.Diagnostics;
 
 [SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
 sealed class VerbArgument : Argument, IVerbArgument
 {
-	readonly Sys.Action<ChildArgumentParser> handler;
+	readonly VerbHandler verbHandler;
 	VerbExecutionArgumentParser? verbExecutionArgumentParser;
 	public BaseArgumentParser? Value => verbExecutionArgumentParser;
 	public override object? RawValue => Value;
 	public override bool IsSupplied => verbExecutionArgumentParser != null;
 	internal sealed override string ShortUsage => Name; //TODO: add ellipsis if it accepts arguments.
 
-	internal VerbArgument( BaseArgumentParser argumentParser, string name, string? description, Sys.Action<ChildArgumentParser> handler )
+	internal VerbArgument( BaseArgumentParser argumentParser, string name, string? description, VerbHandler verbHandler )
 			: base( argumentParser, name, description, isRequired: false ) //each individual verb is not required; the parser sees to it that if any verbs have been added, then one must be supplied.
 	{
 		Assert( Helpers.VerbNameIsValidAssertion( name ) );
 		Assert( argumentParser.Arguments.OfType<PositionalArgument>().Where( positionalArgument => positionalArgument.IsOptional ).FirstOrDefault(), //
 			optionalPositionalArgument => optionalPositionalArgument == null, //
 			optionalPositionalArgument => throw new InvalidArgumentOrderingException( ArgumentOrderingRule.VerbMayNotBePrecededByOptionalPositional, name, optionalPositionalArgument!.Name ) );
-		this.handler = handler;
+		this.verbHandler = verbHandler;
 		if( DebugMode )
 		{
 			VerbInitializationArgumentParser verbInitializationArgumentParser = new( argumentParser, name );
-			handler.Invoke( verbInitializationArgumentParser );
+			verbHandler.Invoke( verbInitializationArgumentParser );
 			Assert( verbInitializationArgumentParser.TryParseWasInvoked, () => throw new TryParseWasNotInvokedException( Name ) );
 		}
 	}
@@ -33,8 +33,9 @@ sealed class VerbArgument : Argument, IVerbArgument
 		Assert( verbExecutionArgumentParser == null ); //cannot happen
 		if( tokens[tokenIndex] != Name )
 			return tokenIndex;
+		ArgumentParser.VerbFound();
 		verbExecutionArgumentParser = new( ArgumentParser, Name, tokenIndex + 1, tokens );
-		handler.Invoke( verbExecutionArgumentParser );
+		verbHandler.Invoke( verbExecutionArgumentParser );
 		return tokens.Count;
 	}
 
