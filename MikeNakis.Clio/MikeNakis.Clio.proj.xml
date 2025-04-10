@@ -40,7 +40,7 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/mikenakis/MikeNakis.Clio.git</RepositoryUrl>
 		<PublishRepositoryUrl>True</PublishRepositoryUrl>
-		<PackageTags>dotnet; dotnet-core; class-libraries; utilities; command-line</PackageTags>
+		<PackageTags>dotnet; dotnet-core; class-libraries; utilities; command-line; console</PackageTags>
 		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageReleaseNotes>initial release</PackageReleaseNotes>

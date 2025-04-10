@@ -47,30 +47,29 @@ public sealed class ArgumentParser : BaseArgumentParser
 	public bool TryParse( string[] arrayOfToken, Sys.Action<string>? lineOutputConsumer = null )
 	{
 		List<string> tokens = new( arrayOfToken );
-		return tryParse( tokens, lineOutputConsumer ?? Sys.Console.Error.WriteLine );
+		return TryParse( tokens, 0, lineOutputConsumer ?? Sys.Console.Error.WriteLine );
+	}
 
-		bool tryParse( List<string> tTokens, Sys.Action<string> lineOutputConsumer )
+	internal bool TryParse( List<string> tokens, int tokenIndex, Sys.Action<string> lineOutputConsumer )
+	{
+		Helpers.SplitCombinedSingleLetterArguments( tokens );
+		Helpers.AddArgumentsFromResponseFiles( tokens, fileReader );
+		try
 		{
-			List<string> tokens = new( arrayOfToken );
-			Helpers.SplitCombinedSingleLetterArguments( tokens );
-			Helpers.AddArgumentsFromResponseFiles( tokens, fileReader );
-			try
-			{
-				ParseRemainingTokens( 0, tokens );
-			}
-			catch( HelpException helpException )
-			{
-				helpException.ArgumentParser.OutputHelp( lineOutputConsumer );
-				return false;
-			}
-			catch( UserException userException )
-			{
-				Helpers.OutputExceptionMessage( userException, lineOutputConsumer );
-				string fullName = GetFullName( ' ' );
-				lineOutputConsumer.Invoke( $"Try '{fullName} --help' for more information." );
-				return false;
-			}
-			return true;
+			ParseRemainingTokens( tokenIndex, tokens );
 		}
+		catch( HelpException helpException )
+		{
+			helpException.ArgumentParser.OutputHelp( lineOutputConsumer );
+			return false;
+		}
+		catch( UserException userException )
+		{
+			Helpers.OutputExceptionMessage( userException, lineOutputConsumer );
+			string fullName = GetFullName( ' ' );
+			lineOutputConsumer.Invoke( $"Try '{fullName} --help' for more information." );
+			return false;
+		}
+		return true;
 	}
 }

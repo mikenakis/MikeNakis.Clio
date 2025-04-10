@@ -32,7 +32,6 @@ public abstract class BaseArgumentParser
 	///<param name="description">The description of the switch, for use when displaying help.</param>
 	public ISwitchArgument AddSwitch( string name, char? singleLetterName = null, string? description = null )
 	{
-		Assert( Helpers.SwitchNameIsValidAssertion( name ) );
 		return new SwitchArgument( this, name, singleLetterName, description );
 	}
 

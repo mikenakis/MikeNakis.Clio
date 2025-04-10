@@ -28,7 +28,7 @@ sealed class VerbArgument : Argument, IVerbArgument
 		}
 	}
 
-	public sealed override int TryParse( int tokenIndex, IReadOnlyList<string> tokens )
+	public sealed override int OnTryParse( int tokenIndex, IReadOnlyList<string> tokens )
 	{
 		Assert( verbExecutionArgumentParser == null ); //cannot happen
 		if( tokens[tokenIndex] != Name )

@@ -1,10 +1,10 @@
 // The following magical incantations are necessary in order to support index and range syntax in net472.
 // From: https://www.meziantou.net/how-to-use-csharp-8-indices-and-ranges-in-dotnet-standard-2-0-and-dotn.htm
-
-#pragma warning disable
-
+// Also see:
 // https://github.com/dotnet/runtime/blob/419e949d258ecee4c40a460fb09c66d974229623/src/libraries/System.Private.CoreLib/src/System/Index.cs
 // https://github.com/dotnet/runtime/blob/419e949d258ecee4c40a460fb09c66d974229623/src/libraries/System.Private.CoreLib/src/System/Range.cs
+
+#pragma warning disable
 
 using System.Runtime.CompilerServices;
 

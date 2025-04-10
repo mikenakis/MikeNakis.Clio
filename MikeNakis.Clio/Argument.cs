@@ -69,7 +69,7 @@ abstract class Argument : IArgument
 	internal bool IsOptional => !IsRequired;
 	public abstract bool IsSupplied { get; }
 	internal abstract string ShortUsage { get; }
-	public abstract int TryParse( int tokenIndex, IReadOnlyList<string> tokens );
+	public abstract int OnTryParse( int tokenIndex, IReadOnlyList<string> tokens );
 	public sealed override string ToString() => $"'{Name}' = {ValueToString()}";
 
 	private protected Argument( BaseArgumentParser argumentParser, string name, string? description, bool isRequired )
@@ -80,6 +80,11 @@ abstract class Argument : IArgument
 		Description = description;
 		IsRequired = isRequired;
 		ArgumentParser.AddArgument( this );
+	}
+
+	public int TryParse( int tokenIndex, IReadOnlyList<string> tokens )
+	{
+		return OnTryParse( tokenIndex, tokens );
 	}
 
 	internal string ValueToString()
