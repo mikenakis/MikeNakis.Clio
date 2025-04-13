@@ -34,7 +34,8 @@ public enum ArgumentOrderingRule
 	NamedArgumentMustPrecedePositional,
 	RequiredPositionalMustPrecedeOptionalPositional,
 	ArgumentMustPrecedeVerb,
-	VerbMayNotBePrecededByOptionalPositional
+	VerbMayNotBePrecededByPositionalArgument,
+	VerbMayNotBePrecededByRequiredArgument
 }
 
 /// <summary>Thrown when an attempt is made to add arguments in the wrong order.</summary>

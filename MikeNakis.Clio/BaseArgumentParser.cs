@@ -283,51 +283,145 @@ public abstract class BaseArgumentParser
 		return helpSwitch;
 	}
 
-	private protected void ParseRemainingTokens( int tokenIndex, IReadOnlyList<string> tokens )
-	{
-		Assert( !HasBeenParsed );
-		ISwitchArgument helpSwitch = this.helpSwitch ?? addHelpSwitch();
-		HasBeenParsed = true;
-		while( tokenIndex < tokens.Count )
-		{
-			int newTokenIndex = tryParseArgument( tokenIndex, tokens, arguments );
-			if( newTokenIndex == tokenIndex )
-				throw new UnexpectedTokenException( tokens[tokenIndex] );
-			tokenIndex = newTokenIndex;
-		}
-		if( helpSwitch.Value )
-			throw new HelpException( this );
-		reportAnyMissingRequiredArguments();
-		reportMissingVerb();
-		return;
+	//private protected void ParseRemainingTokens( int tokenIndex, IReadOnlyList<string> tokens )
+	//{
+	//	Assert( !HasBeenParsed );
+	//	ISwitchArgument helpSwitch = this.helpSwitch ?? addHelpSwitch();
+	//	HasBeenParsed = true;
+	//	while( tokenIndex < tokens.Count )
+	//	{
+	//		int newTokenIndex = tryParseArgument( tokenIndex, tokens, arguments );
+	//		if( newTokenIndex == tokenIndex )
+	//			throw new UnexpectedTokenException( tokens[tokenIndex] );
+	//		tokenIndex = newTokenIndex;
+	//	}
+	//	if( helpSwitch.Value )
+	//		throw new HelpException( this );
+	//	reportAnyMissingRequiredArguments();
+	//	reportMissingVerb();
+	//	return;
 
-		static int tryParseArgument( int tokenIndex, IReadOnlyList<string> tokens, IEnumerable<Argument> orderedArguments )
-		{
-			foreach( Argument argument in orderedArguments )
-			{
-				int newTokenIndex = argument.TryParse( tokenIndex, tokens );
-				if( newTokenIndex > tokenIndex )
-					return newTokenIndex;
-			}
-			return tokenIndex;
-		}
+	//	static int tryParseArgument( int tokenIndex, IReadOnlyList<string> tokens, IEnumerable<Argument> arguments )
+	//	{
+	//		foreach( Argument argument in arguments )
+	//		{
+	//			int newTokenIndex = argument.TryParse( tokenIndex, tokens );
+	//			if( newTokenIndex > tokenIndex )
+	//				return newTokenIndex;
+	//		}
+	//		return tokenIndex;
+	//	}
+	//}
 
-		void reportMissingVerb()
-		{
-			Assert( arguments.OfType<VerbArgument>().ToArray(),
-				verbs => verbs.Length == 0 || verbs.Where( verb => verb.IsSupplied ).Any(),
-				_ => throw new VerbExpectedException( GetRootArgumentParser().VerbTerm ) );
-		}
-	}
+	//void reportMissingVerb()
+	//{
+	//	Assert( arguments.OfType<VerbArgument>().ToArray(),
+	//		verbs => verbs.Length == 0 || verbs.Where( verb => verb.IsSupplied ).Any(),
+	//		_ => throw new VerbExpectedException( GetRootArgumentParser().VerbTerm ) );
+	//}
 
-	internal void VerbFound()
-	{
-		reportAnyMissingRequiredArguments();
-	}
+	//internal void VerbFound()
+	//{
+	//	//reportAnyMissingRequiredArguments();
+	//}
 
 	void reportAnyMissingRequiredArguments()
 	{
 		foreach( Argument argument in arguments.Where( argument => argument.IsRequired && !argument.IsSupplied ) )
 			throw new RequiredArgumentNotSuppliedException( argument.Name );
+	}
+
+	internal bool TryParse( List<string> tokens, int tokenIndex )
+	{
+		Assert( !HasBeenParsed );
+		ISwitchArgument helpSwitch = this.helpSwitch ?? addHelpSwitch();
+		HasBeenParsed = true;
+		IReadOnlyList<VerbArgument> verbArguments = Arguments.OfType<VerbArgument>().ToArray();
+		VerbArgument? foundVerbArgument = null;
+		for( ; tokenIndex < tokens.Count; tokenIndex++ )
+		{
+			if( tokens[tokenIndex] == "--" ) //TODO
+				break;
+			if( tokens[tokenIndex][0] == '@' )
+				processResponseFile( tokens, tokenIndex, GetRootArgumentParser().FileReader );
+			if( tokens[tokenIndex][0] == '-' && tokens[tokenIndex].Length > 2 && tokens[tokenIndex][1] != '-' )
+				processMultiLetterArgument( tokens, tokenIndex );
+
+			bool parsed = false;
+			if( tokens[tokenIndex].StartsWith( "-", Sys.StringComparison.Ordinal ) )
+			{
+				foreach( NamedArgument namedArgument in Arguments.OfType<NamedArgument>() )
+				{
+					int newTokenIndex = namedArgument.TryParse( tokenIndex, tokens );
+					if( newTokenIndex != tokenIndex )
+					{
+						Assert( newTokenIndex == tokenIndex + 1 );
+						parsed = true;
+						break;
+					}
+				}
+				if( parsed )
+					continue;
+			}
+
+			foreach( PositionalArgument positionalArgument in Arguments.OfType<PositionalArgument>() )
+			{
+				int newTokenIndex = positionalArgument.TryParse( tokenIndex, tokens );
+				if( newTokenIndex != tokenIndex )
+				{
+					Assert( newTokenIndex == tokenIndex + 1 );
+					parsed = true;
+					break;
+				}
+			}
+			if( parsed )
+				continue;
+
+			if( verbArguments.Count > 0 )
+			{
+				foreach( VerbArgument verbArgument in verbArguments )
+				{
+					if( verbArgument.Name == tokens[tokenIndex] )
+					{
+						foundVerbArgument = verbArgument;
+						break;
+					}
+				}
+				if( foundVerbArgument != null )
+					break;
+			}
+
+			throw new UnexpectedTokenException( tokens[tokenIndex] );
+		}
+
+		if( helpSwitch.Value )
+			throw new HelpException( this );
+		reportAnyMissingRequiredArguments();
+
+		if( verbArguments.Count > 0 )
+		{
+			if( foundVerbArgument == null )
+				throw new VerbExpectedException( GetRootArgumentParser().VerbTerm );
+			else
+			{
+				int newTokenIndex = foundVerbArgument.TryParse( tokenIndex, tokens );
+				Assert( newTokenIndex == tokens.Count );
+			}
+		}
+		return true;
+
+		static void processMultiLetterArgument( List<string> tokens, int tokenIndex )
+		{
+			string token = tokens[tokenIndex];
+			tokens.RemoveAt( tokenIndex );
+			tokens.InsertRange( tokenIndex, token.Skip( 1 ).Select( c => $"-{c}" ) );
+		}
+
+		static void processResponseFile( List<string> tokens, int tokenIndex, Sys.Func<string, string> fileReader )
+		{
+			IEnumerable<string> lines = Helpers.ReadResponseFile( Sys.IO.Path.GetFullPath( tokens[tokenIndex][1..] ), fileReader );
+			tokens.RemoveAt( tokenIndex );
+			tokens.InsertRange( tokenIndex, lines );
+		}
 	}
 }

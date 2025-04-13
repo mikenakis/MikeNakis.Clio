@@ -91,6 +91,7 @@ sealed class Audit
 		{
 			streamWriter.Write( text );
 			streamWriter.Write( endOfLine );
+			streamWriter.Flush();
 		}
 
 		public void Dispose()

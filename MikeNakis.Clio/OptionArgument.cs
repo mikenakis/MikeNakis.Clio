@@ -45,7 +45,7 @@ abstract class OptionArgument : NamedArgument
 			lineConsumer.Invoke( $"If supplied without a value, the preset is {KitHelpers.SafeToString( RawPresetValue )}." );
 	}
 
-	public sealed override int OnTryParse( int tokenIndex, IReadOnlyList<string> tokens )
+	public sealed override int OnTryParse( int tokenIndex, List<string> tokens )
 	{
 		string token = tokens[tokenIndex];
 		int skip = Helpers.ShortFormNameMatch( token, SingleLetterName );

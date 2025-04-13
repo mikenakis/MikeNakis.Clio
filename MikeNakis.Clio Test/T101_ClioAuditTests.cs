@@ -10,16 +10,16 @@ public sealed class T101_ClioAuditTests
 {
 	const string verbTerm = "subcommand";
 
-	static ArgumentParser newArgumentParser( int? screenWidth = null, Sys.Func<string, string>? fileReader = null )
+	static ArgumentParser newArgumentParser( int? screenWidth = null, Sys.Action<string>? lineOutputConsumer = null, Sys.Func<string, string>? fileReader = null )
 	{
 		TestingOptions testingOptions = new( "TestApp", fileReader );
-		return new ArgumentParser( verbTerm, screenWidth, testingOptions );
+		return new ArgumentParser( verbTerm, screenWidth, lineOutputConsumer, testingOptions );
 	}
 
-	static bool tryParse( ArgumentParser argumentParser, Sys.Action<string> lineOutputConsumer, string commandLine )
+	static bool tryParse( ArgumentParser argumentParser, string commandLine )
 	{
 		string[] tokens = commandLine.Split( ' ', Sys.StringSplitOptions.RemoveEmptyEntries | Sys.StringSplitOptions.TrimEntries );
-		return argumentParser.TryParse( tokens, lineOutputConsumer );
+		return argumentParser.TryParse( tokens );
 	}
 
 	enum Enum1
@@ -42,9 +42,9 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			ArgumentParser argumentParser = newArgumentParser();
+			ArgumentParser argumentParser = newArgumentParser( lineOutputConsumer: lineOutputConsumer );
 			argumentParser.AddRequiredStringPositional( "india", "This is the description of india" );
-			bool ok = tryParse( argumentParser, lineOutputConsumer, "--help" );
+			bool ok = tryParse( argumentParser, "--help" );
 			Assert( !ok ); //because help was requested.
 		} );
 	}
@@ -54,7 +54,7 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			ArgumentParser argumentParser = newArgumentParser();
+			ArgumentParser argumentParser = newArgumentParser( lineOutputConsumer: lineOutputConsumer );
 			argumentParser.AddSwitch( "alpha", 'a', "This is the description of alpha" );
 			argumentParser.AddSwitch( "bravo", 'b' );
 			argumentParser.AddStringOptionWithDefault( "charlie", "charlie-default", singleLetterName: 'c', description: "This is the description of charlie", parameterName: "charlie-parameter" );
@@ -69,7 +69,7 @@ public sealed class T101_ClioAuditTests
 			argumentParser.AddRequiredStringPositional( "india", "This is the description of india" );
 			argumentParser.AddStringPositional( "juliett", "This is the description of juliett" );
 			argumentParser.AddStringPositionalWithDefault( "papa", "papa-default", description: "This is the description of papa" );
-			bool ok = tryParse( argumentParser, lineOutputConsumer, "--help" );
+			bool ok = tryParse( argumentParser, "--help" );
 			Assert( !ok ); //because help was requested.
 		} );
 	}
@@ -79,12 +79,12 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			ArgumentParser argumentParser = newArgumentParser( screenWidth: 80 );
+			ArgumentParser argumentParser = newArgumentParser( screenWidth: 80, lineOutputConsumer: lineOutputConsumer );
 			argumentParser.AddSwitch( "alpha", 'a', "This is the description of alpha" );
 			argumentParser.AddRequiredStringOption( "echo", description: "This is the description of echo", parameterName: "rather-lengthy-echo-parameter" );
 			argumentParser.AddRequiredOption( "hotel", EnumCodec<Enum1>.Instance, description: "This is the description of hotel", parameterName: "rather-lengthy-hotel-parameter" );
 			argumentParser.AddStringOptionWithDefault( "mike", "this is mike-default", description: "This is the description of mike, which is a very long description in order to test word-breaking", presetValue: "this is mike-preset" );
-			bool ok = tryParse( argumentParser, lineOutputConsumer, "--help" );
+			bool ok = tryParse( argumentParser, "--help" );
 			Assert( ok == false ); //because help was requested.
 		} );
 	}
@@ -94,7 +94,9 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			setupAndParse( lineOutputConsumer, "--help" );
+			ArgumentParser argumentParser = setup( lineOutputConsumer );
+			bool ok = tryParse( argumentParser, "--help" );
+			Assert( !ok ); //because help was requested.
 		} );
 	}
 
@@ -103,15 +105,17 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			setupAndParse( lineOutputConsumer, "juliett --help" );
+			ArgumentParser argumentParser = setup( lineOutputConsumer );
+			bool ok = tryParse( argumentParser, "juliett --help" );
+			Assert( !ok ); //because help was requested.
 		} );
 	}
 
-	static void setupAndParse( Sys.Action<string> lineOutputConsumer, string commandLine )
+	static ArgumentParser setup( Sys.Action<string> lineOutputConsumer )
 	{
-		ArgumentParser argumentParser = newArgumentParser( screenWidth: 80 );
+		ArgumentParser argumentParser = newArgumentParser( screenWidth: 80, lineOutputConsumer: lineOutputConsumer );
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha", 'a', "This is the description of alpha" );
-		IArgument<string> echo = argumentParser.AddRequiredStringOption( "echo", description: "This is the description of echo", parameterName: "echo-parameter" );
+		//IArgument<string> echo = argumentParser.AddRequiredStringOption( "echo", description: "This is the description of echo", parameterName: "echo-parameter" );
 		IArgument juliett = argumentParser.AddVerb( "juliett", "This is the description of juliett", argumentParser => //
 			{
 				IArgument<bool> lima = argumentParser.AddSwitch( "lima", description: "This is the description of lima" );
@@ -128,8 +132,7 @@ public sealed class T101_ClioAuditTests
 				Assert( lima.Value == false );
 				Assert( mike.Value == null );
 			} );
-		bool ok = tryParse( argumentParser, lineOutputConsumer, commandLine );
-		Assert( !ok ); //because help was requested.
+		return argumentParser;
 	}
 
 	[VSTesting.TestMethod]
@@ -137,24 +140,24 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			ArgumentParser argumentParser = newArgumentParser();
+			ArgumentParser argumentParser = newArgumentParser( lineOutputConsumer: lineOutputConsumer );
 			ISwitchArgument alpha = argumentParser.AddSwitch( "alpha", 'a' );
 			ISwitchArgument bravo = argumentParser.AddSwitch( "bravo", 'b' );
 			IOptionArgument<string> charlie = argumentParser.AddStringOptionWithDefault( "charlie", "charlie-default", singleLetterName: 'c' );
 			IOptionArgument<string?> delta = argumentParser.AddStringOption( "delta", 'd' );
-			IOptionArgument<string> echo = argumentParser.AddRequiredStringOption( "echo" );
 			IOptionArgument<Enum1> foxtrot = argumentParser.AddOptionWithDefault( "foxtrot", EnumCodec<Enum1>.Instance, Enum1.Value3 );
 			IOptionArgument<Enum1?> golf = argumentParser.AddOption( "golf", EnumCodec<Enum1>.Instance );
-			IOptionArgument<Enum1> hotel = argumentParser.AddRequiredOption( "hotel", EnumCodec<Enum1>.Instance );
 			IOptionArgument<string> india = argumentParser.AddStringOptionWithDefault( "india", "india-default", presetValue: "india-preset" );
 			IOptionArgument<string> juliett = argumentParser.AddStringOptionWithDefault( "juliett", "juliett-default", presetValue: "juliett-preset" );
 			IOptionArgument<string> kilo = argumentParser.AddStringOptionWithDefault( "kilo", "kilo-default", presetValue: "kilo-preset" );
-			IPositionalArgument<string> lima = argumentParser.AddRequiredStringPositional( "lima" );
 			bool mikeHandlerWasInvoked = false;
 			IVerbArgument mike = argumentParser.AddVerb( "mike", "This is the description of mike", argumentParser => //
 				{
+					IOptionArgument<string> echo = argumentParser.AddRequiredStringOption( "echo" );
+					IOptionArgument<Enum1> hotel = argumentParser.AddRequiredOption( "hotel", EnumCodec<Enum1>.Instance );
 					IArgument<bool> november = argumentParser.AddSwitch( "november" );
 					IArgument<bool> oscar = argumentParser.AddSwitch( "oscar" );
+					IPositionalArgument<string> lima = argumentParser.AddRequiredStringPositional( "lima" );
 					IPositionalArgument<string?> papa = argumentParser.AddStringPositional( "papa" );
 					IPositionalArgument<string> quebec = argumentParser.AddStringPositionalWithDefault( "quebec", "quebec-default" );
 					IPositionalArgument<string?> romeo = argumentParser.AddStringPositional( "romeo" );
@@ -179,20 +182,17 @@ public sealed class T101_ClioAuditTests
 					Assert( romeo.Value == null );
 					mikeHandlerWasInvoked = true;
 				} );
-			bool ok = tryParse( argumentParser, lineOutputConsumer, "-a --echo=echo-value --hotel=Value2 --india --kilo=kilo-value lima-value mike --november papa-value" );
+			bool ok = tryParse( argumentParser, "-a --india --kilo=kilo-value mike --echo=echo-value --hotel=Value2 --november lima-value papa-value" );
 			Assert( ok );
 			Assert( alpha.Value == true );
 			Assert( bravo.Value == false );
 			Assert( charlie.Value == "charlie-default" );
 			Assert( delta.Value == null );
-			Assert( echo.Value == "echo-value" );
 			Assert( foxtrot.Value == Enum1.Value3 );
 			Assert( golf.Value == null );
-			Assert( hotel.Value == Enum1.Value2 );
 			Assert( india.Value == "india-preset" );
 			Assert( juliett.Value == "juliett-default" );
 			Assert( kilo.Value == "kilo-value" );
-			Assert( lima.Value == "lima-value" );
 			Assert( mike.Value != null );
 			Assert( mikeHandlerWasInvoked );
 
@@ -228,9 +228,9 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			ArgumentParser argumentParser = newArgumentParser();
+			ArgumentParser argumentParser = newArgumentParser( lineOutputConsumer: lineOutputConsumer );
 			argumentParser.AddSwitch( "alpha" );
-			bool ok = tryParse( argumentParser, lineOutputConsumer, "--alpha --alpha" );
+			bool ok = tryParse( argumentParser, "--alpha --alpha" );
 			Assert( !ok );
 		} );
 	}
@@ -240,9 +240,9 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			ArgumentParser argumentParser = newArgumentParser();
+			ArgumentParser argumentParser = newArgumentParser( lineOutputConsumer: lineOutputConsumer );
 			argumentParser.AddStringOption( "alpha" );
-			bool ok = tryParse( argumentParser, lineOutputConsumer, "--alpha" );
+			bool ok = tryParse( argumentParser, "--alpha" );
 			Assert( !ok );
 		} );
 	}
@@ -252,9 +252,9 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			ArgumentParser argumentParser = newArgumentParser();
+			ArgumentParser argumentParser = newArgumentParser( lineOutputConsumer: lineOutputConsumer );
 			argumentParser.AddRequiredStringOption( "alpha" );
-			bool ok = tryParse( argumentParser, lineOutputConsumer, "" );
+			bool ok = tryParse( argumentParser, "" );
 			Assert( !ok );
 		} );
 	}
@@ -264,9 +264,9 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			ArgumentParser argumentParser = newArgumentParser();
+			ArgumentParser argumentParser = newArgumentParser( lineOutputConsumer: lineOutputConsumer );
 			argumentParser.AddRequiredStringPositional( "alpha" );
-			bool ok = tryParse( argumentParser, lineOutputConsumer, "" );
+			bool ok = tryParse( argumentParser, "" );
 			Assert( !ok );
 		} );
 	}
@@ -276,9 +276,9 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			ArgumentParser argumentParser = newArgumentParser();
+			ArgumentParser argumentParser = newArgumentParser( lineOutputConsumer: lineOutputConsumer );
 			argumentParser.AddOption( "alpha", EnumCodec<Enum1>.Instance );
-			bool ok = tryParse( argumentParser, lineOutputConsumer, "--alpha=Unparsable" );
+			bool ok = tryParse( argumentParser, "--alpha=Unparsable" );
 			Assert( !ok );
 		} );
 	}
@@ -288,9 +288,9 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			ArgumentParser argumentParser = newArgumentParser();
+			ArgumentParser argumentParser = newArgumentParser( lineOutputConsumer: lineOutputConsumer );
 			argumentParser.AddPositional( "alpha", IntCodec.Instance );
-			bool ok = tryParse( argumentParser, lineOutputConsumer, "X" );
+			bool ok = tryParse( argumentParser, "X" );
 			Assert( !ok );
 		} );
 	}
@@ -300,8 +300,8 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			ArgumentParser argumentParser = newArgumentParser();
-			bool ok = tryParse( argumentParser, lineOutputConsumer, "unexpected" );
+			ArgumentParser argumentParser = newArgumentParser( lineOutputConsumer: lineOutputConsumer );
+			bool ok = tryParse( argumentParser, "unexpected" );
 			Assert( !ok );
 		} );
 	}
@@ -311,10 +311,10 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			ArgumentParser argumentParser = newArgumentParser();
+			ArgumentParser argumentParser = newArgumentParser( lineOutputConsumer: lineOutputConsumer );
 			argumentParser.AddSwitch( "alpha", 'a' );
 			argumentParser.AddSwitch( "bravo", 'b' );
-			bool ok = tryParse( argumentParser, lineOutputConsumer, "-abc" );
+			bool ok = tryParse( argumentParser, "-abc" );
 			Assert( !ok );
 		} );
 	}
@@ -324,9 +324,9 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			ArgumentParser argumentParser = newArgumentParser();
+			ArgumentParser argumentParser = newArgumentParser( lineOutputConsumer: lineOutputConsumer );
 			argumentParser.AddOption( "alpha", IntCodec.Instance );
-			bool ok = tryParse( argumentParser, lineOutputConsumer, "--alpha=" );
+			bool ok = tryParse( argumentParser, "--alpha=" );
 			Assert( !ok );
 		} );
 	}
@@ -336,9 +336,9 @@ public sealed class T101_ClioAuditTests
 	{
 		Audit.With( lineOutputConsumer =>
 		{
-			ArgumentParser argumentParser = newArgumentParser();
+			ArgumentParser argumentParser = newArgumentParser( lineOutputConsumer: lineOutputConsumer );
 			argumentParser.AddVerb( "alpha", "This is the description of alpha", emptyVerbHandler );
-			bool ok = tryParse( argumentParser, lineOutputConsumer, "" );
+			bool ok = tryParse( argumentParser, "" );
 			Assert( !ok );
 		} );
 	}

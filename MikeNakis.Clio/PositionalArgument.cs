@@ -22,7 +22,7 @@ abstract class PositionalArgument : Argument
 				optionalPositionalArgument => throw new InvalidArgumentOrderingException( ArgumentOrderingRule.RequiredPositionalMustPrecedeOptionalPositional, Name, optionalPositionalArgument!.Name ) );
 	}
 
-	public sealed override int OnTryParse( int tokenIndex, IReadOnlyList<string> tokens )
+	public sealed override int OnTryParse( int tokenIndex, List<string> tokens )
 	{
 		if( supplied )
 			return tokenIndex;

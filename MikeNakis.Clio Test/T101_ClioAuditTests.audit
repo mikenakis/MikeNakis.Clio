@@ -61,14 +61,13 @@ Options:
 T104_Root_With_Verbs_Help_Audit
 
 Usage:
-    TestApp [<option>...] --echo=<echo-parameter> <subcommand>...
+    TestApp [<option>...] <subcommand>...
 Options:
-    -a, --alpha             This is the description of alpha.
-    --echo=<echo-parameter> This is the description of echo.
-    -h, --help              Display this help.
+    -a, --alpha This is the description of alpha.
+    -h, --help  Display this help.
 Where <subcommand> is one of:
-    juliett                 This is the description of juliett.
-    kilo                    This is the description of kilo.
+    juliett     This is the description of juliett.
+    kilo        This is the description of kilo.
 Try 'TestApp <subcommand> --help' for more information on a specific subcommand.
 
 --------------------------------------------------------------------------------
@@ -88,18 +87,18 @@ alpha = True
 bravo = False
 charlie = "charlie-default"
 delta = null
-echo = "echo-value"
 foxtrot = Value3
 golf = null
-hotel = Value2
 india = "india-preset"
 juliett = "juliett-default"
 kilo = "kilo-value"
 help = False
-lima = "lima-value"
+mike.echo = "echo-value"
+mike.hotel = Value2
 mike.november = True
 mike.oscar = False
 mike.help = False
+mike.lima = "lima-value"
 mike.papa = "papa-value"
 mike.quebec = "quebec-default"
 mike.romeo = null

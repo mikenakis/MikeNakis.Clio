@@ -19,7 +19,7 @@ sealed class SwitchArgument : NamedArgument, ISwitchArgument
 		Assert( Helpers.SwitchNameIsValidAssertion( name ) );
 	}
 
-	public sealed override int OnTryParse( int tokenIndex, IReadOnlyList<string> tokens )
+	public sealed override int OnTryParse( int tokenIndex, List<string> tokens )
 	{
 		string token = tokens[tokenIndex];
 		int skip = Helpers.ShortFormNameMatch( token, SingleLetterName );

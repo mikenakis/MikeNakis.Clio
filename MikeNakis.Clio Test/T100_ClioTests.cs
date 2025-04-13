@@ -10,13 +10,13 @@ public sealed class T100_ClioTests
 	static ArgumentParser newArgumentParser( Sys.Func<string, string>? fileReader = null )
 	{
 		TestingOptions testingOptions = new( "TestApp", fileReader );
-		return new ArgumentParser( null, null, testingOptions );
+		return new ArgumentParser( null, null, lineOutputConsumer, testingOptions );
 	}
 
-	static bool tryParse( ArgumentParser self, string commandLine )
+	static bool tryParse( ArgumentParser argumentParser, string commandLine )
 	{
 		string[] tokens = commandLine.Split( ' ', Sys.StringSplitOptions.RemoveEmptyEntries | Sys.StringSplitOptions.TrimEntries );
-		return self.TryParse( tokens, lineOutputConsumer );
+		return argumentParser.TryParse( tokens );
 	}
 
 	static void lineOutputConsumer( string text )
@@ -402,9 +402,9 @@ public sealed class T100_ClioTests
 		static string fileReader( string filename )
 		{
 			Assert( filename == Sys.IO.Path.GetFullPath( responseFilename ) );
-			return @"mike=mike-value
+			return @"--mike=mike-value
 				#this is a comment
-				papa=papa-value";
+				--papa=papa-value";
 		}
 	}
 
@@ -585,20 +585,33 @@ public sealed class T100_ClioTests
 	}
 
 	[VSTesting.TestMethod]
-	public void T216_Verb_May_Not_Be_Preceded_By_Optional_Positional()
+	public void T216_Verb_May_Not_Be_Preceded_By_Positional_Argument()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		argumentParser.AddStringPositional( "alpha" );
 		Sys.Exception? caughtException = TryCatch( () => //
 						argumentParser.AddVerb( "bravo", "bravo-description", emptyVerbHandler ) );
 		NotNullCast( caughtException, out InvalidArgumentOrderingException exception );
-		Assert( exception.ArgumentOrderingRule == ArgumentOrderingRule.VerbMayNotBePrecededByOptionalPositional );
+		Assert( exception.ArgumentOrderingRule == ArgumentOrderingRule.VerbMayNotBePrecededByPositionalArgument );
 		Assert( exception.ViolatingArgumentName == "bravo" );
 		Assert( exception.PrecedingArgumentName == "alpha" );
 	}
 
 	[VSTesting.TestMethod]
-	public void T217_Switch_Name_Must_Be_Longer_Than_One_Character()
+	public void T217_Verb_May_Not_Be_Preceded_By_Required_Argument()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		argumentParser.AddRequiredStringOption( "alpha" );
+		Sys.Exception? caughtException = TryCatch( () => //
+						argumentParser.AddVerb( "bravo", "bravo-description", emptyVerbHandler ) );
+		NotNullCast( caughtException, out InvalidArgumentOrderingException exception );
+		Assert( exception.ArgumentOrderingRule == ArgumentOrderingRule.VerbMayNotBePrecededByRequiredArgument );
+		Assert( exception.ViolatingArgumentName == "bravo" );
+		Assert( exception.PrecedingArgumentName == "alpha" );
+	}
+
+	[VSTesting.TestMethod]
+	public void T218_Switch_Name_Must_Be_Longer_Than_One_Character()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		Sys.Exception? caughtException = TryCatch( () => //
@@ -608,7 +621,7 @@ public sealed class T100_ClioTests
 	}
 
 	[VSTesting.TestMethod]
-	public void T218_Option_Name_Must_Be_Longer_Than_One_Character()
+	public void T219_Option_Name_Must_Be_Longer_Than_One_Character()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		Sys.Exception? caughtException = TryCatch( () => //
@@ -618,7 +631,7 @@ public sealed class T100_ClioTests
 	}
 
 	[VSTesting.TestMethod]
-	public void T219_Verb_Handler_Must_Invoke_TryParse()
+	public void T220_Verb_Handler_Must_Invoke_TryParse()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		Sys.Exception? caughtException = TryCatch( () => //
@@ -633,7 +646,7 @@ public sealed class T100_ClioTests
 	}
 
 	[VSTesting.TestMethod]
-	public void T220_Verb_Handler_Must_Not_Invoke_TryParse_More_Than_Once()
+	public void T221_Verb_Handler_Must_Not_Invoke_TryParse_More_Than_Once()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		Sys.Exception? caughtException = TryCatch( () => //

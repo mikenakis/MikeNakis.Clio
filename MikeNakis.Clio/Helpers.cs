@@ -120,18 +120,29 @@ static partial class Helpers
 			if( token == "--" )
 				break;
 			if( token[0] == '@' )
-			{
-				tokens.RemoveAt( i );
-				string responseFileName = Sys.IO.Path.GetFullPath( token[1..] );
-				IEnumerable<string> lines = fileReader.Invoke( responseFileName ) //
-					.Split( '\n' )
-					.Select( s => s.Trim() )
-					.Where( s => s.Length > 0 )
-					.Where( s => s[0] != '#' );
-				foreach( string line in lines )
-					tokens.Insert( i++, "--" + line );
-			}
+				i = HandleResponseFileToken( tokens, fileReader, i );
 		}
+	}
+
+	internal static int HandleResponseFileToken( List<string> tokens, Sys.Func<string, string> fileReader, int tokenIndex )
+	{
+		string token = tokens[tokenIndex];
+		Assert( token[0] == '@' );
+		tokens.RemoveAt( tokenIndex );
+		IEnumerable<string> lines = ReadResponseFile( Sys.IO.Path.GetFullPath( token[1..] ), fileReader );
+		foreach( string line in lines )
+			tokens.Insert( tokenIndex++, "--" + line );
+		return tokenIndex;
+	}
+
+	internal static IEnumerable<string> ReadResponseFile( string filename, Sys.Func<string, string> fileReader )
+	{
+		string responseFileName = Sys.IO.Path.GetFullPath( filename );
+		return fileReader.Invoke( responseFileName ) //
+			.Split( '\n' )
+			.Select( s => s.Trim() )
+			.Where( s => s.Length > 0 )
+			.Where( s => s[0] != '#' );
 	}
 
 	internal static void OutputExceptionMessage( Sys.Exception userException, Sys.Action<string> lineOutputConsumer )

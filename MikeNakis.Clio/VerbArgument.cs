@@ -16,9 +16,12 @@ sealed class VerbArgument : Argument, IVerbArgument
 			: base( argumentParser, name, description, isRequired: false ) //each individual verb is not required; the parser sees to it that if any verbs have been added, then one must be supplied.
 	{
 		Assert( Helpers.VerbNameIsValidAssertion( name ) );
-		Assert( argumentParser.Arguments.OfType<PositionalArgument>().Where( positionalArgument => positionalArgument.IsOptional ).FirstOrDefault(), //
-			optionalPositionalArgument => optionalPositionalArgument == null, //
-			optionalPositionalArgument => throw new InvalidArgumentOrderingException( ArgumentOrderingRule.VerbMayNotBePrecededByOptionalPositional, name, optionalPositionalArgument!.Name ) );
+		Assert( argumentParser.Arguments.OfType<PositionalArgument>().FirstOrDefault(), //
+			positionalArgument => positionalArgument == null, //
+			positionalArgument => throw new InvalidArgumentOrderingException( ArgumentOrderingRule.VerbMayNotBePrecededByPositionalArgument, name, positionalArgument!.Name ) );
+		Assert( argumentParser.Arguments.Where( argument => argument.IsRequired ).FirstOrDefault(), //
+			requiredArgument => requiredArgument == null, //
+			requiredArgument => throw new InvalidArgumentOrderingException( ArgumentOrderingRule.VerbMayNotBePrecededByRequiredArgument, name, requiredArgument!.Name ) );
 		this.verbHandler = verbHandler;
 		if( DebugMode )
 		{
@@ -28,12 +31,12 @@ sealed class VerbArgument : Argument, IVerbArgument
 		}
 	}
 
-	public sealed override int OnTryParse( int tokenIndex, IReadOnlyList<string> tokens )
+	public sealed override int OnTryParse( int tokenIndex, List<string> tokens )
 	{
 		Assert( verbExecutionArgumentParser == null ); //cannot happen
 		if( tokens[tokenIndex] != Name )
 			return tokenIndex;
-		ArgumentParser.VerbFound();
+		//ArgumentParser.VerbFound();
 		verbExecutionArgumentParser = new( ArgumentParser, Name, tokenIndex + 1, tokens );
 		verbHandler.Invoke( verbExecutionArgumentParser );
 		return tokens.Count;
@@ -58,9 +61,9 @@ sealed class VerbArgument : Argument, IVerbArgument
 	sealed class VerbExecutionArgumentParser : ChildArgumentParser
 	{
 		readonly int tokenIndex;
-		readonly IReadOnlyList<string> tokens;
+		readonly List<string> tokens;
 
-		internal VerbExecutionArgumentParser( BaseArgumentParser parent, string name, int tokenIndex, IReadOnlyList<string> tokens )
+		internal VerbExecutionArgumentParser( BaseArgumentParser parent, string name, int tokenIndex, List<string> tokens )
 			: base( parent, name )
 		{
 			this.tokenIndex = tokenIndex;
@@ -69,7 +72,7 @@ sealed class VerbArgument : Argument, IVerbArgument
 
 		public override bool TryParse()
 		{
-			ParseRemainingTokens( tokenIndex, tokens );
+			TryParse( tokens, tokenIndex );
 			return true;
 		}
 	}
