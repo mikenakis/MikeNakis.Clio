@@ -283,48 +283,6 @@ public abstract class BaseArgumentParser
 		return helpSwitch;
 	}
 
-	//private protected void ParseRemainingTokens( int tokenIndex, IReadOnlyList<string> tokens )
-	//{
-	//	Assert( !HasBeenParsed );
-	//	ISwitchArgument helpSwitch = this.helpSwitch ?? addHelpSwitch();
-	//	HasBeenParsed = true;
-	//	while( tokenIndex < tokens.Count )
-	//	{
-	//		int newTokenIndex = tryParseArgument( tokenIndex, tokens, arguments );
-	//		if( newTokenIndex == tokenIndex )
-	//			throw new UnexpectedTokenException( tokens[tokenIndex] );
-	//		tokenIndex = newTokenIndex;
-	//	}
-	//	if( helpSwitch.Value )
-	//		throw new HelpException( this );
-	//	reportAnyMissingRequiredArguments();
-	//	reportMissingVerb();
-	//	return;
-
-	//	static int tryParseArgument( int tokenIndex, IReadOnlyList<string> tokens, IEnumerable<Argument> arguments )
-	//	{
-	//		foreach( Argument argument in arguments )
-	//		{
-	//			int newTokenIndex = argument.TryParse( tokenIndex, tokens );
-	//			if( newTokenIndex > tokenIndex )
-	//				return newTokenIndex;
-	//		}
-	//		return tokenIndex;
-	//	}
-	//}
-
-	//void reportMissingVerb()
-	//{
-	//	Assert( arguments.OfType<VerbArgument>().ToArray(),
-	//		verbs => verbs.Length == 0 || verbs.Where( verb => verb.IsSupplied ).Any(),
-	//		_ => throw new VerbExpectedException( GetRootArgumentParser().VerbTerm ) );
-	//}
-
-	//internal void VerbFound()
-	//{
-	//	//reportAnyMissingRequiredArguments();
-	//}
-
 	void reportAnyMissingRequiredArguments()
 	{
 		foreach( Argument argument in arguments.Where( argument => argument.IsRequired && !argument.IsSupplied ) )
@@ -338,30 +296,37 @@ public abstract class BaseArgumentParser
 		HasBeenParsed = true;
 		IReadOnlyList<VerbArgument> verbArguments = Arguments.OfType<VerbArgument>().ToArray();
 		VerbArgument? foundVerbArgument = null;
+		bool endOfOptionsMarkerFound = false;
 		for( ; tokenIndex < tokens.Count; tokenIndex++ )
 		{
-			if( tokens[tokenIndex] == "--" ) //TODO
-				break;
-			if( tokens[tokenIndex][0] == '@' )
-				processResponseFile( tokens, tokenIndex, GetRootArgumentParser().FileReader );
-			if( tokens[tokenIndex][0] == '-' && tokens[tokenIndex].Length > 2 && tokens[tokenIndex][1] != '-' )
-				processMultiLetterArgument( tokens, tokenIndex );
-
-			bool parsed = false;
-			if( tokens[tokenIndex].StartsWith( "-", Sys.StringComparison.Ordinal ) )
+			if( tokens[tokenIndex] == "--" )
 			{
-				foreach( NamedArgument namedArgument in Arguments.OfType<NamedArgument>() )
+				endOfOptionsMarkerFound = true;
+				continue;
+			}
+			bool parsed = false;
+			if( !endOfOptionsMarkerFound )
+			{
+				if( tokens[tokenIndex][0] == '@' )
+					processResponseFile( tokens, tokenIndex, GetRootArgumentParser().FileReader );
+				if( tokens[tokenIndex][0] == '-' && tokens[tokenIndex].Length > 2 && tokens[tokenIndex][1] != '-' )
+					processMultiLetterArgument( tokens, tokenIndex );
+
+				if( tokens[tokenIndex].StartsWith( "-", Sys.StringComparison.Ordinal ) )
 				{
-					int newTokenIndex = namedArgument.TryParse( tokenIndex, tokens );
-					if( newTokenIndex != tokenIndex )
+					foreach( NamedArgument namedArgument in Arguments.OfType<NamedArgument>() )
 					{
-						Assert( newTokenIndex == tokenIndex + 1 );
-						parsed = true;
-						break;
+						int newTokenIndex = namedArgument.TryParse( tokenIndex, tokens );
+						if( newTokenIndex != tokenIndex )
+						{
+							Assert( newTokenIndex == tokenIndex + 1 );
+							parsed = true;
+							break;
+						}
 					}
+					if( parsed )
+						continue;
 				}
-				if( parsed )
-					continue;
 			}
 
 			foreach( PositionalArgument positionalArgument in Arguments.OfType<PositionalArgument>() )
@@ -377,18 +342,21 @@ public abstract class BaseArgumentParser
 			if( parsed )
 				continue;
 
-			if( verbArguments.Count > 0 )
+			if( !endOfOptionsMarkerFound )
 			{
-				foreach( VerbArgument verbArgument in verbArguments )
+				if( verbArguments.Count > 0 )
 				{
-					if( verbArgument.Name == tokens[tokenIndex] )
+					foreach( VerbArgument verbArgument in verbArguments )
 					{
-						foundVerbArgument = verbArgument;
-						break;
+						if( verbArgument.Name == tokens[tokenIndex] )
+						{
+							foundVerbArgument = verbArgument;
+							break;
+						}
 					}
+					if( foundVerbArgument != null )
+						break;
 				}
-				if( foundVerbArgument != null )
-					break;
 			}
 
 			throw new UnexpectedTokenException( tokens[tokenIndex] );

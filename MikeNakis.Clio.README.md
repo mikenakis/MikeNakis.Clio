@@ -82,7 +82,7 @@ class Program
   - named arguments:
     - switches (e.g. `Program1 --verbose`)
     - options (e.g. `Program1 --verbosity=quiet`)
-  - positionals (e.g. `Program1 inputfile.txt outputfile.txt`)
+  - positional arguments (e.g. `Program1 inputfile.txt outputfile.txt`)
   - verbs (e.g. `Program1 new ...` or `Program1 list ...`)
 - Single letter names.
   - Besides a long name, each named argument can also have a single-letter name.
@@ -90,13 +90,15 @@ class Program
   - Multiple single-letter argument names can be grouped into one.
   - For example `-latr` is the same as `-l -a -t -r`.
 - Response files.
-  -	If `@<file>` is supplied in the command-line, then Clio reads `<file>` and interprets each line as a command-line argument. In this file, argument names must _**not**_ be prefixed with '--', and positional arguments must be supplied in name=value format, like options. Single-letter argument names are not allowed. Lines starting with `#` are comments.
+  -	If `@<file>` is supplied in the command-line, then Clio reads `<file>` and interprets each line as a command-line argument. Lines starting with `#` are comments.
+- 'End-of-options' marker.
+  - If `--` appears alone in the command-line, then all tokens after it are treated as positional argument values.
 - Argument data types make sense from a programmatic point of view.
   - The value of a switch is of type `bool`, indicating whether the switch was supplied.
   - The value of an option or positional is commonly of type `string`, but it can be of any type, even some `enum` defined by the programmer.
   - Required arguments are always of a non-nullable type.
   - Optional arguments typically are of a nullable type, where `null` indicates that the argument was not supplied; however:
-  - The programmer may create an optional argument with a default value; in this case, the argument is still optional from the user's point of view, but from the programmer's point of view the argument is of a non-nullable type.
+  - The programmer may create an optional argument with a default value; in this case, the argument is still optional from the user's point of view, but from the programmer's point of view the argument is of a non-nullable type, because it will always have a value: either a value entered by the user, or the default value.
 - Preset values for options.
   - By default, the user must follow an option with an equals-sign and then a value. 
   - The programmer can specify that an option has a preset value, in which case the user may supply the option without an equals-sign and a value. In this case, the option will receive its preset value.
@@ -206,7 +208,6 @@ _**Verb**_: A special kind of argument which is identified by a word and has an 
 - TODO: Add help message about response files.
 - TODO: Add support for including some free text in usage help: a short help prefix and a number of help footnotes.
 - TODO: Remove all strictly-speaking-unnecessary functionality from the Clio interface, move it to extension methods.
-- TODO: Add support for the end-of-options switch (`--`).
 - TODO: Add more functionality for creating enum arguments.
 - TODO: Clarify the message about combining short-form options into one argument by mentioning that it applies to switches and to options with a preset. Give a correct example by searching for either switches or options with a preset.  (As it stands, the example will include any named options with a short-form name, and this may include an option without a preset, which cannot really be combined.)
 - TODO: Improve user-exception messages.

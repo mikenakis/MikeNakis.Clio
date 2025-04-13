@@ -371,18 +371,6 @@ public sealed class T100_ClioTests
 	}
 
 	[VSTesting.TestMethod]
-	public void T132_Positional_Argument_Can_Be_Used_As_Named_Argument()
-	{
-		ArgumentParser argumentParser = newArgumentParser();
-		IArgument<string?> mike = argumentParser.AddStringPositional( "mike", "mike-description" );
-		IArgument<string> papa = argumentParser.AddStringPositionalWithDefault( "papa", "papa-default", description: "papa-description" );
-		bool ok = tryParse( argumentParser, "--mike=mike-value" );
-		Assert( ok );
-		Assert( mike.Value == "mike-value" );
-		Assert( papa.Value == "papa-default" );
-	}
-
-	[VSTesting.TestMethod]
 	public void T133_Response_Files_Work()
 	{
 		const string responseFilename = "responseFilename.txt";
@@ -404,8 +392,22 @@ public sealed class T100_ClioTests
 			Assert( filename == Sys.IO.Path.GetFullPath( responseFilename ) );
 			return @"--mike=mike-value
 				#this is a comment
-				--papa=papa-value";
+				papa-value";
 		}
+	}
+
+	[VSTesting.TestMethod]
+	public void T134_End_Of_Options_Marker_Works()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IArgument<bool> fSwitch = argumentParser.AddSwitch( "f-switch", 'f' );
+		IArgument<bool> xSwitch = argumentParser.AddSwitch( "x-switch", 'x' );
+		IArgument<string?> positional = argumentParser.AddStringPositional( "positional" );
+		bool ok = tryParse( argumentParser, $"-f -- -x" );
+		Assert( ok );
+		Assert( fSwitch.Value );
+		Assert( !xSwitch.Value );
+		Assert( positional.Value == "-x" );
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

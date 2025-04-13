@@ -26,22 +26,7 @@ abstract class PositionalArgument : Argument
 	{
 		if( supplied )
 			return tokenIndex;
-		string token = tokens[tokenIndex];
-		int skip = Helpers.LongFormNameMatch( token, Name );
-		string valueToken;
-		if( skip != 0 )
-		{
-			if( skip + 1 >= token.Length )
-				throw new EqualsSignExpectedException( Name );
-			skip++;
-			valueToken = token[skip..];
-		}
-		else
-		{
-			if( token[0] == '-' )
-				return tokenIndex;
-			valueToken = token;
-		}
+		string valueToken = tokens[tokenIndex];
 		supplied = true;
 		try
 		{
