@@ -1,17 +1,59 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<!-- PEARL: when it comes to editing .csproj files, Visual studio offers an abysmally poor developer experience:
-		- It keeps modifying .csproj files, sometimes messing them up.
-		- It keeps bugging us with warnings saying we better reload the project "or else."
-		- It keeps closing the project file when we reload the project.
-		- It makes it difficult to open the project file if it has been unable to load it.
-		- It keeps reloading project files by itself each time we save them.
-		- With each reload of the project file it loses undo information and it scrolls to the top.
-		To somewhat mitigate all this madness, we put nothing in .csproj files but a single statement which imports
-		another	project file with an extension that is not .csproj, so that:
-		- Visual Studio will leave the other project file alone.
-		- When Visual Studio modifies this file, it is easy to take notice (This file should contain nothing but the
-		  following import task. -->
-	<Import Project="$(MSBuildProjectName).proj.xml" />
+	<!-- PEARL: PackageReference version wildcards are a nasty bitch!
+		    - You cannot use "1.*.*"; there must be only one wildcard in the prefix. This is not documented anywhere.
+			- You cannot use "1.*-Debug"; if the prefix has a wildcard, then the suffix must be a wildcard. This is
+			  also not documented anywhere.
+			- If you make a mistake in the version string wildcard:
+			- When building from within Visual Studio, it fails with a bunch of "failed to restore" messages that
+				do not tell you why it failed to restore, followed by something entirely nonsensical, like "error
+				NETSDK1005: Assets file '<...>\obj\project.assets.json' doesn't have a target for 'net8.0'".
+			- When building using "dotnet restore", it tells you that this is not a valid version string, but it
+				still does not tell you what the fucking problem is. -->
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<!-- AssemblyName: The default is $(MSBuildProjectName) -->
+		<AssemblyName>$(MSBuildProjectName)-$(Configuration)</AssemblyName>
+	</PropertyGroup>
+
+	<Import Project="..\AllProjects.proj.xml" />
+
+	<!-- NuGet Packaging ******************************************************************************************* -->
+
+	<PropertyGroup>
+		<!-- Do not generate package on build because we want to have it as a separate github action step. -->
+		<!--<GeneratePackageOnBuild>True</GeneratePackageOnBuild>-->
+		<!-- PackageId: the default is $(MSBuildProjectName) -->
+		<!--<PackageId>$(AssemblyName)</PackageId>-->
+		<!-- Get version from environment variable, because it is computed by the build server script. -->
+		<Version>$(RELEASE_VERSION)</Version>
+		<!-- Get version prefix from environment variable, because it is computed by the build server script. -->
+		<!--<VersionPrefix>$(VERSION_PREFIX)</VersionPrefix>-->
+		<!-- Title: the default appears to be $(MSBuildProjectName) if equal to $(AssemblyName), blank otherwise. -->
+		<Title>$(MSBuildProjectName) ($(Configuration))</Title>
+		<Authors>MikeNakis</Authors>
+		<Description>A library for parsing command-line arguments</Description>
+		<Copyright>Copyright © Mike Nakis. All rights reserved.</Copyright>
+		<PackageIcon>MikeNakis.Clio-Logo.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/mikenakis/MikeNakis.Clio.git</RepositoryUrl>
+		<PublishRepositoryUrl>True</PublishRepositoryUrl>
+		<PackageTags>dotnet; dotnet-core; class-libraries; utilities; command-line; console</PackageTags>
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<PackageReleaseNotes>initial release</PackageReleaseNotes>
+		<IncludeSymbols Condition="'$(Configuration)' == 'Release'">True</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<!--<PackRelease Condition="'$(Configuration)' == 'Debug'">False</PackRelease>-->
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\LICENSE.md" Pack="True" PackagePath="/" />
+		<None Include="..\MikeNakis.Clio-Logo.png" Pack="True" PackagePath="/" />
+		<None Include="..\MikeNakis.Clio-Logo.svg" Pack="True" PackagePath="/" />
+		<None Include="README-for-nuget.md" Pack="True" PackagePath="/README.md" />
+	</ItemGroup>
 
 </Project>

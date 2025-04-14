@@ -9,12 +9,21 @@
 
 	<Import Project="..\AllProjects.proj.xml" />
 
-	<ItemGroup>
-		<ProjectReference Include="..\MikeNakis.Clio\MikeNakis.Clio.csproj" />
-	</ItemGroup>
+	<Choose>
+		<When Condition="Exists('..\..\MikeNakis.Kit\MikeNakis.Kit\MikeNakis.Kit.csproj')">
+			<ItemGroup>
+				<ProjectReference Include="..\..\MikeNakis.Kit\MikeNakis.Kit\MikeNakis.Kit.csproj" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup>
+				<PackageReference Include="MikeNakis.Kit-$(Configuration)" Version="2.*" PrivateAssests="All" />
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
 
 	<ItemGroup>
-		<PackageReference Include="MikeNakis.Kit-$(Configuration)" Version="2.*" />
+		<ProjectReference Include="..\MikeNakis.Clio\MikeNakis.Clio.csproj" />
 	</ItemGroup>
 
 </Project>
