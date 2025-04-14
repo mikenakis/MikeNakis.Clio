@@ -14,7 +14,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MikeNakis.Kit-$(Configuration)" Version="1.*" />
+		<PackageReference Include="MikeNakis.Kit-$(Configuration)" Version="2.*" />
 	</ItemGroup>
 
 </Project>
