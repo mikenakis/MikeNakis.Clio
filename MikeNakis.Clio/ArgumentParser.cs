@@ -51,7 +51,8 @@ public sealed class ArgumentParser : BaseArgumentParser
 		List<string> tokens = new( arrayOfToken );
 		try
 		{
-			return TryParse( tokens, 0 );
+			Parse( tokens, 0 );
+			return true;
 		}
 		catch( HelpException helpException )
 		{
@@ -65,5 +66,14 @@ public sealed class ArgumentParser : BaseArgumentParser
 			lineOutputConsumer.Invoke( $"Try '{fullName} --help' for more information." );
 			return false;
 		}
+	}
+
+	/// <summary>Parses an array of command-line tokens, stores values in arguments, invokes verb handlers, etc.</summary>
+	/// <remarks>If something goes wrong, an exception is thrown.</remarks>
+	/// <param name="arrayOfToken">The command-line tokens to parse.</param>
+	public void Parse( string[] arrayOfToken )
+	{
+		List<string> tokens = new( arrayOfToken );
+		Parse( tokens, 0 );
 	}
 }

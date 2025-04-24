@@ -1,9 +1,7 @@
 namespace MikeNakis.Clio;
 
-using Sys = System;
-
 /// <summary>Represents a mistake made by the programmer.</summary>
-public abstract class ProgrammerException : Sys.Exception;
+public abstract class ProgrammerException : SaneException;
 
 /// <summary>Thrown when an attempt is made to add an argument after the command-line has been parsed.</summary>
 public sealed class CommandLineHasAlreadyBeenParsedException() : ProgrammerException;

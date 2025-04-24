@@ -72,7 +72,7 @@ sealed class VerbArgument : Argument, IVerbArgument
 
 		public override bool TryParse()
 		{
-			TryParse( tokens, tokenIndex );
+			Parse( tokens, tokenIndex );
 			return true;
 		}
 	}

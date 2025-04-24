@@ -1,12 +1,13 @@
 namespace MikeNakis.Clio_Test;
 
 using MikeNakis.Clio;
+using MikeNakis.Clio.Extensions;
 using MikeNakis.Kit;
 using Sys = System;
 using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [VSTesting.TestClass]
-public sealed class T101_ClioAuditTests
+public sealed class T103_ClioAudits
 {
 	const string verbTerm = "subcommand";
 

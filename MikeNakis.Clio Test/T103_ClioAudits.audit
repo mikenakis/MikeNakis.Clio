@@ -2,9 +2,9 @@
 T101_No_Optional_Named_Arguments_Help_Audit
 
 Usage:
-    TestApp [-h, --help] <india>
+    TestApp [-?, --help] <india>
 Options:
-    -h, --help Display this help.
+    -?, --help Display this help.
     <india>    This is the description of india.
 
 --------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ Options:
     --oscar[=<string>]                This is the description of oscar.
                                       If omitted, the default is "oscar-default".
                                       If supplied without a value, the preset is "oscar-preset".
-    -h, --help                        Display this help.
+    -?, --help                        Display this help.
     <india>                           This is the description of india.
     <juliett>                         This is the description of juliett.
     <papa>                            This is the description of papa.
@@ -55,7 +55,8 @@ Options:
                                              mike-default".
                                              If supplied without a value, the
                                              preset is "this is mike-preset".
-    -h, --help                               Display this help.
+    -?, --help                               Display this help.
+Single-letter arguments can be combined. For example, -a -? can be replaced with -a?.
 
 --------------------------------------------------------------------------------
 T104_Root_With_Verbs_Help_Audit
@@ -64,11 +65,12 @@ Usage:
     TestApp [<option>...] <subcommand>...
 Options:
     -a, --alpha This is the description of alpha.
-    -h, --help  Display this help.
+    -?, --help  Display this help.
 Where <subcommand> is one of:
     juliett     This is the description of juliett.
     kilo        This is the description of kilo.
 Try 'TestApp <subcommand> --help' for more information on a specific subcommand.
+Single-letter arguments can be combined. For example, -a -? can be replaced with -a?.
 
 --------------------------------------------------------------------------------
 T105_Verb_Help_Audit
@@ -77,7 +79,7 @@ Usage:
     TestApp juliett [<option>...] [<papa>]
 Options:
     --lima     This is the description of lima.
-    -h, --help Display this help.
+    -?, --help Display this help.
     <papa>     This is the description of papa.
 
 --------------------------------------------------------------------------------

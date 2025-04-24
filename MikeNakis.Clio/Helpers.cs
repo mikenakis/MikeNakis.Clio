@@ -6,7 +6,7 @@ using Sys = System;
 static partial class Helpers
 {
 	static readonly RegEx.Regex namedArgumentNameValidationRegex = new( "^[a-zA-Z][a-zA-Z0-9-]+$", RegEx.RegexOptions.CultureInvariant );
-	static readonly RegEx.Regex singleLetterNameValidationRegex = new( "^[a-zA-Z0-9]+$", RegEx.RegexOptions.CultureInvariant );
+	static readonly RegEx.Regex singleLetterNameValidationRegex = new( "^[a-zA-Z0-9\\?]$", RegEx.RegexOptions.CultureInvariant );
 	static readonly RegEx.Regex optionParameterNameValidationRegex = new( "^[a-zA-Z0-9-]+$", RegEx.RegexOptions.CultureInvariant );
 	static readonly RegEx.Regex parameterNameValidationRegex = new( "^[a-zA-Z][a-zA-Z0-9-]+$", RegEx.RegexOptions.CultureInvariant );
 	static readonly RegEx.Regex verbNameValidationRegex = new( "^[a-zA-Z0-9-]+$", RegEx.RegexOptions.CultureInvariant );
@@ -74,11 +74,13 @@ static partial class Helpers
 	{
 		if( !shortFormName.HasValue )
 			return 0;
-		if( token.Length != 2 )
-			return 0;
 		if( token[0] != '-' )
 			return 0;
+		if( token.Length < 2 )
+			return 0;
 		if( token[1] != shortFormName.Value )
+			return 0;
+		if( token.Length > 2 && !IsTerminator( token[2] ) )
 			return 0;
 		return 2;
 	}

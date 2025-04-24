@@ -129,47 +129,6 @@ public abstract class BaseArgumentParser
 		return new NonNullableClassOption<T>( this, name, singleLetterName, parameterName, codec, description, presetValue, default );
 	}
 
-	///<summary>Adds an option of type <c>string</c>.</summary>
-	///<param name="name">The name of the option.</param>
-	///<param name="singleLetterName">The (optional) single-letter name for the option.</param>
-	///<param name="description">The description of the option, for use when displaying help.</param>
-	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
-	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
-	///option is specified without an equals-sign and a value.</param>
-	public IOptionArgument<string?> AddStringOption( string name, char? singleLetterName = null, //
-		string? description = null, string? parameterName = null, string? presetValue = null )
-	{
-		return AddOption( name, StringCodec.Instance, singleLetterName, description, parameterName, presetValue );
-	}
-
-	///<summary>Adds an option of type <c>string</c> with a default value.</summary>
-	///<param name="name">The name of the option.</param>
-	///<param name="defaultValue">The default value for the option, which will be the value of the option if the option
-	///is not supplied.</param>
-	///<param name="singleLetterName">The (optional) single-letter name for the option.</param>
-	///<param name="description">The description of the option, for use when displaying help.</param>
-	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
-	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
-	///option is supplied without an equals-sign and a value.</param>
-	public IOptionArgument<string> AddStringOptionWithDefault( string name, string defaultValue, char? singleLetterName = null, //
-		string? description = null, string? parameterName = null, string? presetValue = null )
-	{
-		return AddOptionWithDefault( name, StringCodec.Instance, defaultValue, singleLetterName, description, parameterName, presetValue );
-	}
-
-	///<summary>Adds a required option of type <c>string</c>.</summary>
-	///<param name="name">The name of the option.</param>
-	///<param name="singleLetterName">The (optional) single-letter name for the option.</param>
-	///<param name="description">The description of the option, for use when displaying help.</param>
-	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
-	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
-	///option is supplied without an equals-sign and a value.</param>
-	public IOptionArgument<string> AddRequiredStringOption( string name, char? singleLetterName = null, //
-		string? description = null, string? parameterName = null, string? presetValue = null )
-	{
-		return AddRequiredOption( name, StringCodec.Instance, singleLetterName, description, parameterName, presetValue );
-	}
-
 	///<summary>Adds a positional argument.</summary>
 	///<param name="name">The name of the positional argument, for use in response files, and when displaying help.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the positional argument; provides conversions between
@@ -234,32 +193,6 @@ public abstract class BaseArgumentParser
 		return new NonNullableClassPositionalArgument<T>( this, name, codec, description, default );
 	}
 
-	///<summary>Adds a positional argument of type <c>string</c>.</summary>
-	///<param name="name">The name of the positional argument, for use in response files, and when displaying help.</param>
-	///<param name="description">The description of the positional argument, for use when displaying help.</param>
-	public IPositionalArgument<string?> AddStringPositional( string name, string? description = null )
-	{
-		return AddPositional( name, StringCodec.Instance, description );
-	}
-
-	///<summary>Adds a positional argument of type <c>string</c> with a default value.</summary>
-	///<param name="name">The name of the positional argument, for use in response files, and when displaying help.</param>
-	///<param name="defaultValue">The default value for the positional argument, which will be the value of the argument
-	///if the argument is not supplied.</param>
-	///<param name="description">The description of the positional argument, for use when displaying help.</param>
-	public IPositionalArgument<string> AddStringPositionalWithDefault( string name, string defaultValue, string? description = null )
-	{
-		return AddPositionalWithDefault( name, StringCodec.Instance, defaultValue, description );
-	}
-
-	///<summary>Adds a required positional argument of type <c>string</c>.</summary>
-	///<param name="name">The name of the positional argument, for use in response files, and when displaying help.</param>
-	///<param name="description">The description of the positional argument, for use when displaying help.</param>
-	public IPositionalArgument<string> AddRequiredStringPositional( string name, string? description = null )
-	{
-		return AddRequiredPositional( name, StringCodec.Instance, description );
-	}
-
 	internal void AddArgument( Argument argument )
 	{
 		Assert( !HasBeenParsed, () => throw new CommandLineHasAlreadyBeenParsedException() );
@@ -279,7 +212,7 @@ public abstract class BaseArgumentParser
 	ISwitchArgument addHelpSwitch()
 	{
 		Assert( helpSwitch == null );
-		helpSwitch = AddSwitch( "help", 'h', "Display this help" );
+		helpSwitch = AddSwitch( "help", '?', "Display this help" );
 		return helpSwitch;
 	}
 
@@ -289,7 +222,7 @@ public abstract class BaseArgumentParser
 			throw new RequiredArgumentNotSuppliedException( argument.Name );
 	}
 
-	internal bool TryParse( List<string> tokens, int tokenIndex )
+	internal void Parse( List<string> tokens, int tokenIndex )
 	{
 		Assert( !HasBeenParsed );
 		ISwitchArgument helpSwitch = this.helpSwitch ?? addHelpSwitch();
@@ -299,47 +232,36 @@ public abstract class BaseArgumentParser
 		bool endOfOptionsMarkerFound = false;
 		for( ; tokenIndex < tokens.Count; tokenIndex++ )
 		{
-			if( tokens[tokenIndex] == "--" )
+			string token = tokens[tokenIndex];
+
+			if( token == "--" )
 			{
 				endOfOptionsMarkerFound = true;
 				continue;
 			}
-			bool parsed = false;
+
 			if( !endOfOptionsMarkerFound )
 			{
-				if( tokens[tokenIndex][0] == '@' )
+				if( token[0] == '@' )
+				{
 					processResponseFile( tokens, tokenIndex, GetRootArgumentParser().FileReader );
-				if( tokens[tokenIndex][0] == '-' && tokens[tokenIndex].Length > 2 && tokens[tokenIndex][1] != '-' )
-					processMultiLetterArgument( tokens, tokenIndex );
+					tokenIndex--;
+					continue;
+				}
 
-				if( tokens[tokenIndex].StartsWith( "-", Sys.StringComparison.Ordinal ) )
+				if( isSingleLetterArgumentGroup( token ) )
 				{
-					foreach( NamedArgument namedArgument in Arguments.OfType<NamedArgument>() )
-					{
-						int newTokenIndex = namedArgument.TryParse( tokenIndex, tokens );
-						if( newTokenIndex != tokenIndex )
-						{
-							Assert( newTokenIndex == tokenIndex + 1 );
-							parsed = true;
-							break;
-						}
-					}
-					if( parsed )
+					expandSingleLetterArgumentGroup( tokens, tokenIndex );
+					tokenIndex--;
+					continue;
+				}
+
+				if( token.StartsWith( "-", Sys.StringComparison.Ordinal ) )
+					if( parseNamedArgument( tokenIndex, tokens ) )
 						continue;
-				}
 			}
 
-			foreach( PositionalArgument positionalArgument in Arguments.OfType<PositionalArgument>() )
-			{
-				int newTokenIndex = positionalArgument.TryParse( tokenIndex, tokens );
-				if( newTokenIndex != tokenIndex )
-				{
-					Assert( newTokenIndex == tokenIndex + 1 );
-					parsed = true;
-					break;
-				}
-			}
-			if( parsed )
+			if( parsePositionalArgument( tokenIndex, tokens ) )
 				continue;
 
 			if( !endOfOptionsMarkerFound )
@@ -376,9 +298,9 @@ public abstract class BaseArgumentParser
 				Assert( newTokenIndex == tokens.Count );
 			}
 		}
-		return true;
+		return;
 
-		static void processMultiLetterArgument( List<string> tokens, int tokenIndex )
+		static void expandSingleLetterArgumentGroup( List<string> tokens, int tokenIndex )
 		{
 			string token = tokens[tokenIndex];
 			tokens.RemoveAt( tokenIndex );
@@ -391,5 +313,38 @@ public abstract class BaseArgumentParser
 			tokens.RemoveAt( tokenIndex );
 			tokens.InsertRange( tokenIndex, lines );
 		}
+	}
+
+	bool parsePositionalArgument( int tokenIndex, List<string> tokens )
+	{
+		foreach( PositionalArgument positionalArgument in Arguments.OfType<PositionalArgument>() )
+		{
+			int newTokenIndex = positionalArgument.TryParse( tokenIndex, tokens );
+			if( newTokenIndex != tokenIndex )
+			{
+				Assert( newTokenIndex == tokenIndex + 1 );
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool parseNamedArgument( int tokenIndex, List<string> tokens )
+	{
+		foreach( NamedArgument namedArgument in Arguments.OfType<NamedArgument>() )
+		{
+			int newTokenIndex = namedArgument.TryParse( tokenIndex, tokens );
+			if( newTokenIndex != tokenIndex )
+			{
+				Assert( newTokenIndex == tokenIndex + 1 );
+				return true;
+			}
+		}
+		return false;
+	}
+
+	static bool isSingleLetterArgumentGroup( string token )
+	{
+		return token[0] == '-' && token.Length > 2 && token[1] != '-' && token[2] != '=';
 	}
 }
