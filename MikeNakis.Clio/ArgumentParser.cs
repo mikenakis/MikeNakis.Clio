@@ -3,10 +3,10 @@ namespace MikeNakis.Clio;
 using System.Collections.Generic;
 using Sys = System;
 
-///<summary>Represents a verb handler.</summary>
+/// <summary>Represents a verb handler.</summary>
 public delegate void VerbHandler( ChildArgumentParser argumentParser );
 
-///<summary>Parses command-line arguments for a program.</summary>
+/// <summary>Parses command-line arguments for a program.</summary>
 public sealed class ArgumentParser : BaseArgumentParser
 {
 	public string VerbTerm { get; }
@@ -32,10 +32,10 @@ public sealed class ArgumentParser : BaseArgumentParser
 		FileReader = testingOptions?.FileReader ?? Sys.IO.File.ReadAllText;
 	}
 
-	///<summary>Adds a verb.</summary>
-	///<param name="name">The name of the verb.</param>
-	///<param name="description">The description of the verb, for use when displaying help.</param>
-	///<param name="verbHandler">The handler of the verb.</param>
+	/// <summary>Adds a verb.</summary>
+	/// <param name="name">The name of the verb.</param>
+	/// <param name="description">The description of the verb, for use when displaying help.</param>
+	/// <param name="verbHandler">The handler of the verb.</param>
 	public IVerbArgument AddVerb( string name, string description, VerbHandler verbHandler )
 	{
 		return new VerbArgument( this, name, description, verbHandler );

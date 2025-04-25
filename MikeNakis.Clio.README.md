@@ -118,13 +118,6 @@ class Program
 
 ## Limitations
 
-### Limitations without a workaround
-
-- No support (yet) for the end-of-named-arguments argument (`--`) to signify that everything after that point in the command line is a positional argument.
-  - Support for the end-of-named-arguments argument will be added soon.
-
-### Limitations with a workaround
-
 - No support for repeatable switches, as in `Program1 --switch1 --switch1`. Every switch can be supplied at most once.
   - **Workaround:** Turn the switch into an option of type `int`, with a default of `0` so that it can be omitted, and a preset of `1` so that `--switch1` can be used instead of `--switch1=1`.
   - Support for repeatable switches will be added in the future.
@@ -157,7 +150,7 @@ class Program
 - No support for case-insensitive argument names: all argument names must be supplied exactly as specified.
   - This is so by design.
 - No support for fault tolerance: if the slightest thing goes wrong with the formulation of the command-line, an error message gets printed, and any attempt to read the value of any argument after that results in an exception.
-  - This is so by design. (There is no such thing as "fault tolerance"; it is just a euphemism for _**silent failure**_. I do not engage in, endorse, or facilitate, any form of silent failure.)
+  - This is so by design. (There is no such thing as "fault tolerance"; it is just a euphemism for _**silent failure**_. I do not engage in, endorse, or facilitate silent failure in any way, shape, or form.)
 
 ## License
 
@@ -205,6 +198,7 @@ _**Verb**_: A special kind of argument which is identified by a word and has an 
 
 ## To do:
 
+- TODO: Remove the requirement for no positional arguments before verbs.
 - TODO: Add help message about response files.
 - TODO: Add support for including some free text in usage help: a short help prefix and a number of help footnotes.
 - TODO: Remove all strictly-speaking-unnecessary functionality from the Clio interface, move it to extension methods.
@@ -225,7 +219,6 @@ _**Verb**_: A special kind of argument which is identified by a word and has an 
 - TODO: Add a double codec
 - TODO: Add a duration codec which allows supplying durations like 1s or 200ms
 - TODO: Rename codecs to converters
-- TODO: Refrain from **ever** writing to the console and from **ever** exiting the current process. I had an issue where I was using Clio for parsing strings within a WPF application, and a malformed string would cause the WPF application to inexplicably exit, this must be avoided.
 
 ## Will not do:
 
