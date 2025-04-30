@@ -1,0 +1,16 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Develop" />
+    <BuildType Name="Release" />
+  </Configurations>
+  <Folder Name="/_Solution Items/">
+    <File Path=".github/workflows/github-workflow.yml" />
+    <File Path=".gitignore" />
+    <File Path="LICENSE.md" />
+    <File Path="MikeNakis.Clio-Logo.svg" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="MikeNakis.Clio Test/MikeNakis.Clio Test.csproj" />
+  <Project Path="MikeNakis.Clio/MikeNakis.Clio.csproj" />
+</Solution>
