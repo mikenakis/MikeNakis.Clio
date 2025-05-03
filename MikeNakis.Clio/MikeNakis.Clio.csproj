@@ -21,6 +21,10 @@
 
 	<Import Project="..\AllProjects.proj.xml" />
 
+	<ItemGroup>
+		<PackageReference Include="System.Memory" Version="4.6.3" />	
+	</ItemGroup>
+
 	<!-- NuGet Packaging ******************************************************************************************* -->
 
 	<PropertyGroup>
