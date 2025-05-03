@@ -1,9 +1,5 @@
 namespace MikeNakis.Clio;
 
-using LegacyCollections = System.Collections;
-using System.Collections.Generic;
-using SysCompiler = System.Runtime.CompilerServices;
-
 sealed class ReferenceEqualityComparer : IEqualityComparer<object?>, LegacyCollections.IEqualityComparer
 {
 	ReferenceEqualityComparer() { }

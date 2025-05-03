@@ -1,7 +1,5 @@
 namespace MikeNakis.Clio;
 
-using Sys = System;
-
 public abstract class UserException( Sys.Exception? cause = null ) : Sys.Exception( "", cause );
 
 sealed class HelpException( BaseArgumentParser argumentParser ) : UserException

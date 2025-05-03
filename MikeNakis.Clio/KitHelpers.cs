@@ -1,16 +1,8 @@
 namespace MikeNakis.Clio;
 
-using System.Collections.Generic;
-using System.Linq;
-using LegacyCollections = System.Collections;
-using Sys = System;
-using SysCompiler = System.Runtime.CompilerServices;
-using SysText = System.Text;
-using SysThreading = System.Threading;
-
 static class KitHelpers
 {
-	public static readonly SysThreading.ThreadLocal<bool> FailureTesting = new( false );
+	public static readonly SysThread.ThreadLocal<bool> FailureTesting = new( false );
 
 	public static string SafeToString( object? value )
 	{

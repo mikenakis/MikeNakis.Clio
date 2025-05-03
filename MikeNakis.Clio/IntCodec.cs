@@ -1,8 +1,5 @@
 namespace MikeNakis.Clio;
 
-using Sys = System;
-using SysGlob = System.Globalization;
-
 public sealed class IntCodec : StructCodec<int>
 {
 	public static readonly StructCodec<int> Instance = new IntCodec();

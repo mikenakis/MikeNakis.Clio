@@ -1,8 +1,5 @@
 namespace MikeNakis.Clio;
 
-using System.Collections.Generic;
-using Sys = System;
-
 /// <summary>Represents a verb handler.</summary>
 public delegate void VerbHandler( ChildArgumentParser argumentParser );
 

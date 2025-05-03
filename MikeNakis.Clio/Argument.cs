@@ -1,8 +1,5 @@
 namespace MikeNakis.Clio;
 
-using Sys = System;
-using SysDiag = System.Diagnostics;
-
 /// <summary>Represents a command-line argument.</summary>
 public interface IArgument
 {

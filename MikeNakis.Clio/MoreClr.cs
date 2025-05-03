@@ -6,8 +6,6 @@
 
 #pragma warning disable
 
-using System.Runtime.CompilerServices;
-
 namespace System
 {
 	/// <summary>Represent a type can be used to index a collection either from the start or the end.</summary>
@@ -28,7 +26,7 @@ namespace System
 		/// <remarks>
 		/// If the Index constructed from the end, index value 1 means pointing at the last element and index value 0 means pointing at beyond last element.
 		/// </remarks>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		[SysCompiler.MethodImpl( SysCompiler.MethodImplOptions.AggressiveInlining )]
 		public Index( int value, bool fromEnd = false )
 		{
 			if( value < 0 )
@@ -56,7 +54,7 @@ namespace System
 
 		/// <summary>Create an Index from the start at the position indicated by the value.</summary>
 		/// <param name="value">The index value from the start.</param>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		[SysCompiler.MethodImpl( SysCompiler.MethodImplOptions.AggressiveInlining )]
 		public static Index FromStart( int value )
 		{
 			if( value < 0 )
@@ -69,7 +67,7 @@ namespace System
 
 		/// <summary>Create an Index from the end at the position indicated by the value.</summary>
 		/// <param name="value">The index value from the end.</param>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		[SysCompiler.MethodImpl( SysCompiler.MethodImplOptions.AggressiveInlining )]
 		public static Index FromEnd( int value )
 		{
 			if( value < 0 )
@@ -107,7 +105,7 @@ namespace System
 		/// It is expected Index will be used with collections which always have non negative length/count. If the returned offset is negative and
 		/// then used to index a collection will get out of range exception which will be same affect as the validation.
 		/// </remarks>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		[SysCompiler.MethodImpl( SysCompiler.MethodImplOptions.AggressiveInlining )]
 		public int GetOffset( int length )
 		{
 			var offset = _value;
@@ -211,7 +209,7 @@ namespace System
 		/// It is expected Range will be used with collections which always have non negative length/count.
 		/// We validate the range is inside the length scope though.
 		/// </remarks>
-		[MethodImpl( MethodImplOptions.AggressiveInlining )]
+		[SysCompiler.MethodImpl( SysCompiler.MethodImplOptions.AggressiveInlining )]
 		public (int Offset, int Length) GetOffsetAndLength( int length )
 		{
 			int start;

@@ -1,8 +1,5 @@
 namespace MikeNakis.Clio;
 
-using Sys = System;
-using SysDiag = System.Diagnostics;
-
 [SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
 abstract class PositionalArgument : Argument
 {

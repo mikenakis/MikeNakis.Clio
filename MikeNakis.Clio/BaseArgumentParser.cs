@@ -1,8 +1,5 @@
 namespace MikeNakis.Clio;
 
-using System.Collections.Generic;
-using Sys = System;
-
 /// <summary>Common base class for command-line parsers.</summary>
 public abstract class BaseArgumentParser
 {

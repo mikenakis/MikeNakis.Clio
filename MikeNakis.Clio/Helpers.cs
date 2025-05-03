@@ -1,8 +1,5 @@
 namespace MikeNakis.Clio;
 
-using RegEx = System.Text.RegularExpressions;
-using Sys = System;
-
 static partial class Helpers
 {
 	static readonly RegEx.Regex namedArgumentNameValidationRegex = new( "^[a-zA-Z][a-zA-Z0-9-]+$", RegEx.RegexOptions.CultureInvariant );

@@ -1,11 +1,6 @@
 namespace MikeNakis.Clio_Test;
 
 using MikeNakis.Kit.FileSystem;
-using Sys = System;
-using SysCompiler = System.Runtime.CompilerServices;
-using SysDiag = System.Diagnostics;
-using SysIo = System.IO;
-using SysText = System.Text;
 
 sealed class Audit
 {

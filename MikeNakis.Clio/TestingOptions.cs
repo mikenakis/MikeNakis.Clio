@@ -1,7 +1,5 @@
 namespace MikeNakis.Clio;
 
-using Sys = System;
-
 public sealed class TestingOptions
 {
 	public string? ProgramName { get; }

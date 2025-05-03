@@ -1,8 +1,5 @@
 namespace MikeNakis.Clio;
 
-using Sys = System;
-using SysText = System.Text;
-
 abstract class OptionArgument : NamedArgument
 {
 	internal OptionArgument( BaseArgumentParser argumentParser, string name, char? shortFormName, string? parameterName, string? description, bool isRequired )
