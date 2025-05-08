@@ -1,5 +1,6 @@
 namespace MikeNakis.Clio_Test;
 
+using MikeNakis.Kit.Extensions;
 using MikeNakis.Kit.FileSystem;
 
 sealed class Audit
@@ -13,13 +14,13 @@ sealed class Audit
 	{
 		Assert( callerFileName != null );
 		Assert( callerMemberName != null );
-		FilePath callerFilePath = FilePath.FromAbsolutePath( NotNull( callerFileName ) );
+		FilePath callerFilePath = FilePath.FromAbsolutePath( callerFileName.OrThrow() );
 		FilePath auditFilePath = callerFilePath.WithReplacedExtension( FileExtension );
 		Audit audit = getOrCreateAuditFile( auditFilePath );
 		using( AuditFile auditFile = audit.newFile() )
 		{
 			auditFile.WriteLine( new string( '-', 80 ) );
-			auditFile.WriteLine( NotNull( callerMemberName ) );
+			auditFile.WriteLine( callerMemberName.OrThrow() );
 			auditFile.WriteLine( "" );
 			procedure.Invoke( auditFile.WriteLine );
 		}

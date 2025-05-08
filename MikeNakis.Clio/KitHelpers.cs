@@ -173,7 +173,7 @@ static class KitHelpers
 		if( type.IsArray )
 		{
 			SysText.StringBuilder stringBuilder = new();
-			stringBuilder.Append( GetCSharpTypeName( NotNull( type.GetElementType() ) ) );
+			stringBuilder.Append( GetCSharpTypeName( type.GetElementType().OrThrow() ) );
 			stringBuilder.Append( '[' );
 			int rank = type.GetArrayRank();
 			Assert( rank >= 1 );
@@ -195,7 +195,7 @@ static class KitHelpers
 
 		static string getBaseTypeName( Sys.Type type )
 		{
-			string typeName = NotNull( type.GetGenericTypeDefinition().FullName );
+			string typeName = type.GetGenericTypeDefinition().FullName.OrThrow();
 			int indexOfTick = typeName.LastIndexOf( '`' );
 			Assert( indexOfTick == typeName.IndexOf( '`' ) );
 			return typeName[..indexOfTick];

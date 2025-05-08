@@ -26,6 +26,7 @@
 	</Choose>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Solution\Testing\Testing.csproj" />
 		<ProjectReference Include="..\MikeNakis.Clio\MikeNakis.Clio.csproj" />
 	</ItemGroup>
 

@@ -24,5 +24,5 @@ public sealed class EnumCodec<T> : StructCodec<T> where T : struct, Sys.Enum
 		return value;
 	}
 
-	public override string TextFromValue( T value ) => NotNull( enumType.GetEnumName( value ) );
+	public override string TextFromValue( T value ) => enumType.GetEnumName( value ).OrThrow();
 }
