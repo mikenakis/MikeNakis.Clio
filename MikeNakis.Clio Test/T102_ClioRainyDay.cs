@@ -1,10 +1,10 @@
 namespace MikeNakis.Clio_Test;
 
 using MikeNakis.Clio;
-using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 using MikeNakis.Clio.Extensions;
 using MikeNakis.Kit.Extensions;
 using Testing.Extensions;
+using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [VSTesting.TestClass]
 public sealed class T102_ClioRainyDay
@@ -284,7 +284,7 @@ public sealed class T102_ClioRainyDay
 		TryCatch( () => //
 				argumentParser.AddVerb( "juliett", "", argumentParser => { } ) ) //
 				.OrThrow() //
-				.Cast( out TryParseWasNotInvokedException exception );
+				.Cast( out VerbHandlerDidNotInvokeTryParseMethodException exception );
 		Assert( exception.VerbName == "juliett" );
 	}
 

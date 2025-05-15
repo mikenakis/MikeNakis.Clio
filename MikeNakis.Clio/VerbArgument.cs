@@ -25,7 +25,7 @@ sealed class VerbArgument : Argument, IVerbArgument
 		{
 			VerbInitializationArgumentParser verbInitializationArgumentParser = new( argumentParser, name );
 			verbHandler.Invoke( verbInitializationArgumentParser );
-			Assert( verbInitializationArgumentParser.TryParseWasInvoked, () => throw new TryParseWasNotInvokedException( Name ) );
+			Assert( verbInitializationArgumentParser.TryParseWasInvoked, () => throw new VerbHandlerDidNotInvokeTryParseMethodException( Name ) );
 		}
 	}
 

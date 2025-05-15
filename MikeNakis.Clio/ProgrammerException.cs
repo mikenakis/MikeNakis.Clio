@@ -44,7 +44,7 @@ public sealed class InvalidArgumentOrderingException( ArgumentOrderingRule argum
 	public string PrecedingArgumentName => precedingArgumentName;
 }
 
-public sealed class TryParseWasNotInvokedException( string verbName ) : ProgrammerException
+public sealed class VerbHandlerDidNotInvokeTryParseMethodException( string verbName ) : ProgrammerException
 {
 	public string VerbName => verbName;
 }
