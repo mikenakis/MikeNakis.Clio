@@ -14,7 +14,7 @@ sealed class Audit
 	{
 		Assert( callerFileName != null );
 		Assert( callerMemberName != null );
-		FilePath callerFilePath = FilePath.FromAbsolutePath( callerFileName.OrThrow() );
+		FilePath callerFilePath = FilePath.FromRelativeOrAbsolutePath( callerFileName.OrThrow() );
 		FilePath auditFilePath = callerFilePath.WithReplacedExtension( FileExtension );
 		Audit audit = getOrCreateAuditFile( auditFilePath );
 		using( AuditFile auditFile = audit.newFile() )
