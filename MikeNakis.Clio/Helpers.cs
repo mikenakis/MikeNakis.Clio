@@ -128,7 +128,7 @@ static partial class Helpers
 		string token = tokens[tokenIndex];
 		Assert( token[0] == '@' );
 		tokens.RemoveAt( tokenIndex );
-		IEnumerable<string> lines = ReadResponseFile( Sys.IO.Path.GetFullPath( token[1..] ), fileReader );
+		IEnumerable<string> lines = ReadResponseFile( SysIo.Path.GetFullPath( token[1..] ), fileReader );
 		foreach( string line in lines )
 			tokens.Insert( tokenIndex++, "--" + line );
 		return tokenIndex;
@@ -136,7 +136,7 @@ static partial class Helpers
 
 	internal static IEnumerable<string> ReadResponseFile( string filename, Sys.Func<string, string> fileReader )
 	{
-		string responseFileName = Sys.IO.Path.GetFullPath( filename );
+		string responseFileName = SysIo.Path.GetFullPath( filename );
 		return fileReader.Invoke( responseFileName ) //
 			.Split( '\n' )
 			.Select( s => s.Trim() )
