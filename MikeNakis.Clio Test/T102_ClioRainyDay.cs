@@ -3,7 +3,6 @@ namespace MikeNakis.Clio_Test;
 using MikeNakis.Clio;
 using MikeNakis.Clio.Extensions;
 using MikeNakis.Kit.Extensions;
-using Testing.Extensions;
 using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [VSTesting.TestClass]

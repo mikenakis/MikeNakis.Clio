@@ -1,5 +1,6 @@
 namespace MikeNakis.Clio;
 
+// As of net5.0 there is System.Collections.Generic.ReferenceEqualityComparer, but it is not available in netstandard.
 sealed class ReferenceEqualityComparer : IEqualityComparer<object?>, LegacyCollections.IEqualityComparer
 {
 	ReferenceEqualityComparer() { }
@@ -8,11 +9,5 @@ sealed class ReferenceEqualityComparer : IEqualityComparer<object?>, LegacyColle
 
 	public new bool Equals( object? x, object? y ) => ReferenceEquals( x, y );
 
-	public int GetHashCode( object? obj )
-	{
-		// Depending on target framework, RuntimeHelpers.GetHashCode might not be annotated
-		// with the proper nullability attribute. We'll suppress any warning that might
-		// result.
-		return SysCompiler.RuntimeHelpers.GetHashCode( obj! );
-	}
+	public int GetHashCode( object? obj ) => SysCompiler.RuntimeHelpers.GetHashCode( obj! );
 }
