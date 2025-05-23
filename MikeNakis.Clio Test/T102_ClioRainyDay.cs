@@ -44,10 +44,9 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha" );
-		TryCatch( () => //
-				argumentParser.AddSwitch( "alpha" ) ) //
-				.OrThrow() //
-				.Cast( out DuplicateArgumentNameException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddSwitch( "alpha" ) );
+		var exception = (DuplicateArgumentNameException)caughtException.OrThrow();
 		Assert( exception.ArgumentName == "alpha" );
 	}
 
@@ -56,10 +55,9 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha" );
-		TryCatch( () => //
-				argumentParser.AddStringOption( "alpha" ) ) //
-				.OrThrow() //
-				.Cast( out DuplicateArgumentNameException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddStringOption( "alpha" ) );
+		var exception = (DuplicateArgumentNameException)caughtException.OrThrow();
 		Assert( exception.ArgumentName == "alpha" );
 	}
 
@@ -68,10 +66,9 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha" );
-		TryCatch( () => //
-				argumentParser.AddStringPositional( "alpha" ) ) //
-				.OrThrow() //
-				.Cast( out DuplicateArgumentNameException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddStringPositional( "alpha" ) );
+		var exception = (DuplicateArgumentNameException)caughtException.OrThrow();
 		Assert( exception.ArgumentName == "alpha" );
 	}
 
@@ -80,10 +77,9 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha", 'a' );
-		TryCatch( () => //
-				argumentParser.AddSwitch( "bravo", 'a' ) ) //
-				.OrThrow() //
-				.Cast( out DuplicateArgumentSingleLetterNameException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddSwitch( "bravo", 'a' ) );
+		var exception = (DuplicateArgumentSingleLetterNameException)caughtException.OrThrow();
 		Assert( exception.ArgumentShortFormName == 'a' );
 	}
 
@@ -92,10 +88,9 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha", 'a' );
-		TryCatch( () => //
-				argumentParser.AddStringOption( "bravo", 'a' ) ) //
-				.OrThrow() //
-				.Cast( out DuplicateArgumentSingleLetterNameException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddStringOption( "bravo", 'a' ) );
+		var exception = (DuplicateArgumentSingleLetterNameException)caughtException.OrThrow();
 		Assert( exception.ArgumentShortFormName == 'a' );
 	}
 
@@ -104,9 +99,8 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string> alpha = argumentParser.AddRequiredStringPositional( "alpha" );
-		TryCatch( () => _ = alpha.Value ) //
-				.OrThrow() //
-				.Cast( out CommandLineHasNotBeenParsedException _ );
+		Sys.Exception? caughtException = TryCatch( () => _ = alpha.Value );
+		var exception = (CommandLineHasNotBeenParsedException)caughtException.OrThrow();
 	}
 
 	[VSTesting.TestMethod]
@@ -114,20 +108,18 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		tryParse( argumentParser, "" );
-		TryCatch( () => //
-				argumentParser.AddRequiredStringPositional( "alpha" ) ) //
-				.OrThrow() //
-				.Cast( out CommandLineHasAlreadyBeenParsedException _ );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddRequiredStringPositional( "alpha" ) );
+		var exception = (CommandLineHasAlreadyBeenParsedException)caughtException.OrThrow();
 	}
 
 	[VSTesting.TestMethod]
 	public void T208_Named_Argument_Name_Must_Be_Valid()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
-		TryCatch( () => //
-				argumentParser.AddSwitch( "-" ) ) //
-				.OrThrow() //
-				.Cast( out InvalidArgumentNameException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddSwitch( "-" ) );
+		var exception = (InvalidArgumentNameException)caughtException.OrThrow();
 		Assert( exception.ArgumentName == "-" );
 	}
 
@@ -135,10 +127,9 @@ public sealed class T102_ClioRainyDay
 	public void T209_Positional_Argument_Name_Must_Be_Valid()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
-		TryCatch( () => //
-				argumentParser.AddStringPositional( "-invalid" ) ) //
-				.OrThrow() //
-				.Cast( out InvalidArgumentNameException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddStringPositional( "-invalid" ) );
+		var exception = (InvalidArgumentNameException)caughtException.OrThrow();
 		Assert( exception.ArgumentName == "-invalid" );
 	}
 
@@ -147,10 +138,9 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		argumentParser.AddStringPositional( "alpha" );
-		TryCatch( () => //
-				argumentParser.AddRequiredStringPositional( "bravo" ) ) //
-				.OrThrow() //
-				.Cast( out InvalidArgumentOrderingException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddRequiredStringPositional( "bravo" ) );
+		var exception = (InvalidArgumentOrderingException)caughtException.OrThrow();
 		Assert( exception.ArgumentOrderingRule == ArgumentOrderingRule.RequiredPositionalMustPrecedeOptionalPositional );
 		Assert( exception.ViolatingArgumentName == "bravo" );
 		Assert( exception.PrecedingArgumentName == "alpha" );
@@ -161,10 +151,9 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		argumentParser.AddStringPositionalWithDefault( "alpha", "alpha-default" );
-		TryCatch( () => //
-				argumentParser.AddRequiredStringPositional( "bravo" ) ) //
-				.OrThrow() //
-				.Cast( out InvalidArgumentOrderingException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddRequiredStringPositional( "bravo" ) );
+		var exception = (InvalidArgumentOrderingException)caughtException.OrThrow();
 		Assert( exception.ArgumentOrderingRule == ArgumentOrderingRule.RequiredPositionalMustPrecedeOptionalPositional );
 		Assert( exception.ViolatingArgumentName == "bravo" );
 		Assert( exception.PrecedingArgumentName == "alpha" );
@@ -175,10 +164,9 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		argumentParser.AddStringPositional( "alpha" );
-		TryCatch( () => //
-				argumentParser.AddSwitch( "bravo" ) ) //
-				.OrThrow() //
-				.Cast( out InvalidArgumentOrderingException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddSwitch( "bravo" ) );
+		var exception = (InvalidArgumentOrderingException)caughtException.OrThrow();
 		Assert( exception.ArgumentOrderingRule == ArgumentOrderingRule.NamedArgumentMustPrecedePositional );
 		Assert( exception.ViolatingArgumentName == "bravo" );
 		Assert( exception.PrecedingArgumentName == "alpha" );
@@ -189,10 +177,9 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		argumentParser.AddVerb( "alpha", "alpha-description", emptyVerbHandler );
-		TryCatch( () => //
-				argumentParser.AddSwitch( "bravo" ) ) //
-				.OrThrow() //
-				.Cast( out InvalidArgumentOrderingException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddSwitch( "bravo" ) );
+		var exception = (InvalidArgumentOrderingException)caughtException.OrThrow();
 		Assert( exception.ArgumentOrderingRule == ArgumentOrderingRule.ArgumentMustPrecedeVerb );
 		Assert( exception.ViolatingArgumentName == "bravo" );
 		Assert( exception.PrecedingArgumentName == "alpha" );
@@ -203,10 +190,9 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		argumentParser.AddVerb( "alpha", "alpha-description", emptyVerbHandler );
-		TryCatch( () => //
-				argumentParser.AddStringOption( "bravo" ) ) //
-				.OrThrow() //
-				.Cast( out InvalidArgumentOrderingException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddStringOption( "bravo" ) );
+		var exception = (InvalidArgumentOrderingException)caughtException.OrThrow();
 		Assert( exception.ArgumentOrderingRule == ArgumentOrderingRule.ArgumentMustPrecedeVerb );
 		Assert( exception.ViolatingArgumentName == "bravo" );
 		Assert( exception.PrecedingArgumentName == "alpha" );
@@ -217,10 +203,9 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		argumentParser.AddVerb( "alpha", "alpha-description", emptyVerbHandler );
-		TryCatch( () => //
-				argumentParser.AddStringPositional( "bravo" ) ) //
-				.OrThrow() //
-				.Cast( out InvalidArgumentOrderingException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddStringPositional( "bravo" ) );
+		var exception = (InvalidArgumentOrderingException)caughtException.OrThrow();
 		Assert( exception.ArgumentOrderingRule == ArgumentOrderingRule.ArgumentMustPrecedeVerb );
 		Assert( exception.ViolatingArgumentName == "bravo" );
 		Assert( exception.PrecedingArgumentName == "alpha" );
@@ -231,10 +216,9 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		argumentParser.AddStringPositional( "alpha" );
-		TryCatch( () => //
-				argumentParser.AddVerb( "bravo", "bravo-description", emptyVerbHandler ) ) //
-				.OrThrow() //
-				.Cast( out InvalidArgumentOrderingException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddVerb( "bravo", "bravo-description", emptyVerbHandler ) );
+		var exception = (InvalidArgumentOrderingException)caughtException.OrThrow();
 		Assert( exception.ArgumentOrderingRule == ArgumentOrderingRule.VerbMayNotBePrecededByPositionalArgument );
 		Assert( exception.ViolatingArgumentName == "bravo" );
 		Assert( exception.PrecedingArgumentName == "alpha" );
@@ -245,10 +229,9 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		argumentParser.AddRequiredStringOption( "alpha" );
-		TryCatch( () => //
-				argumentParser.AddVerb( "bravo", "bravo-description", emptyVerbHandler ) ) //
-				.OrThrow() //
-				.Cast( out InvalidArgumentOrderingException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddVerb( "bravo", "bravo-description", emptyVerbHandler ) );
+		var exception = (InvalidArgumentOrderingException)caughtException.OrThrow();
 		Assert( exception.ArgumentOrderingRule == ArgumentOrderingRule.VerbMayNotBePrecededByRequiredArgument );
 		Assert( exception.ViolatingArgumentName == "bravo" );
 		Assert( exception.PrecedingArgumentName == "alpha" );
@@ -258,10 +241,9 @@ public sealed class T102_ClioRainyDay
 	public void T218_Switch_Name_Must_Be_Longer_Than_One_Character()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
-		TryCatch( () => //
-				argumentParser.AddSwitch( "a" ) ) //
-				.OrThrow() //
-				.Cast( out InvalidArgumentNameException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddSwitch( "a" ) );
+		var exception = (InvalidArgumentNameException)caughtException.OrThrow();
 		Assert( exception.ArgumentName == "a" );
 	}
 
@@ -269,10 +251,9 @@ public sealed class T102_ClioRainyDay
 	public void T219_Option_Name_Must_Be_Longer_Than_One_Character()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
-		TryCatch( () => //
-				argumentParser.AddStringOption( "a" ) ) //
-				.OrThrow() //
-				.Cast( out InvalidArgumentNameException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddStringOption( "a" ) );
+		var exception = (InvalidArgumentNameException)caughtException.OrThrow();
 		Assert( exception.ArgumentName == "a" );
 	}
 
@@ -280,10 +261,9 @@ public sealed class T102_ClioRainyDay
 	public void T220_Verb_Handler_Must_Invoke_TryParse()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
-		TryCatch( () => //
-				argumentParser.AddVerb( "juliett", "", argumentParser => { } ) ) //
-				.OrThrow() //
-				.Cast( out VerbHandlerDidNotInvokeTryParseMethodException exception );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.AddVerb( "juliett", "", argumentParser => { } ) );
+		var exception = (VerbHandlerDidNotInvokeTryParseMethodException)caughtException.OrThrow();
 		Assert( exception.VerbName == "juliett" );
 	}
 
@@ -291,15 +271,14 @@ public sealed class T102_ClioRainyDay
 	public void T221_Verb_Handler_Must_Not_Invoke_TryParse_More_Than_Once()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
-		TryCatch( () => //
+		Sys.Exception? caughtException = TryCatch( () => //
 				argumentParser.AddVerb( "juliett", "", argumentParser => //
 					{
 						argumentParser.TryParse();
 						argumentParser.TryParse();
 					} )
-				) //
-				.OrThrow() //
-				.Cast( out TryParseInvokedMoreThanOnceException exception );
+				);
+		var exception = (TryParseInvokedMoreThanOnceException)caughtException.OrThrow();
 		Assert( exception.VerbName == "juliett" );
 	}
 }

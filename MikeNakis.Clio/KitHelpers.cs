@@ -128,77 +128,34 @@ static class KitHelpers
 			< 160 => false,
 			173 => false,
 			< 256 => true,
-			338 => true, // Œ
-			339 => true, // œ
-			352 => true, // Š
-			353 => true, // š
-			376 => true, // Ÿ
-			381 => true, // Ž
-			382 => true, // ž
-			402 => true, // ƒ
-			710 => true, // ˆ
-			732 => true, // ˜
-			8211 => true, // –
-			8212 => true, // —
-			8216 => true, // ‘
-			8217 => true, // ’
-			8218 => true, // ‚
-			8220 => true, // “
-			8221 => true, // ”
-			8222 => true, // „
-			8224 => true, // †
-			8225 => true, // ‡
-			8226 => true, // •
-			8230 => true, // …
-			8240 => true, // ‰
-			8249 => true, // ‹
-			8250 => true, // ›
-			8364 => true, // €
-			8482 => true, // ™
+			0x0152 => true, // Œ
+			0x0153 => true, // œ
+			0x0160 => true, // Š
+			0x0161 => true, // š
+			0x0178 => true, // Ÿ
+			0x017D => true, // Ž
+			0x017E => true, // ž
+			0x0192 => true, // ƒ
+			0x02C6 => true, // ˆ
+			0x02DC => true, // ˜
+			0x2013 => true, // –
+			0x2014 => true, // —
+			0x2018 => true, // ‘
+			0x2019 => true, // ’
+			0x201A => true, // ‚
+			0x201C => true, // “
+			0x201D => true, // ”
+			0x201E => true, // „
+			0x2020 => true, // †
+			0x2021 => true, // ‡
+			0x2022 => true, // •
+			0x2026 => true, // …
+			0x2030 => true, // ‰
+			0x2039 => true, // ‹
+			0x203A => true, // ›
+			0x20AC => true, // €
+			0x2122 => true, // ™
 			_ => false
 		};
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// System.Type
-
-	// Obtains the full name of a type using C# notation.
-	// PEARL: DotNet represents the full names of types in a cryptic way which does not correspond to any language in particular:
-	//        - Generic types are suffixed with a back-quote character, followed by the number of generic parameters.
-	//        - Constructed generic types are further suffixed with a list of assembly-qualified type names, one for each generic parameter.
-	//        Plus, a nested class is denoted with the '+' sign. (Handling of which is TODO.)
-	//        This method returns the full name of a type using C#-specific notation instead of DotNet's cryptic notation.
-	public static string GetCSharpTypeName( Sys.Type type )
-	{
-		if( type.IsArray )
-		{
-			SysText.StringBuilder stringBuilder = new();
-			stringBuilder.Append( GetCSharpTypeName( type.GetElementType().OrThrow() ) );
-			stringBuilder.Append( '[' );
-			int rank = type.GetArrayRank();
-			Assert( rank >= 1 );
-			for( int i = 0; i < rank - 1; i++ )
-				stringBuilder.Append( ',' );
-			stringBuilder.Append( ']' );
-			return stringBuilder.ToString();
-		}
-		if( type.IsGenericType )
-		{
-			SysText.StringBuilder stringBuilder = new();
-			stringBuilder.Append( getBaseTypeName( type ) );
-			stringBuilder.Append( '<' );
-			stringBuilder.Append( string.Join( ",", type.GenericTypeArguments.Select( GetCSharpTypeName ).ToArray() ) );
-			stringBuilder.Append( '>' );
-			return stringBuilder.ToString();
-		}
-		return type.Namespace + '.' + type.Name.Replace( '+', '.' );
-
-		static string getBaseTypeName( Sys.Type type )
-		{
-			string typeName = type.GetGenericTypeDefinition().FullName.OrThrow();
-			int indexOfTick = typeName.LastIndexOf( '`' );
-			Assert( indexOfTick == typeName.IndexOf( '`' ) );
-			return typeName[..indexOfTick];
-		}
 	}
 }
