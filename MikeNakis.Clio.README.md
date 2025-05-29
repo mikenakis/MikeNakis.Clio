@@ -4,7 +4,7 @@
   <img title="MikeNakis.Clio logo" src="MikeNakis.Clio-Logo.svg" width="256" />
 </p>
 
-[![Build](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/github-workflow.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/github-workflow.yml)
+[![Build](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/Clio-github-workflow.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/Clio-github-workflow.yml)
 
 ## Introduction
 
