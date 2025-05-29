@@ -92,7 +92,7 @@ class Program
 - Response files.
   -	If `@<file>` is supplied in the command-line, then Clio reads `<file>` and interprets each line as a command-line argument. Lines starting with `#` are comments.
 - 'End-of-options' marker.
-  - If `--` appears alone in the command-line, then all tokens after it are treated as positional argument values.
+  - If `--` appears as a distinct token in the command-line, then all tokens after it are treated as positional argument values.
 - Argument data types make sense from a programmatic point of view.
   - The value of a switch is of type `bool`, indicating whether the switch was supplied.
   - The value of an option or positional is commonly of type `string`, but it can be of any type, even some `enum` defined by the programmer.
