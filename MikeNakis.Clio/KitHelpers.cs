@@ -1,5 +1,7 @@
 namespace MikeNakis.Clio;
 
+using MikeNakis.CSharpTypeNames.Extensions;
+
 static class KitHelpers
 {
 	public static readonly SysThread.ThreadLocal<bool> FailureTesting = new( false );
@@ -34,6 +36,8 @@ static class KitHelpers
 				EscapeForCSharp( c, textConsumer );
 			else if( value is string s )
 				EscapeForCSharp( s, textConsumer );
+			else if( value is Sys.Type t )
+				textConsumer.Invoke( t.GetCSharpName() );
 			else if( value is LegacyCollections.IEnumerable enumerable )
 			{
 				textConsumer.Invoke( "[" );

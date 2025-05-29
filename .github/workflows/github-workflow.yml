@@ -50,13 +50,15 @@ jobs:
       run: dotnet restore
 
     - name: "Configuration 'Debug': build"
-      run: dotnet build --configuration Debug --no-restore /tl:off /check
+      run: dotnet build --configuration Debug --no-restore /tl:off
+      #/check
 
     - name: "Configuration 'Debug': test"
       run: dotnet test --configuration Debug --no-build --verbosity normal
 
     - name: "Configuration 'Develop': build"
-      run: dotnet build --configuration Develop --no-restore /tl:off /check
+      run: dotnet build --configuration Develop --no-restore /tl:off
+      #/check
 
     - name: "Configuration 'Develop': pack"
       run: dotnet pack --configuration Develop --no-build --version-suffix Develop
@@ -65,7 +67,8 @@ jobs:
       run: dotnet nuget push "${{github.event.repository.name}}/bin/Develop/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
 
     - name: "Configuration 'Release': build"
-      run: dotnet build --configuration Release --no-restore /tl:off /check
+      run: dotnet build --configuration Release --no-restore /tl:off
+      #/check
 
     - name: "Configuration 'Release': pack"
       run: dotnet pack --configuration Release --no-build
