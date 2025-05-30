@@ -64,14 +64,6 @@ static class Statics
 		throw exception;
 	}
 
-	/// <summary>Returns the supplied pointer unchanged, while asserting that it is non-<c>null</c>.</summary>
-	[SysDiag.DebuggerHidden]
-	public static T NotNull<T>( T? nullableReference ) where T : class //
-	{
-		Assert( nullableReference != null );
-		return nullableReference!;
-	}
-
 	/// <summary>If a debugger is attached, hits a breakpoint and returns <c>true</c>; otherwise, returns <c>false</c></summary>
 	[SysDiag.DebuggerHidden]
 	public static bool Breakpoint()
