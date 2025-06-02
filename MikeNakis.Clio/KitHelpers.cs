@@ -37,7 +37,7 @@ static class KitHelpers
 			else if( value is string s )
 				EscapeForCSharp( s, textConsumer );
 			else if( value is Sys.Type t )
-				textConsumer.Invoke( t.GetCSharpName() );
+				textConsumer.Invoke( t.GetCSharpName( CSharpTypeNames.Options.EmitTypeDefinitionKeyword ) );
 			else if( value is LegacyCollections.IEnumerable enumerable )
 			{
 				textConsumer.Invoke( "[" );
