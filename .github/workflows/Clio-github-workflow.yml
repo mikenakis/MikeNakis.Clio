@@ -1,6 +1,6 @@
 name: Build
 
-# PEARL: In GitHub, the output of msbuild look completely different from what it looks when building locally. For
+# PEARL: In GitHub, the output of msbuild looks completely different from what it looks when building locally. For
 #        example, the output of "Message" tasks is not shown, even when "Importance" is set to "High".
 #        The "-ConsoleLoggerParameters:off" magical incantation corrects this problem.
 # PEARL-ON-PEARL: The "-ConsoleLoggerParameters:off" magical incantation does not work when invoking "dotnet build"
@@ -14,19 +14,6 @@ on:
     branches: [ "master" ]
 
 env:
-# PEARL: The VersionPrefix, VersionSuffix mechanism is retarded!
-#        - The version prefix must be exactly three numbers separated by periods. 
-#          If you omit the last number, a zero will be automagically supplied for you.
-#        - Apparently, the entire version number may contain at most one dash, which is automagically supplied when the
-#          version-prefix is concatenated with the version-suffix, so the version suffix itself may not contain a dash. 
-#          If it does, you get: "The package manifest contains an invalid Version: '1.0.0-9-1'"
-#        - To top it all off, the suffix does not actually change the version of the package; instead, it causes nuget 
-#          to treat the version as a pre-release version.  
-#          This is a misapplication of abstraction: the "VersionSuffix" is not some general-purpose suffix for the 
-#          version, it is a "Pre-release version specifier", which happens to be a suffix.
-#          The result of all this is that the whole prefix-suffix mechanism serves a very narrowly scoped purpose and
-#          is entirely useless for any other scenario.
-  RELEASE_VERSION: 4.${{github.run_number}}.${{github.run_attempt}}
   BUILD_SERVER_BUILD: True
 
 jobs:
@@ -36,14 +23,33 @@ jobs:
     # runs-on: windows-latest
 
     steps:
+
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # A fetch-depth of 0 fetches all history. It is needed for GitVersion.
+
+    # latest gitversion version: 6.3.0
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v3.2.1
+      with:
+        versionSpec: 6.3.x
+
+    - name: Determine Version
+      uses: gittools/actions/gitversion/execute@v3.2.1
+      id: gitversion # step id used as reference for output values
+
+    - name: Display GitVersion outputs
+      run: |
+        git tag
+        echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
+        echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
 
     - name: Setup dotnet
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.200
 
-    - run: echo gitHub.run_number = ${{github.run_number}} gitHub.run_attempt = ${{github.run_attempt}} env.RELEASE_VERSION = ${{env.RELEASE_VERSION}}
+    #- run: echo gitHub.run_number = ${{github.run_number}} gitHub.run_attempt = ${{github.run_attempt}} env.RELEASE_VERSION = ${{env.RELEASE_VERSION}}
 
     - name: "restore"
       run: dotnet restore    -TerminalLogger:off -check
@@ -58,7 +64,7 @@ jobs:
       run: dotnet build      -TerminalLogger:off -check --configuration Develop --no-restore
 
     - name: "Configuration 'Develop': pack"
-      run: dotnet pack       -TerminalLogger:off -check --configuration Develop --no-build --property:PackageVersion=${{env.RELEASE_VERSION}}
+      run: dotnet pack       -TerminalLogger:off -check --configuration Develop --no-build --property:PackageVersion=${{ steps.gitversion.outputs.SemVer }}
 
     - name: "Configuration 'Develop': push"
       run: dotnet nuget push "${{github.event.repository.name}}/bin/Develop/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
@@ -67,7 +73,7 @@ jobs:
       run: dotnet build      -TerminalLogger:off -check --configuration Release --no-restore
 
     - name: "Configuration 'Release': pack"
-      run: dotnet pack       -TerminalLogger:off -check --configuration Release --no-build --property:PackageVersion=${{env.RELEASE_VERSION}}
+      run: dotnet pack       -TerminalLogger:off -check --configuration Release --no-build --property:PackageVersion=${{ steps.gitversion.outputs.SemVer }}
 
     - name: "Configuration 'Release': push"
       run: dotnet nuget push "${{github.event.repository.name}}/bin/Release/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}

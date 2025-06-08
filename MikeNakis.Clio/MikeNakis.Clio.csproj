@@ -46,7 +46,7 @@
 
 	<!-- PEARL: Dotnet does not support swapping between package and project dependencies. The following nonsense is
 	            necessary to work around this limitation. See https://github.com/dotnet/project-system/issues/195 -->
-	<Choose>
+	<!-- <Choose>
 		<When Condition="Exists('..\..\MikeNakis.CSharpTypeNames\MikeNakis.CSharpTypeNames\MikeNakis.CSharpTypeNames.csproj')">
 			<ItemGroup>
 				<ProjectReference Include="..\..\MikeNakis.CSharpTypeNames\MikeNakis.CSharpTypeNames\MikeNakis.CSharpTypeNames.csproj" />
@@ -57,6 +57,6 @@
 				<PackageReference Include="MikeNakis.CSharpTypeNames-$(PackagesConfiguration)" Version="2.*" PrivateAssests="All" />
 			</ItemGroup>
 		</Otherwise>
-	</Choose>
+	</Choose> -->
 
 </Project>
