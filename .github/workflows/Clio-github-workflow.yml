@@ -66,8 +66,6 @@ jobs:
       with:
         dotnet-version: 9.0.200
 
-    #- run: echo gitHub.run_number = ${{github.run_number}} gitHub.run_attempt = ${{github.run_attempt}} env.RELEASE_VERSION = ${{env.RELEASE_VERSION}}
-
     - name: "restore"
       run: dotnet restore    -TerminalLogger:off -check
 
