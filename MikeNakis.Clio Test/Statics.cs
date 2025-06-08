@@ -94,4 +94,6 @@ static class Statics
 			FailureTesting.Value = false;
 		}
 	}
+
+	public static IEnumerable<T> EnumerableOf<T>( params T[] arguments ) => arguments;
 }

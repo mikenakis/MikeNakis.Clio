@@ -1,8 +1,8 @@
 namespace MikeNakis.Clio_Test;
 
 using MikeNakis.Clio;
-using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 using MikeNakis.Clio.Extensions;
+using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [VSTesting.TestClass]
 public sealed class T102_ClioSunnyDay
@@ -13,11 +13,8 @@ public sealed class T102_ClioSunnyDay
 		return new ArgumentParser( null, null, lineOutputConsumer, testingOptions );
 	}
 
-	static string[] split( string commandLine ) => commandLine.Split( ' ', Sys.StringSplitOptions.RemoveEmptyEntries | Sys.StringSplitOptions.TrimEntries );
-
-	static void parse( ArgumentParser argumentParser, string commandLine )
+	static void parse( ArgumentParser argumentParser, params string[] tokens )
 	{
-		string[] tokens = split( commandLine );
 		argumentParser.Parse( tokens );
 	}
 
@@ -42,7 +39,7 @@ public sealed class T102_ClioSunnyDay
 	public void T101_Empty_Clio_Works()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
-		parse( argumentParser, "" );
+		parse( argumentParser );
 	}
 
 	[VSTesting.TestMethod]
@@ -50,7 +47,7 @@ public sealed class T102_ClioSunnyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha" );
-		parse( argumentParser, "" );
+		parse( argumentParser );
 		Assert( !alpha.Value );
 	}
 
@@ -68,7 +65,7 @@ public sealed class T102_ClioSunnyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string?> alpha = argumentParser.AddStringOption( "alpha" );
-		parse( argumentParser, "" );
+		parse( argumentParser );
 		Assert( alpha.Value == null );
 	}
 
@@ -86,7 +83,7 @@ public sealed class T102_ClioSunnyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string> alpha = argumentParser.AddStringOptionWithDefault( "alpha", "alpha-default" );
-		parse( argumentParser, "" );
+		parse( argumentParser );
 		Assert( alpha.Value == "alpha-default" );
 	}
 
@@ -104,7 +101,7 @@ public sealed class T102_ClioSunnyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string?> alpha = argumentParser.AddStringOption( "alpha", presetValue: "alpha-preset" );
-		parse( argumentParser, "" );
+		parse( argumentParser );
 		Assert( alpha.Value == null );
 	}
 
@@ -176,7 +173,7 @@ public sealed class T102_ClioSunnyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string?> alpha = argumentParser.AddStringPositional( "alpha" );
-		parse( argumentParser, "" );
+		parse( argumentParser );
 		Assert( alpha.Value == null );
 	}
 
@@ -194,7 +191,7 @@ public sealed class T102_ClioSunnyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<string> alpha = argumentParser.AddStringPositionalWithDefault( "alpha", "alpha-default" );
-		parse( argumentParser, "" );
+		parse( argumentParser );
 		Assert( alpha.Value == "alpha-default" );
 	}
 
@@ -221,7 +218,7 @@ public sealed class T102_ClioSunnyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<Enum1?> alpha = argumentParser.AddPositional( "alpha", EnumCodec<Enum1>.Instance );
-		parse( argumentParser, "" );
+		parse( argumentParser );
 		Assert( alpha.Value == null );
 	}
 
@@ -239,7 +236,7 @@ public sealed class T102_ClioSunnyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<Enum1> alpha = argumentParser.AddPositionalWithDefault( "alpha", EnumCodec<Enum1>.Instance, Enum1.Value2 );
-		parse( argumentParser, "" );
+		parse( argumentParser );
 		Assert( alpha.Value == Enum1.Value2 );
 	}
 
@@ -278,7 +275,7 @@ public sealed class T102_ClioSunnyDay
 		ArgumentParser argumentParser = newArgumentParser();
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha" );
 		IArgument<string?> bravo = argumentParser.AddStringPositional( "bravo" );
-		parse( argumentParser, "bravo-value --alpha" );
+		parse( argumentParser, "bravo-value", "--alpha" );
 		Assert( alpha.Value );
 		Assert( bravo.Value == "bravo-value" );
 	}
@@ -301,7 +298,7 @@ public sealed class T102_ClioSunnyDay
 		IArgument<bool> alphaBravo = argumentParser.AddSwitch( "alphaBravo" );
 		IArgument<bool> alpha = argumentParser.AddSwitch( "alpha" );
 		IArgument<bool> alphaBravoCharlie = argumentParser.AddSwitch( "alphaBravoCharlie" );
-		parse( argumentParser, "--alpha --alphaBravo --alphaBravoCharlie" );
+		parse( argumentParser, "--alpha", "--alphaBravo", "--alphaBravoCharlie" );
 		Assert( alpha.Value == true );
 		Assert( alphaBravo.Value == true );
 		Assert( alphaBravoCharlie.Value == true );
@@ -334,7 +331,7 @@ public sealed class T102_ClioSunnyDay
 				verbHandlerInvoked = true;
 			} );
 		argumentParser.AddVerb( "kilo", "kilo-description", emptyVerbHandler );
-		parse( argumentParser, "-a juliett --lima india-value" );
+		parse( argumentParser, "-a", "juliett", "--lima", "india-value" );
 		Assert( verbHandlerInvoked );
 	}
 
@@ -347,7 +344,7 @@ public sealed class T102_ClioSunnyDay
 		IArgument<string?> mike = argumentParser.AddStringOption( "mike" );
 		IArgument<string?> papa = argumentParser.AddStringPositional( "papa" );
 		IArgument<string?> zulu = argumentParser.AddStringPositional( "zulu" );
-		parse( argumentParser, $"--alpha=alpha-value @{responseFilename} zulu-value" );
+		parse( argumentParser, "--alpha=alpha-value", $"@{responseFilename}", "zulu-value" );
 		Assert( alpha.Value == "alpha-value" );
 		Assert( mike.Value == "mike-value" );
 		Assert( papa.Value == "papa-value" );
@@ -356,7 +353,7 @@ public sealed class T102_ClioSunnyDay
 
 		static string fileReader( string filename )
 		{
-			Assert( filename == Sys.IO.Path.GetFullPath( responseFilename ) );
+			Assert( filename == SysIo.Path.GetFullPath( responseFilename ) );
 			return @"--mike=mike-value
 				#this is a comment
 				papa-value";
@@ -370,7 +367,7 @@ public sealed class T102_ClioSunnyDay
 		IArgument<bool> fSwitch = argumentParser.AddSwitch( "f-switch", 'f' );
 		IArgument<bool> xSwitch = argumentParser.AddSwitch( "x-switch", 'x' );
 		IArgument<string?> positional = argumentParser.AddStringPositional( "positional" );
-		parse( argumentParser, $"-f -- -x" );
+		parse( argumentParser, $"-f", "--", "-x" );
 		Assert( fSwitch.Value );
 		Assert( !xSwitch.Value );
 		Assert( positional.Value == "-x" );
@@ -384,5 +381,22 @@ public sealed class T102_ClioSunnyDay
 		parse( argumentParser, $"-f=covfefe" );
 		Assert( fOption.Value == "covfefe" );
 	}
-}
 
+	[VSTesting.TestMethod]
+	public void T165_Repeated_Struct_Option_Works()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IRepeatedOptionArgument<int> option = argumentParser.AddRepeatedOption( "f-option", IntCodec.Instance, 'f' );
+		parse( argumentParser, $"-f=42", "-f=43" );
+		Assert( option.Value.SequenceEqual( EnumerableOf( 42, 43 ) ) );
+	}
+
+	[VSTesting.TestMethod]
+	public void T166_Repeated_Class_Option_Works()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IRepeatedOptionArgument<string> option = argumentParser.AddRepeatedOption( "f-option", StringCodec.Instance, 'f' );
+		parse( argumentParser, $"-f=covfefe", "-f=I have the best words" );
+		Assert( option.Value.SequenceEqual( EnumerableOf( "covfefe", "I have the best words" ) ) );
+	}
+}

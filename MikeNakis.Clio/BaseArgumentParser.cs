@@ -126,6 +126,36 @@ public abstract class BaseArgumentParser
 		return new NonNullableClassOption<T>( this, name, singleLetterName, parameterName, codec, description, presetValue, default );
 	}
 
+	///<summary>Adds a repeated option.</summary>
+	///<param name="name">The name of the option.</param>
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between string and
+	///the actual type of the option.</param>
+	///<param name="singleLetterName">The (optional) single-letter name for the option.</param>
+	///<param name="description">The description of the option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
+	///option is specified without an equals-sign and a value.</param>
+	public IRepeatedOptionArgument<T> AddRepeatedOption<T>( string name, StructCodec<T> codec, char? singleLetterName = null, //
+		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
+	{
+		return new RepeatedStructOption<T>( this, name, singleLetterName, parameterName, codec, description, presetValue, default );
+	}
+
+	///<summary>Adds a repeated option.</summary>
+	///<param name="name">The name of the option.</param>
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between string and
+	///the actual type of the option.</param>
+	///<param name="singleLetterName">The (optional) single-letter name for the option.</param>
+	///<param name="description">The description of the option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
+	///option is specified without an equals-sign and a value.</param>
+	public IRepeatedOptionArgument<T> AddRepeatedOption<T>( string name, ClassCodec<T> codec, char? singleLetterName = null, //
+		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
+	{
+		return new RepeatedClassOption<T>( this, name, singleLetterName, parameterName, codec, description, presetValue, default );
+	}
+
 	///<summary>Adds a positional argument.</summary>
 	///<param name="name">The name of the positional argument, for use in response files, and when displaying help.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the positional argument; provides conversions between

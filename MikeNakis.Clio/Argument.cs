@@ -41,6 +41,12 @@ public interface IOptionArgument<T> : IArgument<T>
 {
 }
 
+///<summary>Represents a repeated option argument.</summary>
+///<remarks>A repeated option may appear many times in the command-line. It is represented as an <c><b>IEnumerable{T}</b></c>.</remarks>
+public interface IRepeatedOptionArgument<T> : IArgument<IEnumerable<T>>
+{
+}
+
 ///<summary>Represents a positional argument.</summary>
 ///<remarks>A positional argument is a free-standing value in the command-line, identified by its position relative
 ///to other positional arguments. For example: <c>Acme.Cli InputFile.txt</c>.</remarks>

@@ -9,9 +9,11 @@ sealed class SwitchArgument : NamedArgument, ISwitchArgument
 		get
 		{
 			Assert( HasBeenParsedAssertion() );
-			return IsSupplied;
+			return supplied;
 		}
 	}
+	bool supplied;
+	public override bool IsSupplied => supplied;
 
 	internal SwitchArgument( BaseArgumentParser argumentParser, string name, char? singleLetterName, string? description )
 			: base( argumentParser, name, singleLetterName, description, isRequired: false )
@@ -27,9 +29,9 @@ sealed class SwitchArgument : NamedArgument, ISwitchArgument
 			skip = Helpers.LongFormNameMatch( token, Name );
 		if( skip == 0 )
 			return tokenIndex;
-		if( IsSupplied )
+		if( supplied )
 			throw new ArgumentSuppliedMoreThanOnceException( Name );
-		Supplied = true;
+		supplied = true;
 		string remainder = token[skip..];
 		if( remainder != "" )
 			throw new UnexpectedCharactersAfterNamedArgumentException( Name, remainder );

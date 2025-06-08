@@ -114,6 +114,10 @@ class Program
 - Extensive error checking.
   - If the programmer makes any mistake in specifying the syntax of the command-line, Clio throws an exception which clearly identifies the mistake.
   - When running a debug build, Clio also invokes each verb handler once during startup, allowing it to specify the syntax of the arguments of the verb. Thus, all mistakes are caught during startup, even for verbs that were not supplied.
+- Repeatable options.
+  - The programmer can specify that an option is repeatable. A repeatable option of type `T` has a value of type
+	`IEnumerable<T>`. The user can supply the option multiple times in the command-line, as in `Program1 --option1=<value1> --option1=<value2>`
+	and the option will contain all supplied values.
 - ...and more.
 
 ## Limitations
@@ -121,12 +125,9 @@ class Program
 - No support for repeatable switches, as in `Program1 --switch1 --switch1`. Every switch can be supplied at most once.
   - **Workaround:** Turn the switch into an option of type `int`, with a default of `0` so that it can be omitted, and a preset of `1` so that `--switch1` can be used instead of `--switch1=1`.
   - Support for repeatable switches will be added in the future.
-- No support for repeatable options, as in `Program1 --option1=<value1> --option1=<value2>`. Every option can be supplied at most once.
-  - **Workaround:** In the "description" of the option, explain that the value of the option is a `;`-separated list of values, and do the splitting yourself.
-  - Support for repeatable options will be added in the future.
 - No support for meta-options, for example `--option1=<name>=<value>`.
   - **Workaround:** In the "description" of the option, explain that the value of the option is a `;`-separated list of `name=value` pairs, and do the splitting and the parsing yourself.
-  - Support for meta-options will be added in the future. (After adding support for repeatable options.)
+  - Support for meta-options will be added in the future.
 - No support for invertable switches. For example, `git config` has options like `--[no-]global`, which means that either `--global` or `--no-global` can be used. Other utilities allow prefixing switch names with either `-` or `+`, which inverts the effect of the switch.
   - **Workaround:** Specify each option and its inverse option separately.
   - Support for invertable switches and options will be added in the future.

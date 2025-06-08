@@ -3,8 +3,6 @@ namespace MikeNakis.Clio;
 abstract class NamedArgument : Argument
 {
 	public char? SingleLetterName { get; }
-	protected bool Supplied { get; set; }
-	public override bool IsSupplied => Supplied;
 
 	private protected NamedArgument( BaseArgumentParser argumentParser, string name, char? singleLetterName, string? description, bool isRequired )
 			: base( argumentParser, name, description, isRequired )
@@ -19,18 +17,5 @@ abstract class NamedArgument : Argument
 				existingArgument => existingArgument == null, //
 				existingArgument => throw new DuplicateArgumentSingleLetterNameException( singleLetterName.Value ) );
 		SingleLetterName = singleLetterName;
-	}
-
-	protected string? TryParseNameAndGetRemainder( string token )
-	{
-		int skip = Helpers.ShortFormNameMatch( token, SingleLetterName );
-		if( skip == 0 )
-			skip = Helpers.LongFormNameMatch( token, Name );
-		if( skip == 0 )
-			return null;
-		if( Supplied )
-			throw new ArgumentSuppliedMoreThanOnceException( Name );
-		Supplied = true;
-		return token[skip..];
 	}
 }
