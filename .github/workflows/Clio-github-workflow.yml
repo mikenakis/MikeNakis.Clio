@@ -13,8 +13,8 @@ on:
   pull_request:
     branches: [ "master" ]
 
-env:
-  BUILD_SERVER_BUILD: True
+# env:
+#  BUILD_SERVER_BUILD: True
 
 jobs:
   build:
