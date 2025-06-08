@@ -1,6 +1,6 @@
 namespace MikeNakis.Clio;
 
-using MikeNakis.CSharpTypeNames.Extensions;
+//using MikeNakis.CSharpTypeNames.Extensions;
 
 static class KitHelpers
 {
@@ -36,8 +36,8 @@ static class KitHelpers
 				EscapeForCSharp( c, textConsumer );
 			else if( value is string s )
 				EscapeForCSharp( s, textConsumer );
-			else if( value is Sys.Type t )
-				textConsumer.Invoke( t.GetCSharpName( CSharpTypeNames.Options.EmitTypeDefinitionKeyword ) );
+			//else if( value is Sys.Type t )
+			//	textConsumer.Invoke( t.GetCSharpName( CSharpTypeNames.Options.EmitTypeDefinitionKeyword ) );
 			else if( value is LegacyCollections.IEnumerable enumerable )
 			{
 				textConsumer.Invoke( "[" );
