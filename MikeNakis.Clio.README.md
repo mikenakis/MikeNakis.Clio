@@ -140,18 +140,24 @@ class Program
 - No support for mutually exclusive options. For example, in the usage of `git` we see `[--paginate | --no-pager]` which means that either `--paginate` or `--no-pager` can be specified, but not both.
   - **Workaround:** Define each option separately, add help footnotes explaining mutual exclusions, and implement the mutual exclusion logic yourself.
   - Support for mutually exclusive options might be added in the future.
-- No support for supplying partial long option names. Some utilities allow supplying fewer characters than the full option name, as long as enough characters are supplied as to be inambiguous.
-  - **Workaround:** If you do not want to require the user to always supply the full long name of an option, add a single-letter name to that option.
-  - Support for supplying partial long option names is not planned, because it defeats the purpose of having long option names in the first place, which is to allow writing self-explanatory scripts by fully spelling out each option. For those who want convenience when typing commands at the prompt, that is what single-letter option names are for.
 
 ### Limitations that are so by design.
 
-- No support for space as the separator between a named argument and its value: only the equals sign (`=`) can be used.
+- No support for space as separator.
+  - The separator between a named argument and its value must be the equals sign (`=`), it cannot be anything else, such as a space.
   - This is so by design.
-- No support for case-insensitive argument names: all argument names must be supplied exactly as specified.
+- No support for case-insensitive argument names.
+  - All argument names must be supplied in the command-line with the exact right capitalization.
   - This is so by design.
-- No support for fault tolerance: if the slightest thing goes wrong with the formulation of the command-line, an error message gets printed, and any attempt to read the value of any argument after that results in an exception.
-  - This is so by design. (There is no such thing as "fault tolerance"; it is just a euphemism for _**silent failure**_. I do not engage in, endorse, or facilitate silent failure in any way, shape, or form.)
+- No support for fault tolerance.
+  - If the slightest thing goes wrong with the formulation of the command-line, an error message is issued, and any attempt to read the value of any argument after that results in an exception.
+  - This is so by design.
+  - There is no such thing as "fault tolerance"; it is just a euphemism for _**silent failure**_. I do not engage in, endorse, or facilitate silent failure in any way, shape, or form.
+- No support for partial long option names. 
+  - Some utilities allow supplying fewer characters than the full option name, as long as enough characters are supplied as to be inambiguous.
+  - This is so by design.
+  - **Workaround:** If you do not want to require the user to always supply the full long name of an option, add a single-letter name to that option.
+  - Support for supplying partial long option names is not planned, because it defeats the purpose of having long option names in the first place, which is to allow writing self-explanatory scripts by fully spelling out each option. For those who want convenience when typing commands at the prompt, that is what single-letter option names are for.
 
 ## License
 
@@ -209,7 +215,6 @@ _**Verb**_: A special kind of argument which is identified by a word and has an 
 - TODO: Rewrite the argument name validation functions to _not_ work with regular expressions and add more exceptions that give more detailed explanations as to what is wrong with an invalid argument name.
 - TODO: Introduce invertable options, as in `--[no-]option` and as in `-o|+o` or possibly `-o-|-o+`.
 - TODO: Introduce repeatable switches, whose type is `int` instead of `bool`.
-- TODO: Introduce repeatable options, whose type is `IReadOnlyList<T>` instead of `<T>`.
 - TODO: Introduce meta-options, as in `--option=<name>=<value>`, whose type is `IReadOnlyDictionary<K,V>`.
 - TODO: Introduce greedy parameters. A greedy parameter consumes all remaining non-named arguments in the command-line, and its value is of type `IReadOnlyList<T>` instead of `T`.
 - TODO: Introduce a number-only option, as per `grep` option `-NUM` which is the same as `--context=NUM`.

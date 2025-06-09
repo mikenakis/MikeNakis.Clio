@@ -16,12 +16,13 @@
 		<Authors>MikeNakis</Authors>
 		<Description>A library for parsing command-line arguments</Description>
 		<Copyright>Copyright © Mike Nakis. All rights reserved.</Copyright>
+		<!-- PEARL: "GitHub Packages" ignores the "PackageIcon" tag and displays a generic nuget package icon instead; there is nothing we can do about that. -->
 		<PackageIcon>MikeNakis.Clio-Logo.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/mikenakis/MikeNakis.Clio.git</RepositoryUrl>
 		<PublishRepositoryUrl>True</PublishRepositoryUrl>
 		<PackageTags>dotnet; netstandard; class-libraries; utilities</PackageTags>
-		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageReleaseNotes>initial release</PackageReleaseNotes>
@@ -32,31 +33,15 @@
 
 	<Import Project="..\AllProjects.proj.xml" />
 
-	
+	<!-- PEARL this target is executed AFTER pack, even though we say BeforeTargets="Pack". -->
 	<Target Name="PrepareForPack" BeforeTargets="Pack">
         <Error Condition="'$(PackageVersion)' == '1.0.0'" Text="PackageVersion is '1.0.0', which probably means it was not supplied." />		
 	</Target>
 
 	<ItemGroup>
-		<None Include="..\LICENSE.md" Pack="True" PackagePath="/" />
 		<None Include="..\MikeNakis.Clio-Logo.png" Pack="True" PackagePath="/" />
 		<None Include="..\MikeNakis.Clio-Logo.svg" Pack="True" PackagePath="/" />
 		<None Include="README-for-nuget.md" Pack="True" PackagePath="/README.md" />
 	</ItemGroup>
-
-	<!-- PEARL: Dotnet does not support swapping between package and project dependencies. The following nonsense is
-	            necessary to work around this limitation. See https://github.com/dotnet/project-system/issues/195 -->
-	<!-- <Choose>
-		<When Condition="Exists('..\..\MikeNakis.CSharpTypeNames\MikeNakis.CSharpTypeNames\MikeNakis.CSharpTypeNames.csproj')">
-			<ItemGroup>
-				<ProjectReference Include="..\..\MikeNakis.CSharpTypeNames\MikeNakis.CSharpTypeNames\MikeNakis.CSharpTypeNames.csproj" />
-			</ItemGroup>
-		</When>
-		<Otherwise>
-			<ItemGroup>
-				<PackageReference Include="MikeNakis.CSharpTypeNames-$(PackagesConfiguration)" Version="2.*" PrivateAssests="All" />
-			</ItemGroup>
-		</Otherwise>
-	</Choose> -->
 
 </Project>
