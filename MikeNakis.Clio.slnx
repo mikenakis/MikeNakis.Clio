@@ -5,7 +5,9 @@
     <BuildType Name="Release" />
   </Configurations>
   <Folder Name="/_Solution Items/">
-    <File Path=".github/workflows/github-workflow.yml" />
+    <File Path=".github/workflows/Clio-build-and-test-on-push.yml" />
+    <File Path=".github/workflows/Clio-publish-to-github-packages.yml" />
+    <File Path=".github/workflows/Clio-publish-to-nuget-org.yml" />
     <File Path=".gitignore" />
     <File Path="LICENSE.md" />
     <File Path="MikeNakis.Clio-Logo.svg" />

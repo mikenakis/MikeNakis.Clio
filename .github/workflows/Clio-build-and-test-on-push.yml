@@ -1,0 +1,35 @@
+name: build-and-test-on-push
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  the_job:
+
+    runs-on: ubuntu-latest
+    # runs-on: windows-latest
+
+    permissions:
+      contents: write
+
+    steps:
+
+    - uses: actions/checkout@v4
+
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.200
+
+    - name: "Build 'Debug' configuration and run tests"
+      run: scripts/build.bash Configuration=Debug RunTests=Yes
+
+    - name: "Build 'Develop' configuration"
+      run: scripts/build.bash Configuration=Develop
+
+    - name: "Build 'Release' configuration"
+      run: scripts/build.bash Configuration=Release

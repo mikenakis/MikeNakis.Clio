@@ -14,7 +14,7 @@
 		<!-- Title: the default appears to be $(MSBuildProjectName) if equal to $(AssemblyName), blank otherwise. -->
 		<Title>$(MSBuildProjectName) ($(Configuration))</Title>
 		<Authors>MikeNakis</Authors>
-		<Description>A library for parsing command-line arguments</Description>
+		<Description>A library for parsing command-line arguments.</Description>
 		<Copyright>Copyright © Mike Nakis. All rights reserved.</Copyright>
 		<!-- PEARL: "GitHub Packages" ignores the "PackageIcon" tag and displays a generic nuget package icon instead; there is nothing we can do about that. -->
 		<PackageIcon>MikeNakis.Clio-Logo.png</PackageIcon>

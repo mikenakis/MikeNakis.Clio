@@ -4,7 +4,9 @@
   <img title="MikeNakis.Clio logo" src="MikeNakis.Clio-Logo.svg" width="256" />
 </p>
 
-[![Build](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/Clio-github-workflow.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/Clio-github-workflow.yml)
+[![Build](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/Clio-build-and-test-on-push.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/Clio-build-and-test-on-push.yml)
+[![Build](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/Clio-publish-to-github-packages.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/Clio-publish-to-github-packages.yml)
+[![Build](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/Clio-publish-to-nuget-org.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/Clio-publish-to-nuget-org.yml)
 
 ## Introduction
 
