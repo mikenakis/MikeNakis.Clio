@@ -12,7 +12,7 @@ set -u
 # Magical incantation to enable extended pattern matching.
 shopt -s extglob
 
-RunTests=
+RunTests=No
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -31,13 +31,15 @@ done
 
 printf "Configuration: ${Configuration}; RunTests: ${RunTests};\n"
 
+set +e
+
+echo 1
 git diff --name-only HEAD HEAD~1
 
+echo 2
 git diff --name-only HEAD HEAD~2
 
-git diff --name-only origin/master@{1} origin/master
-
-git diff --name-only origin/master@{2} origin/master
+set -e
 
 # PEARL: In GitHub, the output of `dotnet build` looks completely different from what it looks when building locally.
 #        For example, the output of "Message" tasks is not shown, even when "Importance" is set to "High".
