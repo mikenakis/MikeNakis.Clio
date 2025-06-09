@@ -15,51 +15,25 @@ on:
 
 jobs:
 
-  generate-version:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: GitHub Tag Bump
-        id: tab_bump
-        uses: anothrNick/github-tag-action@1.71.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INITIAL_VERSION: 5.1.0
-          DEFAULT_BUMP: patch
-
-    outputs:
-      new_version: ${{ steps.tab_bump.outputs.new_tag }}
-
   build:
 
     runs-on: ubuntu-latest
     # runs-on: windows-latest
-    needs: generate-version
+
+    permissions:
+      contents: write
 
     steps:
 
     - uses: actions/checkout@v4
-#      with:
-#        fetch-depth: 0 # A fetch-depth of 0 fetches all history. It is needed for GitVersion.
 
-#    - name: Install GitVersion
-#      uses: gittools/actions/gitversion/setup@v3.2.1
-#      with:
-#        versionSpec: 6.3.x
-
-#    - name: Determine Version
-#      uses: gittools/actions/gitversion/execute@v3.2.1
-#      id: gitversion # step id used as reference for output values
-
-#    - name: Display GitVersion outputs
-#      run: |
-#        git tag
-#        echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
-#        echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
+    - name: GitHub Tag Bump
+      id: tag_bump
+      uses: anothrNick/github-tag-action@1.71.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        INITIAL_VERSION: 5.1.0
+        DEFAULT_BUMP: patch
 
     - name: Setup dotnet
       uses: actions/setup-dotnet@v4
@@ -79,7 +53,7 @@ jobs:
       run: dotnet build      -TerminalLogger:off -check --configuration Develop --no-restore
 
     - name: "Configuration 'Develop': pack"
-      run: dotnet pack       -TerminalLogger:off -check --configuration Develop --no-build --property:PackageVersion=${{ needs.generate-version.outputs.new_version }}
+      run: dotnet pack       -TerminalLogger:off -check --configuration Develop --no-build --property:PackageVersion=${{ steps.tag_bump.outputs.new_tag }}
 
     - name: "Configuration 'Develop': push to github packages"
       run: dotnet nuget push "${{github.event.repository.name}}/bin/Develop/*.nupkg" --source https://nuget.pkg.github.com/MikeNakis/index.json --api-key ${{secrets.MY_GITHUB_TOKEN}}
@@ -91,7 +65,7 @@ jobs:
       run: dotnet build      -TerminalLogger:off -check --configuration Release --no-restore
 
     - name: "Configuration 'Release': pack"
-      run: dotnet pack       -TerminalLogger:off -check --configuration Release --no-build --property:PackageVersion=${{ needs.generate-version.outputs.new_version }}
+      run: dotnet pack       -TerminalLogger:off -check --configuration Release --no-build --property:PackageVersion=${{ steps.tag_bump.outputs.new_tag }}
 
     - name: "Configuration 'Release': push to github packages"
       run: dotnet nuget push "${{github.event.repository.name}}/bin/Release/*.nupkg" --source https://nuget.pkg.github.com/MikeNakis/index.json --api-key ${{secrets.MY_GITHUB_TOKEN}}
