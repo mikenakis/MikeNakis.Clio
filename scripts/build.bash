@@ -31,6 +31,14 @@ done
 
 printf "Configuration: ${Configuration}; RunTests: ${RunTests};\n"
 
+git diff --name-only HEAD HEAD~1
+
+git diff --name-only HEAD HEAD~2
+
+git diff --name-only origin/master@{1} origin/master
+
+git diff --name-only origin/master@{2} origin/master
+
 # PEARL: In GitHub, the output of `dotnet build` looks completely different from what it looks when building locally.
 #        For example, the output of "Message" tasks is not shown, even when "Importance" is set to "High".
 #        The "-ConsoleLoggerParameters:off" magical incantation corrects this problem.

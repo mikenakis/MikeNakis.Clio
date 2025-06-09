@@ -18,13 +18,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       with:
-        fetch-depth: 2
-
-    - run: git diff --name-only HEAD HEAD~1
-
-    - run: git diff origin/master@{1} origin/master --name-status
-
-    - run: git diff origin/master@{2} origin/master --name-status
+        fetch-depth: 10
 
     - name: Setup dotnet
       uses: actions/setup-dotnet@v4
