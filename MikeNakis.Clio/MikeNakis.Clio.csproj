@@ -16,7 +16,10 @@
 		<Authors>MikeNakis</Authors>
 		<Description>A library for parsing command-line arguments</Description>
 		<Copyright>Copyright © Mike Nakis. All rights reserved.</Copyright>
-		<PackageIcon>MikeNakis.Clio-Logo.png</PackageIcon>
+		<!-- PEARL: "GitHub Packages" ignores the "PackageIcon" tag.  The icon is expected to placed at the root of the
+			package content and to be called either 'icon.png' or 'icon.jpg'.  So, if we want our icon instead of a
+			generic nuget package icon to appear in "GitHub Releases", we have to follow that convention. -->
+		<PackageIcon>icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/mikenakis/MikeNakis.Clio.git</RepositoryUrl>
 		<PublishRepositoryUrl>True</PublishRepositoryUrl>
@@ -39,7 +42,7 @@
 
 	<ItemGroup>
 		<None Include="..\LICENSE.md" Pack="True" PackagePath="/" />
-		<None Include="..\MikeNakis.Clio-Logo.png" Pack="True" PackagePath="/" />
+		<None Include="..\MikeNakis.Clio-Logo.png" Pack="True" PackagePath="/icon.png" />
 		<None Include="..\MikeNakis.Clio-Logo.svg" Pack="True" PackagePath="/" />
 		<None Include="README-for-nuget.md" Pack="True" PackagePath="/README.md" />
 	</ItemGroup>
