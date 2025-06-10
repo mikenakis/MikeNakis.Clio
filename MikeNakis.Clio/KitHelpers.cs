@@ -1,7 +1,5 @@
 namespace MikeNakis.Clio;
 
-//using MikeNakis.CSharpTypeNames.Extensions;
-
 static class KitHelpers
 {
 	public static readonly SysThread.ThreadLocal<bool> FailureTesting = new( false );
