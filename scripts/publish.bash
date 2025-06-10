@@ -47,5 +47,5 @@ echo "It worked, I guess."
 echo ""
 echo "NUGET PUSH =============================================================="
 echo ""
-dotnet nuget push ${ProjectName}/bin/${Configuration}/*.nupkg --source ${Address} --api-key ${ApiKey}
+dotnet nuget push ${ProjectName}/bin/${Configuration}/*.nupkg --source ${Address} --api-key ${ApiKey} --skip-duplicate
 
