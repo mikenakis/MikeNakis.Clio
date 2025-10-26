@@ -1,5 +1,6 @@
 namespace MikeNakis.Clio_Test;
 
+using MikeNakis.Kit;
 using MikeNakis.Kit.Extensions;
 using MikeNakis.Kit.FileSystem;
 
@@ -14,7 +15,7 @@ sealed class Audit
 	{
 		Assert( callerFileName != null );
 		Assert( callerMemberName != null );
-		FilePath callerFilePath = FilePath.FromRelativeOrAbsolutePath( callerFileName.OrThrow() );
+		FilePath callerFilePath = FilePath.FromRelativeOrAbsolutePath( callerFileName.OrThrow(), DotNetHelpers.GetWorkingDirectoryPath() );
 		FilePath auditFilePath = callerFilePath.WithReplacedExtension( FileExtension );
 		Audit audit = getOrCreateAuditFile( auditFilePath );
 		using( AuditFile auditFile = audit.newFile() )
@@ -73,14 +74,8 @@ sealed class Audit
 		{
 			this.outputFilePath = outputFilePath;
 			this.endOfLine = endOfLine;
-			SysIo.FileStreamOptions fileStreamOptions = new();
-			fileStreamOptions.Access = SysIo.FileAccess.Write;
-			fileStreamOptions.Mode = SysIo.FileMode.Truncate;
-			fileStreamOptions.Share = SysIo.FileShare.Read;
-			fileStreamOptions.Options = SysIo.FileOptions.WriteThrough | SysIo.FileOptions.SequentialScan;
-			SysIo.Stream stream = outputFilePath.NewStream( SysIo.FileMode.Append, SysIo.FileAccess.Write, SysIo.FileShare.Read, fileOptions: SysIo.FileOptions.WriteThrough | SysIo.FileOptions.SequentialScan );
-			SysText.Encoding utfBomlessEncoding = new SysText.UTF8Encoding( false );
-			streamWriter = new SysIo.StreamWriter( stream, utfBomlessEncoding );
+			SysIo.Stream stream = outputFilePath.OpenBinaryForAppending(); // fileOptions: SysIo.FileOptions.WriteThrough | SysIo.FileOptions.SequentialScan
+			streamWriter = new SysIo.StreamWriter( stream, DotNetHelpers.BomlessUtf8 );
 		}
 
 		public void WriteLine( string text )
