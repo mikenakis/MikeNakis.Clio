@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
@@ -18,7 +18,7 @@
 		</When>
 		<Otherwise>
 			<ItemGroup>
-				<PackageReference Include="MikeNakis.Kit-$(PackagesConfiguration)" Version="2.*" PrivateAssests="All" />
+				<PackageReference Include="MikeNakis.Kit-$(PackagesConfiguration)" Version="5.1.*" PrivateAssests="All" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
