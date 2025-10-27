@@ -4,10 +4,10 @@
 # #!/usr/bin/env bash
 
 # Magical incantation to prevent silent failure if a command fails. (though this seems to be the default behavior.)
-set -e
+# set -e
 
 # Magical incantation to prevent silent failure if an undefined variable is used.
-set -u
+# set -u
 
 # Magical incantation to enable extended pattern matching.
 shopt -s extglob
@@ -31,16 +31,6 @@ done
 
 printf "Configuration: ${Configuration}; RunTests: ${RunTests};\n"
 
-set +e
-
-echo 1
-git diff --name-only HEAD HEAD~1
-
-echo 2
-git diff --name-only HEAD HEAD~2
-
-set -e
-
 # PEARL: In GitHub, the output of `dotnet build` looks completely different from what it looks when building locally.
 #        For example, the output of "Message" tasks is not shown, even when "Importance" is set to "High".
 #        The "-ConsoleLoggerParameters:off" magical incantation corrects this problem.
@@ -51,7 +41,8 @@ set -e
 echo ""
 echo "RESTORE ================================================================="
 echo ""
-dotnet restore    -TerminalLogger:off -check
+dotnet restore    -TerminalLogger:off -check --no-cache
+# --verbosity normal
 
 echo ""
 echo "BUILD ==================================================================="
