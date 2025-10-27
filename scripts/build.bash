@@ -51,7 +51,7 @@ set -e
 echo ""
 echo "RESTORE ================================================================="
 echo ""
-dotnet restore    -TerminalLogger:off -check
+dotnet restore    -TerminalLogger:off -check --verbosity normal
 
 echo ""
 echo "BUILD ==================================================================="
