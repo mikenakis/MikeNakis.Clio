@@ -1,5 +1,8 @@
 namespace MikeNakis.Clio;
 
+using System.Collections.Generic;
+using static MikeNakis.Clio.Statics;
+
 sealed class SwitchArgument : NamedArgument, ISwitchArgument
 {
 	internal override string ShortUsage => $"{(SingleLetterName == null ? "" : $"-{SingleLetterName}, ")}--{Name}";

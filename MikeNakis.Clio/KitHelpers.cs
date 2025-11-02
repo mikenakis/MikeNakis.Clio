@@ -1,5 +1,14 @@
 namespace MikeNakis.Clio;
 
+using System.Collections.Generic;
+using System.Linq;
+using static MikeNakis.Clio.Statics;
+using LegacyCollections = System.Collections;
+using Sys = System;
+using SysCompiler = System.Runtime.CompilerServices;
+using SysText = System.Text;
+using SysThread = System.Threading;
+
 static class KitHelpers
 {
 	public static readonly SysThread.ThreadLocal<bool> FailureTesting = new( false );

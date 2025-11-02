@@ -1,5 +1,11 @@
 namespace MikeNakis.Clio;
 
+using System.Collections.Generic;
+using System.Linq;
+using static MikeNakis.Clio.Statics;
+using Sys = System;
+using SysDiag = System.Diagnostics;
+
 /// <summary>Represents a command-line argument.</summary>
 public interface IArgument
 {

@@ -1,5 +1,10 @@
 namespace MikeNakis.Clio;
 
+using System.Collections.Generic;
+using System.Linq;
+using Sys = System;
+using SysText = System.Text;
+
 static class HelpGenerator
 {
 	const string indentation = "    ";

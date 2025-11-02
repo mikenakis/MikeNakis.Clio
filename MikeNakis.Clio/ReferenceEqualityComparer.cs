@@ -1,5 +1,9 @@
 namespace MikeNakis.Clio;
 
+using System.Collections.Generic;
+using LegacyCollections = System.Collections;
+using SysCompiler = System.Runtime.CompilerServices;
+
 // As of net5.0 there is System.Collections.Generic.ReferenceEqualityComparer, but it is not available in netstandard.
 sealed class ReferenceEqualityComparer : IEqualityComparer<object?>, LegacyCollections.IEqualityComparer
 {

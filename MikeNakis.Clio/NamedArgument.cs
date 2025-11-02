@@ -1,5 +1,8 @@
 namespace MikeNakis.Clio;
 
+using System.Linq;
+using static MikeNakis.Clio.Statics;
+
 abstract class NamedArgument : Argument
 {
 	public char? SingleLetterName { get; }

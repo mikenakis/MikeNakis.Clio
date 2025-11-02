@@ -1,5 +1,10 @@
 namespace MikeNakis.Clio;
 
+using Sys = System;
+using SysDiag = System.Diagnostics;
+using SysReflect = System.Reflection;
+using SysText = System.Text;
+
 [SysDiag.DebuggerDisplay( "{GetType().Name,nq}: {Message,nq}" )]
 public abstract class SaneException : Sys.Exception
 {

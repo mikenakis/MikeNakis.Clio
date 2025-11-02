@@ -1,5 +1,12 @@
 namespace MikeNakis.Clio;
 
+using System.Collections.Generic;
+using System.Linq;
+using static MikeNakis.Clio.Statics;
+using RegEx = System.Text.RegularExpressions;
+using Sys = System;
+using SysIo = System.IO;
+
 static partial class Helpers
 {
 	static readonly RegEx.Regex namedArgumentNameValidationRegex = new( "^[a-zA-Z][a-zA-Z0-9-]+$", RegEx.RegexOptions.CultureInvariant );

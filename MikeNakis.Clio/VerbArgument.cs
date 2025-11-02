@@ -1,5 +1,10 @@
 namespace MikeNakis.Clio;
 
+using System.Collections.Generic;
+using System.Linq;
+using static MikeNakis.Clio.Statics;
+using SysDiag = System.Diagnostics;
+
 [SysDiag.DebuggerDisplay( "{ToString(),nq}" )]
 sealed class VerbArgument : Argument, IVerbArgument
 {
