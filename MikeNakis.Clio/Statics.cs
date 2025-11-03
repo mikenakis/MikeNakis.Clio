@@ -1,5 +1,8 @@
 namespace MikeNakis.Clio;
 
+using Sys = System;
+using SysDiag = System.Diagnostics;
+
 ///<summary>Frequently used stuff that needs to be conveniently accessible without a type name qualification.</summary>
 ///<remarks>NOTE: This class must be kept AS SMALL AS POSSIBLE.</remarks>
 static class Statics

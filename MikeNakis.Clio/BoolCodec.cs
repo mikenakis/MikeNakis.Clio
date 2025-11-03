@@ -1,5 +1,8 @@
 namespace MikeNakis.Clio;
 
+using Sys = System;
+using SysGlob = System.Globalization;
+
 public sealed class BoolCodec : StructCodec<bool>
 {
 	public static readonly StructCodec<bool> Instance = new BoolCodec();

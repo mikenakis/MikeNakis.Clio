@@ -1,5 +1,7 @@
 namespace MikeNakis.Clio;
 
+using SysThread = System.Threading;
+
 public static class FailureTesting
 {
 	static readonly SysThread.ThreadLocal<bool> value = new( false );

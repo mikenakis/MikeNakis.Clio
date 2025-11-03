@@ -1,5 +1,7 @@
 namespace MikeNakis.Clio;
 
+using Sys = System;
+
 public sealed class EnumCodec<T> : StructCodec<T> where T : struct, Sys.Enum
 {
 	public static readonly StructCodec<T> Instance = new EnumCodec<T>();

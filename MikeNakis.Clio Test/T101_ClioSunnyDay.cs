@@ -1,11 +1,13 @@
 namespace MikeNakis.Clio_Test;
 
+using System.Linq;
 using MikeNakis.Clio;
 using MikeNakis.Clio.Extensions;
-using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
+using static System.MemoryExtensions;
 using static Statics;
 using Sys = System;
+using SysIo = System.IO;
+using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [VSTesting.TestClass]
 public sealed class T102_ClioSunnyDay
