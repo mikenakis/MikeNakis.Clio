@@ -19,14 +19,6 @@ static class Statics
 	///Allows code to be enabled/disabled while still having to pass compilation, thus preventing code rot.</remarks>
 	public static bool False => false;
 
-	///<summary>Returns <c>true</c> if <c>DEBUG</c> has been defined.</summary>
-	///<remarks>Allows code to be enabled/disabled while still having to pass compilation, thus preventing code rot.</remarks>
-#if DEBUG
-	public static bool DebugMode => true;
-#else
-	public static bool DebugMode => false;
-#endif
-
 	///<summary>Identity function.</summary>
 	///<remarks>useful as a no-op lambda and sometimes as a debugging aid.</remarks>
 	public static T Identity<T>( T value ) => value;
@@ -36,6 +28,7 @@ static class Statics
 	/// (Though the factory may just as well throw the exception instead of returning it.)
 	/// This function is only executed (and the supplied <paramref name="condition"/> is only evaluated) when running a debug build.</remarks>
 	[SysDiag.DebuggerHidden]
+	[SysDiag.Conditional( "DEBUG" )]
 	public static void Assert( bool condition, Sys.Func<Sys.Exception> exceptionFactory ) //
 	{
 		if( condition )
@@ -47,6 +40,7 @@ static class Statics
 	/// <remarks>If the given <paramref name="condition"/> is <c>false</c>, an <see cref="AssertionFailureException"/> is thrown.
 	/// This function is only executed (and the supplied <paramref name="condition"/> is only evaluated) when running a debug build.</remarks>
 	[SysDiag.DebuggerHidden]
+	[SysDiag.Conditional( "DEBUG" )]
 	public static void Assert( bool condition ) //
 	{
 		if( condition )
@@ -61,22 +55,13 @@ static class Statics
 		if( !FailureTesting.Value )
 		{
 			SysDiag.Debug.WriteLine( $"Assertion failed: {exception.GetType().FullName}: {exception.Message}" );
-			if( Breakpoint() )
+			if( SysDiag.Debugger.IsAttached )
+			{
+				SysDiag.Debugger.Break(); //Note: this is problematic due to some Visual Studio bug: when it hits, you are prevented from setting the next statement either within the calling function or within this function.
 				return;
+			}
 		}
 		throw exception;
-	}
-
-	/// <summary>If a debugger is attached, hits a breakpoint and returns <c>true</c>; otherwise, returns <c>false</c></summary>
-	[SysDiag.DebuggerHidden]
-	public static bool Breakpoint()
-	{
-		if( SysDiag.Debugger.IsAttached )
-		{
-			SysDiag.Debugger.Break(); //Note: this is problematic due to some Visual Studio bug: when it hits, you are prevented from setting the next statement either within the calling function or within this function.
-			return true;
-		}
-		return false;
 	}
 
 	public static Sys.Exception? TryCatch( Sys.Action procedure )
