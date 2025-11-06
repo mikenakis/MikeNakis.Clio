@@ -13,22 +13,18 @@ public sealed class ArgumentParser : BaseArgumentParser
 	internal override BaseArgumentParser? Parent => null;
 	internal override ArgumentParser GetRootArgumentParser() => this;
 	internal int ScreenWidth { get; }
-	readonly Sys.Action<string> lineOutputConsumer;
 	internal readonly Sys.Func<string, string> FileReader;
 
 	/// <summary>Constructor.</summary>
 	/// <param name="verbTerm" >Specifies the term to use in place of 'verb' when displaying help.</param>
 	/// <param name="screenWidth" >Specifies the screen width to target when word-wrapping help text.
 	/// If omitted, a reasonable default is used.</param>
-	/// <param name="lineOutputConsumer">A consumer for text output. Defaults to the
-	/// <see cref="Sys.IO.TextWriter.WriteLine( string )"/> method of <see cref="Sys.Console.Error"/>.</param>
 	/// <param name="testingOptions" >Supplies options used for testing.</param>
-	public ArgumentParser( string? verbTerm = null, int? screenWidth = null, Sys.Action<string>? lineOutputConsumer = null, TestingOptions? testingOptions = null )
+	public ArgumentParser( string? verbTerm = null, int? screenWidth = null, TestingOptions? testingOptions = null )
 		: base( testingOptions?.ProgramName ?? Sys.AppDomain.CurrentDomain.FriendlyName )
 	{
 		VerbTerm = verbTerm ?? "verb";
 		ScreenWidth = screenWidth ?? 120;
-		this.lineOutputConsumer = lineOutputConsumer ?? Sys.Console.Error.WriteLine;
 		FileReader = testingOptions?.FileReader ?? Sys.IO.File.ReadAllText;
 	}
 
@@ -45,9 +41,11 @@ public sealed class ArgumentParser : BaseArgumentParser
 	/// <remarks>If something goes wrong, (or if the `--help` option is supplied,) it displays all necessary messages
 	/// and returns <c>false</c>, meaning that the current process should terminate.</remarks>
 	/// <param name="arrayOfToken">The command-line tokens to parse.</param>
+	/// <param name="lineOutputConsumer">A consumer for text output. Defaults to the <see cref="Sys.IO.TextWriter.WriteLine( string )"/> method of <see cref="Sys.Console.Error"/>.</param>
 	/// <returns><c>true</c> if successful; <c>false</c> otherwise.</returns>
-	public bool TryParse( string[] arrayOfToken )
+	public bool TryParse( string[] arrayOfToken, Sys.Action<string>? lineOutputConsumer = null )
 	{
+		lineOutputConsumer ??= Sys.Console.Error.WriteLine;
 		List<string> tokens = new( arrayOfToken );
 		try
 		{

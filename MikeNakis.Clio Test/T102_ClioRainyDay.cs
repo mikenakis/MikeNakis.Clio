@@ -13,7 +13,7 @@ public sealed class T102_ClioRainyDay
 	static ArgumentParser newArgumentParser( Sys.Func<string, string>? fileReader = null )
 	{
 		TestingOptions testingOptions = new( "TestApp", fileReader );
-		return new ArgumentParser( null, null, lineOutputConsumer, testingOptions );
+		return new ArgumentParser( null, null, testingOptions );
 	}
 
 	static string[] split( string commandLine ) => commandLine.Split( ' ', Sys.StringSplitOptions.RemoveEmptyEntries | Sys.StringSplitOptions.TrimEntries );
@@ -21,7 +21,7 @@ public sealed class T102_ClioRainyDay
 	static bool tryParse( ArgumentParser argumentParser, string commandLine )
 	{
 		string[] tokens = split( commandLine );
-		return argumentParser.TryParse( tokens );
+		return argumentParser.TryParse( tokens, lineOutputConsumer );
 	}
 
 	static void lineOutputConsumer( string text )

@@ -15,17 +15,12 @@ public sealed class T102_ClioSunnyDay
 	static ArgumentParser newArgumentParser( Sys.Func<string, string>? fileReader = null )
 	{
 		TestingOptions testingOptions = new( "TestApp", fileReader );
-		return new ArgumentParser( null, null, lineOutputConsumer, testingOptions );
+		return new ArgumentParser( null, null, testingOptions );
 	}
 
 	static void parse( ArgumentParser argumentParser, params string[] tokens )
 	{
 		argumentParser.Parse( tokens );
-	}
-
-	static void lineOutputConsumer( string text )
-	{
-		Assert( false ); //we do not expect the line-output-consumer to ever be invoked.
 	}
 
 	enum Enum1

@@ -254,7 +254,7 @@ public abstract class BaseArgumentParser
 			throw new RequiredArgumentNotSuppliedException( argument.Name );
 	}
 
-	internal void Parse( List<string> tokens, int tokenIndex )
+	protected void Parse( List<string> tokens, int tokenIndex )
 	{
 		Assert( !HasBeenParsed );
 		ISwitchArgument helpSwitch = this.helpSwitch ?? addHelpSwitch();
