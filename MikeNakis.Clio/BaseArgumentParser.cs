@@ -11,7 +11,7 @@ public abstract class BaseArgumentParser
 	internal abstract BaseArgumentParser? Parent { get; }
 	internal abstract ArgumentParser GetRootArgumentParser();
 	internal bool HasBeenParsed { get; private set; }
-	internal string GetFullName( char delimiter ) => Parent == null ? Name : $"{Parent.GetFullName( delimiter )}{delimiter}{Name}";
+	internal string GetFullName() => Parent == null ? Name : $"{Parent.GetFullName()} {Name}";
 
 	/// <summary>The name of the program or verb.</summary>
 	public string Name { get; }
@@ -236,7 +236,7 @@ public abstract class BaseArgumentParser
 	internal void OutputHelp( Sys.Action<string> lineOutputConsumer )
 	{
 		int screenWidth = GetRootArgumentParser().ScreenWidth;
-		string fullName = GetFullName( ' ' );
+		string fullName = GetFullName();
 		HelpGenerator.OutputHelp( lineOutputConsumer, screenWidth, fullName, arguments, GetRootArgumentParser().VerbTerm );
 		return;
 	}

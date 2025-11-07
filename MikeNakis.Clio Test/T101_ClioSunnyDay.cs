@@ -14,8 +14,8 @@ public sealed class T102_ClioSunnyDay
 {
 	static ArgumentParser newArgumentParser( Sys.Func<string, string>? fileReader = null )
 	{
-		TestingOptions testingOptions = new( "TestApp", fileReader );
-		return new ArgumentParser( null, null, testingOptions );
+		TestingOptions testingOptions = new( fileReader );
+		return new ArgumentParser( "TestApp", null, null, testingOptions );
 	}
 
 	static void parse( ArgumentParser argumentParser, params string[] tokens )

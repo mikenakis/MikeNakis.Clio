@@ -14,8 +14,8 @@ public sealed class T103_ClioAudits
 
 	static ArgumentParser newArgumentParser( int? screenWidth = null, Sys.Func<string, string>? fileReader = null )
 	{
-		TestingOptions testingOptions = new( "TestApp", fileReader );
-		return new ArgumentParser( verbTerm, screenWidth, testingOptions );
+		TestingOptions testingOptions = new( fileReader );
+		return new ArgumentParser( "TestApp", verbTerm, screenWidth, testingOptions );
 	}
 
 	static bool tryParse( ArgumentParser argumentParser, string commandLine, Sys.Action<string>? lineOutputConsumer = null )

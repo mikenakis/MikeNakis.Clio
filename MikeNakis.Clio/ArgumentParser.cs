@@ -16,12 +16,13 @@ public sealed class ArgumentParser : BaseArgumentParser
 	internal readonly Sys.Func<string, string> FileReader;
 
 	/// <summary>Constructor.</summary>
+	/// <param name="programName" >Specifies the name of the program to use when displaying help.</param>
 	/// <param name="verbTerm" >Specifies the term to use in place of 'verb' when displaying help.</param>
 	/// <param name="screenWidth" >Specifies the screen width to target when word-wrapping help text.
 	/// If omitted, a reasonable default is used.</param>
 	/// <param name="testingOptions" >Supplies options used for testing.</param>
-	public ArgumentParser( string? verbTerm = null, int? screenWidth = null, TestingOptions? testingOptions = null )
-		: base( testingOptions?.ProgramName ?? Sys.AppDomain.CurrentDomain.FriendlyName )
+	public ArgumentParser( string? programName = null, string? verbTerm = null, int? screenWidth = null, TestingOptions? testingOptions = null )
+		: base( programName ?? Sys.AppDomain.CurrentDomain.FriendlyName )
 	{
 		VerbTerm = verbTerm ?? "verb";
 		ScreenWidth = screenWidth ?? 120;
@@ -60,7 +61,7 @@ public sealed class ArgumentParser : BaseArgumentParser
 		catch( UserException userException )
 		{
 			Helpers.OutputExceptionMessage( userException, lineOutputConsumer );
-			string fullName = GetFullName( ' ' );
+			string fullName = GetFullName();
 			lineOutputConsumer.Invoke( $"Try '{fullName} --help' for more information." );
 			return false;
 		}
