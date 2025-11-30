@@ -4,8 +4,7 @@
   <img title="MikeNakis.Clio logo" src="MikeNakis.Clio-Logo.svg" width="256" />
 </p>
 
-[![Build](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/auto.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/auto.yml)
-[![Build](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/manual.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/manual.yml)
+[![Build](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/continuous-integration.yml)
 
 ## Introduction
 
