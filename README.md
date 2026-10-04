@@ -1,1 +1,1 @@
-../MikeNakis.Clio.README.md
+MikeNakis.Clio.README.md
