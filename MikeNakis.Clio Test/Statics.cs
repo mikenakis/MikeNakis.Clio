@@ -83,5 +83,12 @@ static class Statics
 		}
 	}
 
+	public static T Catch<T>( Sys.Action procedure ) where T : Sys.Exception
+	{
+		Sys.Exception? exception = TryCatch( procedure );
+		Assert( exception != null );
+		return (T)exception!;
+	}
+
 	public static IEnumerable<T> EnumerableOf<T>( params T[] arguments ) => arguments;
 }
