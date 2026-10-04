@@ -5,7 +5,6 @@ using System.Linq;
 using static MikeNakis.Clio.Internal.Statics;
 using RegEx = System.Text.RegularExpressions;
 using Sys = System;
-using SysIo = System.IO;
 
 static partial class Helpers
 {
@@ -102,49 +101,9 @@ static partial class Helpers
 		return 2 + name.Length;
 	}
 
-	internal static void SplitCombinedSingleLetterArguments( List<string> tokens )
+	internal static IEnumerable<string> ReadResponseFile( string fullPath, Sys.Func<string, string> fileReader )
 	{
-		for( int i = 0; i < tokens.Count; i++ )
-		{
-			string token = tokens[i];
-			if( token == "--" )
-				break;
-			if( token[0] == '-' && token.Length > 2 && token[1] != '-' )
-			{
-				tokens.RemoveAt( i );
-				foreach( char c in token.Skip( 1 ) )
-					tokens.Insert( i++, $"-{c}" );
-			}
-		}
-	}
-
-	internal static void AddArgumentsFromResponseFiles( List<string> tokens, Sys.Func<string, string> fileReader )
-	{
-		for( int i = 0; i < tokens.Count; i++ )
-		{
-			string token = tokens[i];
-			if( token == "--" )
-				break;
-			if( token[0] == '@' )
-				i = HandleResponseFileToken( tokens, fileReader, i );
-		}
-	}
-
-	internal static int HandleResponseFileToken( List<string> tokens, Sys.Func<string, string> fileReader, int tokenIndex )
-	{
-		string token = tokens[tokenIndex];
-		Assert( token[0] == '@' );
-		tokens.RemoveAt( tokenIndex );
-		IEnumerable<string> lines = ReadResponseFile( SysIo.Path.GetFullPath( token[1..] ), fileReader );
-		foreach( string line in lines )
-			tokens.Insert( tokenIndex++, "--" + line );
-		return tokenIndex;
-	}
-
-	internal static IEnumerable<string> ReadResponseFile( string filename, Sys.Func<string, string> fileReader )
-	{
-		string responseFileName = SysIo.Path.GetFullPath( filename );
-		return fileReader.Invoke( responseFileName ) //
+		return fileReader.Invoke( fullPath ) //
 			.Split( '\n' )
 			.Select( s => s.Trim() )
 			.Where( s => s.Length > 0 )
