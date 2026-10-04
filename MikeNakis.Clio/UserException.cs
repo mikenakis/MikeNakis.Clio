@@ -43,3 +43,18 @@ sealed class VerbExpectedException( string verbTerm ) : UserException
 {
 	public override string Message => $"Expected a {verbTerm}.";
 }
+
+sealed class ResponseFileNameExpectedException() : UserException
+{
+	public override string Message => "Expected a file name after '@'.";
+}
+
+sealed class ResponseFileUnreadableException( string fileName, Sys.Exception cause ) : UserException( cause )
+{
+	public override string Message => $"Could not read response file '{fileName}'.";
+}
+
+sealed class ResponseFileIncludedMoreThanOnceException( string fileName ) : UserException
+{
+	public override string Message => $"Response file '{fileName}' is included more than once.";
+}

@@ -143,7 +143,7 @@ public abstract class BaseArgumentParser
 	public IRepeatedOptionArgument<T> AddRepeatedOption<T>( string name, StructCodec<T> codec, char? singleLetterName = null, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
 	{
-		return new RepeatedStructOption<T>( this, name, singleLetterName, parameterName, codec, description, presetValue, default );
+		return new RepeatedStructOption<T>( this, name, singleLetterName, parameterName, codec, description, presetValue );
 	}
 
 	///<summary>Adds a repeated option.</summary>
@@ -158,7 +158,7 @@ public abstract class BaseArgumentParser
 	public IRepeatedOptionArgument<T> AddRepeatedOption<T>( string name, ClassCodec<T> codec, char? singleLetterName = null, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
 	{
-		return new RepeatedClassOption<T>( this, name, singleLetterName, parameterName, codec, description, presetValue, default );
+		return new RepeatedClassOption<T>( this, name, singleLetterName, parameterName, codec, description, presetValue );
 	}
 
 	///<summary>Adds a positional argument.</summary>
@@ -274,9 +274,9 @@ public abstract class BaseArgumentParser
 
 			if( !endOfOptionsMarkerFound )
 			{
-				if( token[0] == '@' )
+				if( token.StartsWith( "@", Sys.StringComparison.Ordinal ) )
 				{
-					processResponseFile( tokens, tokenIndex, GetRootArgumentParser().FileReader );
+					processResponseFile( tokens, tokenIndex, GetRootArgumentParser() );
 					tokenIndex--;
 					continue;
 				}
@@ -339,9 +339,39 @@ public abstract class BaseArgumentParser
 			tokens.InsertRange( tokenIndex, token.Skip( 1 ).Select( c => $"-{c}" ) );
 		}
 
-		static void processResponseFile( List<string> tokens, int tokenIndex, Sys.Func<string, string> fileReader )
+		static void processResponseFile( List<string> tokens, int tokenIndex, ArgumentParser rootArgumentParser )
 		{
-			IEnumerable<string> lines = Helpers.ReadResponseFile( Sys.IO.Path.GetFullPath( tokens[tokenIndex][1..] ), fileReader );
+			string fileName = tokens[tokenIndex][1..];
+			if( string.IsNullOrWhiteSpace( fileName ) )
+				throw new ResponseFileNameExpectedException();
+
+			string fullPath;
+			try
+			{
+				fullPath = Sys.IO.Path.GetFullPath( fileName );
+			}
+			catch( Sys.Exception exception ) when( exception is Sys.ArgumentException or Sys.NotSupportedException //
+				or Sys.IO.IOException or Sys.Security.SecurityException )
+			{
+				throw new ResponseFileUnreadableException( fileName, exception );
+			}
+
+			//A response file which includes itself would cause an endless loop, so we forbid reading any response file
+			//more than once.
+			if( !rootArgumentParser.ResponseFilesRead.Add( fullPath ) )
+				throw new ResponseFileIncludedMoreThanOnceException( fileName );
+
+			IReadOnlyList<string> lines;
+			try
+			{
+				lines = Helpers.ReadResponseFile( fullPath, rootArgumentParser.FileReader ).ToArray();
+			}
+			catch( Sys.Exception exception ) when( exception is Sys.IO.IOException or Sys.UnauthorizedAccessException //
+				or Sys.Security.SecurityException )
+			{
+				throw new ResponseFileUnreadableException( fileName, exception );
+			}
+
 			tokens.RemoveAt( tokenIndex );
 			tokens.InsertRange( tokenIndex, lines );
 		}
@@ -377,6 +407,6 @@ public abstract class BaseArgumentParser
 
 	static bool isSingleLetterArgumentGroup( string token )
 	{
-		return token[0] == '-' && token.Length > 2 && token[1] != '-' && token[2] != '=';
+		return token.Length > 2 && token[0] == '-' && token[1] != '-' && token[2] != '=';
 	}
 }

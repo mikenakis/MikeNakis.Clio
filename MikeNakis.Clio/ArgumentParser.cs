@@ -14,6 +14,9 @@ public sealed class ArgumentParser : BaseArgumentParser
 	internal override ArgumentParser GetRootArgumentParser() => this;
 	internal int ScreenWidth { get; }
 	internal readonly Sys.Func<string, string> FileReader;
+	//Case-insensitive because Windows and macOS file systems usually are; otherwise a self-including response file
+	//referred to with different casing would still cause an endless loop.
+	internal readonly HashSet<string> ResponseFilesRead = new( Sys.StringComparer.OrdinalIgnoreCase );
 
 	/// <summary>Constructor.</summary>
 	/// <param name="programName" >Specifies the name of the program to use when displaying help.</param>

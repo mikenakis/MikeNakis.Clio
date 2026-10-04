@@ -94,7 +94,7 @@ sealed class NullableStructOption<T> : OptionArgument, IOptionArgument<T?> where
 		get
 		{
 			Assert( HasBeenParsedAssertion() );
-			return IsSupplied ? value ?? presetValue : default;
+			return value;
 		}
 	}
 	public override bool IsSupplied => value != null;
@@ -133,7 +133,7 @@ sealed class NullableClassOption<T> : OptionArgument, IOptionArgument<T?> where 
 		get
 		{
 			Assert( HasBeenParsedAssertion() );
-			return value;// ?? presetValue;
+			return value;
 		}
 	}
 
@@ -243,7 +243,7 @@ sealed class RepeatedStructOption<T> : OptionArgument, IRepeatedOptionArgument<T
 	readonly StructCodec<T> codec;
 	private protected override string TypeName => codec.Name;
 	public override object? RawValue => Value;
-	private protected override object? RawDefaultValue => defaultValue;
+	private protected override object? RawDefaultValue => null;
 	private protected override object? RawPresetValue => presetValue;
 	public IEnumerable<T> Value
 	{
@@ -256,7 +256,6 @@ sealed class RepeatedStructOption<T> : OptionArgument, IRepeatedOptionArgument<T
 	public override bool IsSupplied => value.Count > 0;
 
 	readonly T? presetValue;
-	readonly T? defaultValue;
 	readonly List<T> value = new();
 
 	private protected override void RealizePreset() => realizeValue( presetValue ?? throw new Sys.InvalidOperationException() );
@@ -269,12 +268,11 @@ sealed class RepeatedStructOption<T> : OptionArgument, IRepeatedOptionArgument<T
 	}
 
 	public RepeatedStructOption( BaseArgumentParser argumentParser, string name, char? shortFormName, //
-		string? parameterName, StructCodec<T> codec, string? description, T? presetValue, T? defaultValue )
-		: base( argumentParser, name, shortFormName, parameterName, description, isRequired: defaultValue is null )
+		string? parameterName, StructCodec<T> codec, string? description, T? presetValue )
+		: base( argumentParser, name, shortFormName, parameterName, description, isRequired: false )
 	{
 		this.codec = codec;
 		this.presetValue = presetValue;
-		this.defaultValue = defaultValue;
 	}
 }
 
@@ -283,7 +281,7 @@ sealed class RepeatedClassOption<T> : OptionArgument, IRepeatedOptionArgument<T>
 	readonly ClassCodec<T> codec;
 	private protected override string TypeName => codec.Name;
 	public override object? RawValue => Value;
-	private protected override object? RawDefaultValue => defaultValue;
+	private protected override object? RawDefaultValue => null;
 	private protected override object? RawPresetValue => presetValue;
 	public IEnumerable<T> Value
 	{
@@ -297,7 +295,6 @@ sealed class RepeatedClassOption<T> : OptionArgument, IRepeatedOptionArgument<T>
 	public override bool IsSupplied => value.Count > 0;
 
 	readonly T? presetValue;
-	readonly T? defaultValue;
 	readonly List<T> value = new();
 
 	private protected override void RealizePreset()
@@ -311,11 +308,10 @@ sealed class RepeatedClassOption<T> : OptionArgument, IRepeatedOptionArgument<T>
 	}
 
 	public RepeatedClassOption( BaseArgumentParser argumentParser, string name, char? shortFormName, //
-		string? parameterName, ClassCodec<T> codec, string? description, T? presetValue, T? defaultValue )
-		: base( argumentParser, name, shortFormName, parameterName, description, isRequired: defaultValue is null )
+		string? parameterName, ClassCodec<T> codec, string? description, T? presetValue )
+		: base( argumentParser, name, shortFormName, parameterName, description, isRequired: false )
 	{
 		this.codec = codec;
 		this.presetValue = presetValue;
-		this.defaultValue = defaultValue;
 	}
 }

@@ -1,10 +1,13 @@
 namespace MikeNakis.Clio_Test;
 
+using System.Collections.Generic;
+using System.Linq;
 using MikeNakis.Clio;
 using MikeNakis.Clio.Extensions;
 using MikeNakis.Kit.Extensions;
 using static Statics;
 using Sys = System;
+using SysIo = System.IO;
 using VSTesting = Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [VSTesting.TestClass]
@@ -282,6 +285,105 @@ public sealed class T102_ClioRainyDay
 				);
 		var exception = (TryParseInvokedMoreThanOnceException)caughtException.OrThrow();
 		Assert( exception.VerbName == "juliett" );
+	}
+
+	[VSTesting.TestMethod]
+	public void T222_Unexpected_Empty_Token_Is_Reported_As_User_Error()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		argumentParser.AddSwitch( "alpha" );
+		List<string> outputLines = new();
+		bool result = argumentParser.TryParse( [""], outputLines.Add );
+		Assert( !result );
+		Assert( outputLines.Count > 0 );
+	}
+
+	[VSTesting.TestMethod]
+	public void T223_Missing_Response_File_Is_Reported_As_User_Error()
+	{
+		const string responseFilename = "missing.txt";
+		ArgumentParser argumentParser = newArgumentParser( fileReader );
+		argumentParser.AddSwitch( "alpha" );
+		List<string> outputLines = new();
+		bool result = argumentParser.TryParse( [$"@{responseFilename}"], outputLines.Add );
+		Assert( !result );
+		Assert( outputLines.Any( line => line.Contains( responseFilename, Sys.StringComparison.Ordinal ) ) );
+		return;
+
+		static string fileReader( string filename ) => throw new SysIo.FileNotFoundException( $"Could not find file '{filename}'.", filename );
+	}
+
+	[VSTesting.TestMethod]
+	public void T224_Self_Referencing_Response_File_Is_Reported_As_User_Error()
+	{
+		const string responseFilename = "self.txt";
+		const int maxInvocationCount = 100; //guards against an infinite loop, so that the test fails instead of hanging.
+		int invocationCount = 0;
+		ArgumentParser argumentParser = newArgumentParser( fileReader );
+		argumentParser.AddSwitch( "alpha" );
+		List<string> outputLines = new();
+		bool result = argumentParser.TryParse( [$"@{responseFilename}"], outputLines.Add );
+		Assert( invocationCount < maxInvocationCount );
+		Assert( !result );
+		Assert( outputLines.Count > 0 );
+		return;
+
+		string fileReader( string filename )
+		{
+			if( ++invocationCount >= maxInvocationCount )
+				throw new Sys.InvalidOperationException( "Response file recursion was not detected." );
+			return $"@{responseFilename}";
+		}
+	}
+
+	[VSTesting.TestMethod]
+	public void T225_Bare_At_Sign_Is_Reported_As_User_Error()
+	{
+		ArgumentParser argumentParser = newArgumentParser( fileReader );
+		argumentParser.AddSwitch( "alpha" );
+		List<string> outputLines = new();
+		bool result = argumentParser.TryParse( ["@"], outputLines.Add );
+		Assert( !result );
+		Assert( outputLines.Count > 0 );
+		Assert( outputLines[0] == "Expected a file name after '@'." );
+		return;
+
+		static string fileReader( string filename ) => throw new Sys.InvalidOperationException( "The file reader should not have been invoked." );
+	}
+
+	//TODO: this test documents a limitation: the same response file may not be used both before and after a verb, even
+	//      though this does not cause an endless loop. This is because the set of response files already read is kept
+	//      in the root argument parser and shared by all verb parsers, so any second use of a response file is rejected.
+	//      A better approach would be to track real nesting: record which response file each expanded token came from,
+	//      and reject a response file only if it is currently being expanded, i.e. if it appears in its own chain of
+	//      inclusions. This would allow any number of repeated uses, (even at the same level, as in `@a.rsp @a.rsp`,)
+	//      while still catching every loop. It would require the list of tokens to carry the origin of each token.
+	//      When this is done, this test should be changed to expect success.
+	[VSTesting.TestMethod]
+	public void T226_Same_Response_File_Before_And_After_Verb_Is_Reported_As_User_Error()
+	{
+		const string responseFilename = "common.txt";
+		int invocationCount = 0;
+		ArgumentParser argumentParser = newArgumentParser( fileReader );
+		argumentParser.AddSwitch( "alpha" );
+		argumentParser.AddVerb( "bravo", "bravo-description", argumentParser => //
+			{
+				argumentParser.AddSwitch( "alpha" );
+				argumentParser.TryParse();
+			} );
+		List<string> outputLines = new();
+		bool result = argumentParser.TryParse( [$"@{responseFilename}", "bravo", $"@{responseFilename}"], outputLines.Add );
+		Assert( !result );
+		Assert( invocationCount == 1 );
+		Assert( outputLines.Count > 0 );
+		Assert( outputLines[0] == $"Response file '{responseFilename}' is included more than once." );
+		return;
+
+		string fileReader( string filename )
+		{
+			invocationCount++;
+			return "--alpha";
+		}
 	}
 }
 

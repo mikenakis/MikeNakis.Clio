@@ -399,4 +399,66 @@ public sealed class T102_ClioSunnyDay
 		parse( argumentParser, $"-f=covfefe", "-f=I have the best words" );
 		Assert( option.Value.SequenceEqual( EnumerableOf( "covfefe", "I have the best words" ) ) );
 	}
+
+	[VSTesting.TestMethod]
+	public void T167_Empty_Token_Is_Accepted_As_Positional_Value()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IArgument<string?> positional = argumentParser.AddStringPositional( "positional" );
+		parse( argumentParser, "" );
+		Assert( positional.IsSupplied );
+		Assert( positional.Value == "" );
+	}
+
+	[VSTesting.TestMethod]
+	public void T168_Repeated_Struct_Option_May_Be_Omitted()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IRepeatedOptionArgument<int> option = argumentParser.AddRepeatedOption( "f-option", IntCodec.Instance, 'f' );
+		parse( argumentParser );
+		Assert( !option.IsRequired );
+		Assert( !option.IsSupplied );
+		Assert( !option.Value.Any() );
+	}
+
+	[VSTesting.TestMethod]
+	public void T169_Repeated_Class_Option_May_Be_Omitted()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IRepeatedOptionArgument<string> option = argumentParser.AddRepeatedOption( "f-option", StringCodec.Instance, 'f' );
+		parse( argumentParser );
+		Assert( !option.IsRequired );
+		Assert( !option.IsSupplied );
+		Assert( !option.Value.Any() );
+	}
+
+	[VSTesting.TestMethod]
+	public void T170_Optional_Struct_Option_With_Preset_Receives_Null_When_Not_Supplied()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IOptionArgument<int?> alpha = argumentParser.AddOption( "alpha", IntCodec.Instance, presetValue: 42 );
+		parse( argumentParser );
+		Assert( !alpha.IsSupplied );
+		Assert( alpha.Value == null );
+	}
+
+	[VSTesting.TestMethod]
+	public void T171_Optional_Struct_Option_With_Preset_Receives_Value_When_Supplied()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IOptionArgument<int?> alpha = argumentParser.AddOption( "alpha", IntCodec.Instance, presetValue: 42 );
+		parse( argumentParser, "--alpha=7" );
+		Assert( alpha.IsSupplied );
+		Assert( alpha.Value == 7 );
+	}
+
+	[VSTesting.TestMethod]
+	public void T172_Optional_Struct_Option_With_Preset_Receives_Preset_When_Supplied_Without_Value()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IOptionArgument<int?> alpha = argumentParser.AddOption( "alpha", IntCodec.Instance, presetValue: 42 );
+		parse( argumentParser, "--alpha" );
+		Assert( alpha.IsSupplied );
+		Assert( alpha.Value == 42 );
+	}
 }
