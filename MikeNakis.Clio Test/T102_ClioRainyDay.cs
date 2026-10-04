@@ -328,14 +328,12 @@ public sealed class T102_ClioRainyDay
 		static string fileReader( string filename ) => throw new Sys.InvalidOperationException( "The file reader should not have been invoked." );
 	}
 
-	//TODO: this test documents a limitation: the same response file may not be used both before and after a verb, even
-	//      though this does not cause an endless loop. This is because the set of response files already read is kept
-	//      in the root argument parser and shared by all verb parsers, so any second use of a response file is rejected.
-	//      A better approach would be to track real nesting: record which response file each expanded token came from,
-	//      and reject a response file only if it is currently being expanded, i.e. if it appears in its own chain of
-	//      inclusions. This would allow any number of repeated uses, (even at the same level, as in `@a.rsp @a.rsp`,)
-	//      while still catching every loop. It would require the list of tokens to carry the origin of each token.
-	//      When this is done, this test should be changed to expect success.
+	//This test documents a known limitation: the same response file may not be used both before and after a verb, even
+	//though this does not cause an endless loop. This is because the set of response files already read is kept in the
+	//root argument parser and shared by all verb parsers, so any second use of a response file is rejected, (even at the
+	//same level, as in `@a.rsp @a.rsp`.) Lifting this limitation would require tracking real nesting, (each token would
+	//have to carry the chain of response files it came from,) which was deemed not worth the complexity, since repeated
+	//use of a response file is rare, and when it happens, it is reported as a clear user error.
 	[VSTesting.TestMethod]
 	public void T226_Same_Response_File_Before_And_After_Verb_Is_Reported_As_User_Error()
 	{
