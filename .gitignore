@@ -16,3 +16,9 @@
 
 # Local-build files (they contain secrets so they must never be committed.)
 /local-build*.bat
+
+# PEARL: As of Visual Studio 2022 Version 17.14.30, each time you launch Visual Studio, it spits out a
+#        `.github/copilot-instructions.md` file that absolutely nobody asked for.
+#        Someone at Microsoft should have been fired for this, but I am sure they were promoted instead.
+#        We have no option but to ignore it.
+/.github/copilot-instructions.md
