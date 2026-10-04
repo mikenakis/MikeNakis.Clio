@@ -461,4 +461,50 @@ public sealed class T102_ClioSunnyDay
 		Assert( alpha.IsSupplied );
 		Assert( alpha.Value == 42 );
 	}
+
+	[VSTesting.TestMethod]
+	public void T173_Help_Is_Requested_With_Dash_Question_Mark()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		Catch<HelpException>( () => parse( argumentParser, "-?" ) );
+	}
+
+	[VSTesting.TestMethod]
+	public void T174_Help_Is_Requested_With_Dash_H()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		Catch<HelpException>( () => parse( argumentParser, "-h" ) );
+	}
+
+	[VSTesting.TestMethod]
+	public void T175_Help_Is_Requested_With_Dash_H_In_Single_Letter_Group()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		argumentParser.AddSwitch( "alpha", 'a' );
+		Catch<HelpException>( () => parse( argumentParser, "-ah" ) );
+	}
+
+	[VSTesting.TestMethod]
+	public void T176_Switch_With_Two_Single_Letter_Names_Works_With_Either()
+	{
+		test( "-v" );
+		test( "-V" );
+		return;
+
+		static void test( string token )
+		{
+			ArgumentParser argumentParser = newArgumentParser();
+			ISwitchArgument verbose = argumentParser.AddSwitch( "verbose", ['v', 'V'] );
+			parse( argumentParser, token );
+			Assert( verbose.Value );
+		}
+	}
+
+	[VSTesting.TestMethod]
+	public void T177_Single_Letter_Names_Are_Exposed()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		ISwitchArgument verbose = argumentParser.AddSwitch( "verbose", ['v', 'V'] );
+		Assert( verbose.SingleLetterNames.SequenceEqual( ['v', 'V'] ) );
+	}
 }

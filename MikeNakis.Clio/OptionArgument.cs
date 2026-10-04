@@ -8,8 +8,8 @@ using SysText = System.Text;
 
 abstract class OptionArgument : NamedArgument
 {
-	internal OptionArgument( BaseArgumentParser argumentParser, string name, char? shortFormName, string? parameterName, string? description, bool isRequired )
-			: base( argumentParser, name, shortFormName, description, isRequired )
+	internal OptionArgument( BaseArgumentParser argumentParser, string name, IReadOnlyList<char> singleLetterNames, string? parameterName, string? description, bool isRequired )
+			: base( argumentParser, name, singleLetterNames, description, isRequired )
 	{
 		Assert( Helpers.OptionNameIsValidAssertion( name ) );
 		Assert( parameterName == null || Helpers.OptionParameterNameIsValidAssertion( parameterName ) );
@@ -28,8 +28,7 @@ abstract class OptionArgument : NamedArgument
 	string buildShortUsage()
 	{
 		SysText.StringBuilder stringBuilder = new();
-		if( SingleLetterName != null )
-			stringBuilder.Append( '-' ).Append( SingleLetterName ).Append( ", " );
+		stringBuilder.Append( SingleLetterNamesShortUsage );
 		stringBuilder.Append( "--" ).Append( Name );
 		if( hasPreset )
 			stringBuilder.Append( '[' );
@@ -51,7 +50,7 @@ abstract class OptionArgument : NamedArgument
 	public sealed override int OnTryParse( int tokenIndex, List<string> tokens )
 	{
 		string token = tokens[tokenIndex];
-		int skip = Helpers.ShortFormNameMatch( token, SingleLetterName );
+		int skip = SingleLetterNameMatch( token );
 		if( skip == 0 )
 			skip = Helpers.LongFormNameMatch( token, Name );
 		if( skip == 0 )
@@ -90,14 +89,7 @@ sealed class NullableStructOption<T> : OptionArgument, IOptionArgument<T?> where
 	public override object? RawValue => Value;
 	private protected override object? RawDefaultValue => null;
 	private protected override object? RawPresetValue => presetValue;
-	public T? Value
-	{
-		get
-		{
-			Assert( HasBeenParsedAssertion() );
-			return value;
-		}
-	}
+	public T? Value => getValue();
 	public override bool IsSupplied => value != null;
 
 	readonly T? presetValue;
@@ -113,9 +105,15 @@ sealed class NullableStructOption<T> : OptionArgument, IOptionArgument<T?> where
 		this.value = value;
 	}
 
-	internal NullableStructOption( BaseArgumentParser argumentParser, string name, char? shortFormName, string? parameterName, //
+	T? getValue()
+	{
+		Assert( HasBeenParsedAssertion() );
+		return value;
+	}
+
+	internal NullableStructOption( BaseArgumentParser argumentParser, string name, IReadOnlyList<char> singleLetterNames, string? parameterName, //
 		string? description, StructCodec<T> codec, T? presetValue )
-			: base( argumentParser, name, shortFormName, parameterName, description, isRequired: false )
+			: base( argumentParser, name, singleLetterNames, parameterName, description, isRequired: false )
 	{
 		this.codec = codec;
 		this.presetValue = presetValue;
@@ -129,14 +127,7 @@ sealed class NullableClassOption<T> : OptionArgument, IOptionArgument<T?> where 
 	public override object? RawValue => Value;
 	private protected override object? RawDefaultValue => null;
 	private protected override object? RawPresetValue => presetValue;
-	public T? Value
-	{
-		get
-		{
-			Assert( HasBeenParsedAssertion() );
-			return value;
-		}
-	}
+	public T? Value => getValue();
 
 	public override bool IsSupplied => value != null;
 
@@ -152,9 +143,15 @@ sealed class NullableClassOption<T> : OptionArgument, IOptionArgument<T?> where 
 		this.value = value;
 	}
 
-	internal NullableClassOption( BaseArgumentParser argumentParser, string name, char? shortFormName, string? parameterName, //
+	T? getValue()
+	{
+		Assert( HasBeenParsedAssertion() );
+		return value;
+	}
+
+	internal NullableClassOption( BaseArgumentParser argumentParser, string name, IReadOnlyList<char> singleLetterNames, string? parameterName, //
 		string? description, ClassCodec<T> codec, T? presetValue )
-			: base( argumentParser, name, shortFormName, parameterName, description, isRequired: false )
+			: base( argumentParser, name, singleLetterNames, parameterName, description, isRequired: false )
 	{
 		this.codec = codec;
 		this.presetValue = presetValue;
@@ -168,14 +165,7 @@ sealed class NonNullableStructOption<T> : OptionArgument, IOptionArgument<T> whe
 	public override object? RawValue => Value;
 	private protected override object? RawDefaultValue => defaultValue;
 	private protected override object? RawPresetValue => presetValue;
-	public T Value
-	{
-		get
-		{
-			Assert( HasBeenParsedAssertion() );
-			return value ?? defaultValue ?? throw Failure();
-		}
-	}
+	public T Value => getValue();
 	public override bool IsSupplied => value != null;
 
 	readonly T? presetValue;
@@ -191,8 +181,14 @@ sealed class NonNullableStructOption<T> : OptionArgument, IOptionArgument<T> whe
 		this.value = value;
 	}
 
-	public NonNullableStructOption( BaseArgumentParser argumentParser, string name, char? shortFormName, string? parameterName, StructCodec<T> codec, string? description, T? presetValue, T? defaultValue )
-		: base( argumentParser, name, shortFormName, parameterName, description, isRequired: defaultValue is null )
+	T getValue()
+	{
+		Assert( HasBeenParsedAssertion() );
+		return value ?? defaultValue ?? throw Failure();
+	}
+
+	public NonNullableStructOption( BaseArgumentParser argumentParser, string name, IReadOnlyList<char> singleLetterNames, string? parameterName, StructCodec<T> codec, string? description, T? presetValue, T? defaultValue )
+		: base( argumentParser, name, singleLetterNames, parameterName, description, isRequired: defaultValue is null )
 	{
 		this.codec = codec;
 		this.presetValue = presetValue;
@@ -207,14 +203,7 @@ sealed class NonNullableClassOption<T> : OptionArgument, IOptionArgument<T> wher
 	public override object? RawValue => Value;
 	private protected override object? RawDefaultValue => defaultValue;
 	private protected override object? RawPresetValue => presetValue;
-	public T Value
-	{
-		get
-		{
-			Assert( HasBeenParsedAssertion() );
-			return value ?? defaultValue ?? throw Failure();
-		}
-	}
+	public T Value => getValue();
 	public override bool IsSupplied => value != null;
 
 	readonly T? presetValue;
@@ -230,8 +219,14 @@ sealed class NonNullableClassOption<T> : OptionArgument, IOptionArgument<T> wher
 		this.value = value;
 	}
 
-	public NonNullableClassOption( BaseArgumentParser argumentParser, string name, char? shortFormName, string? parameterName, ClassCodec<T> codec, string? description, T? presetValue, T? defaultValue )
-		: base( argumentParser, name, shortFormName, parameterName, description, isRequired: defaultValue is null )
+	T getValue()
+	{
+		Assert( HasBeenParsedAssertion() );
+		return value ?? defaultValue ?? throw Failure();
+	}
+
+	public NonNullableClassOption( BaseArgumentParser argumentParser, string name, IReadOnlyList<char> singleLetterNames, string? parameterName, ClassCodec<T> codec, string? description, T? presetValue, T? defaultValue )
+		: base( argumentParser, name, singleLetterNames, parameterName, description, isRequired: defaultValue is null )
 	{
 		this.codec = codec;
 		this.presetValue = presetValue;
@@ -246,14 +241,7 @@ sealed class RepeatedStructOption<T> : OptionArgument, IRepeatedOptionArgument<T
 	public override object? RawValue => Value;
 	private protected override object? RawDefaultValue => null;
 	private protected override object? RawPresetValue => presetValue;
-	public IEnumerable<T> Value
-	{
-		get
-		{
-			Assert( HasBeenParsedAssertion() );
-			return value;
-		}
-	}
+	public IEnumerable<T> Value => getValue();
 	public override bool IsSupplied => value.Count > 0;
 
 	readonly T? presetValue;
@@ -268,9 +256,15 @@ sealed class RepeatedStructOption<T> : OptionArgument, IRepeatedOptionArgument<T
 		this.value.Add( value );
 	}
 
-	public RepeatedStructOption( BaseArgumentParser argumentParser, string name, char? shortFormName, //
+	IEnumerable<T> getValue()
+	{
+		Assert( HasBeenParsedAssertion() );
+		return value;
+	}
+
+	public RepeatedStructOption( BaseArgumentParser argumentParser, string name, IReadOnlyList<char> singleLetterNames, //
 		string? parameterName, StructCodec<T> codec, string? description, T? presetValue )
-		: base( argumentParser, name, shortFormName, parameterName, description, isRequired: false )
+		: base( argumentParser, name, singleLetterNames, parameterName, description, isRequired: false )
 	{
 		this.codec = codec;
 		this.presetValue = presetValue;
@@ -284,14 +278,7 @@ sealed class RepeatedClassOption<T> : OptionArgument, IRepeatedOptionArgument<T>
 	public override object? RawValue => Value;
 	private protected override object? RawDefaultValue => null;
 	private protected override object? RawPresetValue => presetValue;
-	public IEnumerable<T> Value
-	{
-		get
-		{
-			Assert( HasBeenParsedAssertion() );
-			return value;
-		}
-	}
+	public IEnumerable<T> Value => getValue();
 
 	public override bool IsSupplied => value.Count > 0;
 
@@ -308,9 +295,15 @@ sealed class RepeatedClassOption<T> : OptionArgument, IRepeatedOptionArgument<T>
 		value.Add( codec.ValueFromText( stringValue ) );
 	}
 
-	public RepeatedClassOption( BaseArgumentParser argumentParser, string name, char? shortFormName, //
+	IEnumerable<T> getValue()
+	{
+		Assert( HasBeenParsedAssertion() );
+		return value;
+	}
+
+	public RepeatedClassOption( BaseArgumentParser argumentParser, string name, IReadOnlyList<char> singleLetterNames, //
 		string? parameterName, ClassCodec<T> codec, string? description, T? presetValue )
-		: base( argumentParser, name, shortFormName, parameterName, description, isRequired: false )
+		: base( argumentParser, name, singleLetterNames, parameterName, description, isRequired: false )
 	{
 		this.codec = codec;
 		this.presetValue = presetValue;

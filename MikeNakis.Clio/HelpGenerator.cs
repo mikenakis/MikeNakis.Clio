@@ -98,11 +98,11 @@ static class HelpGenerator
 		static void outputInformationalMessageAboutCombiningSingleLetters( Sys.Action<string> lineOutputConsumer, IEnumerable<Argument> arguments )
 		{
 			//TODO: recursively search for single-letter switches in verbs
-			IReadOnlyList<NamedArgument> singleLetterSwitches = arguments.OfType<NamedArgument>().Where( argument => argument.SingleLetterName is not null and not '?' ).ToArray();
+			IReadOnlyList<NamedArgument> singleLetterSwitches = arguments.OfType<NamedArgument>().Where( argument => argument.SingleLetterNames.Count > 0 && !argument.SingleLetterNames.Contains( '?' ) ).ToArray();
 			if( singleLetterSwitches.Count > 1 )
 			{
-				char a = singleLetterSwitches[0].SingleLetterName!.Value;
-				char b = singleLetterSwitches[1].SingleLetterName!.Value;
+				char a = singleLetterSwitches[0].SingleLetterNames[0];
+				char b = singleLetterSwitches[1].SingleLetterNames[0];
 				lineOutputConsumer.Invoke( $"Single-letter arguments can be combined. For example, -{a} -{b} can be replaced with -{a}{b}." );
 			}
 		}

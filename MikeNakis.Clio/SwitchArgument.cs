@@ -5,21 +5,20 @@ using static MikeNakis.Clio.Internal.Statics;
 
 sealed class SwitchArgument : NamedArgument, ISwitchArgument
 {
-	internal override string ShortUsage => $"{(SingleLetterName == null ? "" : $"-{SingleLetterName}, ")}--{Name}";
+	internal override string ShortUsage => $"{SingleLetterNamesShortUsage}--{Name}";
 	public override object? RawValue => Value;
-	public bool Value
-	{
-		get
-		{
-			Assert( HasBeenParsedAssertion() );
-			return supplied;
-		}
-	}
+	public bool Value => getValue();
 	bool supplied;
 	public override bool IsSupplied => supplied;
 
-	internal SwitchArgument( BaseArgumentParser argumentParser, string name, char? singleLetterName, string? description )
-			: base( argumentParser, name, singleLetterName, description, isRequired: false )
+	bool getValue()
+	{
+		Assert( HasBeenParsedAssertion() );
+		return supplied;
+	}
+
+	internal SwitchArgument( BaseArgumentParser argumentParser, string name, IReadOnlyList<char> singleLetterNames, string? description )
+			: base( argumentParser, name, singleLetterNames, description, isRequired: false )
 	{
 		Assert( Helpers.SwitchNameIsValidAssertion( name ) );
 	}
@@ -27,7 +26,7 @@ sealed class SwitchArgument : NamedArgument, ISwitchArgument
 	public sealed override int OnTryParse( int tokenIndex, List<string> tokens )
 	{
 		string token = tokens[tokenIndex];
-		int skip = Helpers.ShortFormNameMatch( token, SingleLetterName );
+		int skip = SingleLetterNameMatch( token );
 		if( skip == 0 )
 			skip = Helpers.LongFormNameMatch( token, Name );
 		if( skip == 0 )

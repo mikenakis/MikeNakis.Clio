@@ -87,7 +87,7 @@ class Program
   - positional arguments (e.g. `Program1 inputfile.txt outputfile.txt`)
   - verbs (e.g. `Program1 new ...` or `Program1 list ...`)
 - Single letter names.
-  - Besides a long name, each named argument can also have a single-letter name.
+  - Besides a long name, each named argument can also have one or more single-letter names, e.g. `parser.AddSwitch( "verbose", ['v'] )`.
 - Single-letter argument grouping.
   - Multiple single-letter argument names can be grouped into one.
   - For example `-latr` is the same as `-l -a -t -r`.
@@ -105,7 +105,7 @@ class Program
   - By default, the user must follow an option with an equals-sign and then a value. 
   - The programmer can specify that an option has a preset value, in which case the user may supply the option without an equals-sign and a value. In this case, the option will receive its preset value.
 - Fully automated usage help.
-  - Clio has a built-in `-?`, `--help` switch which displays extensive automatically generated usage help text, using descriptions supplied by the programmer.
+  - Clio has a built-in `-?`, `-h`, `--help` switch which displays extensive automatically generated usage help text, using descriptions supplied by the programmer.
   - If using verbs, then each verb has its own `--help` switch which displays help specifically for that verb.
 - Adjustable help output width.
   - When showing usage help, Clio performs line-wrapping with word-break on the 120th column by default, but the programmer can specify a different column number to wrap at.

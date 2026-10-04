@@ -50,17 +50,16 @@ sealed class NullableClassPositionalArgument<T> : PositionalArgument, IPositiona
 	readonly ClassCodec<T> codec;
 	public override object? RawValue => Value;
 	private protected override string TypeName => codec.Name;
-	public T? Value
-	{
-		get
-		{
-			Assert( HasBeenParsedAssertion() );
-			return value;
-		}
-	}
+	public T? Value => getValue();
 
 	T? value;
 	private protected override void RealizeValue( string valueToken ) => value = codec.ValueFromText( valueToken );
+
+	T? getValue()
+	{
+		Assert( HasBeenParsedAssertion() );
+		return value;
+	}
 
 	internal NullableClassPositionalArgument( BaseArgumentParser argumentParser, string name, ClassCodec<T> codec, string? description )
 		: base( argumentParser, name, description, isRequired: false )
@@ -74,17 +73,16 @@ sealed class NullableStructPositionalArgument<T> : PositionalArgument, IPosition
 	readonly StructCodec<T> codec;
 	public override object? RawValue => Value;
 	private protected override string TypeName => codec.Name;
-	public T? Value
-	{
-		get
-		{
-			Assert( HasBeenParsedAssertion() );
-			return value;
-		}
-	}
+	public T? Value => getValue();
 
 	T? value;
 	private protected override void RealizeValue( string valueToken ) => value = codec.ValueFromText( valueToken );
+
+	T? getValue()
+	{
+		Assert( HasBeenParsedAssertion() );
+		return value;
+	}
 
 	internal NullableStructPositionalArgument( BaseArgumentParser argumentParser, string name, StructCodec<T> codec, string? description )
 		: base( argumentParser, name, description, isRequired: false )
@@ -98,18 +96,17 @@ sealed class NonNullableClassPositionalArgument<T> : PositionalArgument, IPositi
 	readonly ClassCodec<T> codec;
 	public override object? RawValue => Value;
 	private protected override string TypeName => codec.Name;
-	public T Value
-	{
-		get
-		{
-			Assert( HasBeenParsedAssertion() );
-			return (IsSupplied ? value : defaultValue) ?? throw Failure();
-		}
-	}
+	public T Value => getValue();
 
 	readonly T? defaultValue;
 	T? value;
 	private protected override void RealizeValue( string valueToken ) => value = codec.ValueFromText( valueToken );
+
+	T getValue()
+	{
+		Assert( HasBeenParsedAssertion() );
+		return (IsSupplied ? value : defaultValue) ?? throw Failure();
+	}
 
 	public NonNullableClassPositionalArgument( BaseArgumentParser argumentParser, string name, ClassCodec<T> codec, string? description, T? defaultValue )
 		: base( argumentParser, name, description, isRequired: defaultValue is null )
@@ -124,18 +121,17 @@ sealed class NonNullableStructPositionalArgument<T> : PositionalArgument, IPosit
 	readonly StructCodec<T> codec;
 	public override object? RawValue => Value;
 	private protected override string TypeName => codec.Name;
-	public T Value
-	{
-		get
-		{
-			Assert( HasBeenParsedAssertion() );
-			return (IsSupplied ? value : defaultValue) ?? throw new Sys.InvalidOperationException();
-		}
-	}
+	public T Value => getValue();
 
 	readonly T? defaultValue;
 	T? value;
 	private protected override void RealizeValue( string valueToken ) => value = codec.ValueFromText( valueToken );
+
+	T getValue()
+	{
+		Assert( HasBeenParsedAssertion() );
+		return (IsSupplied ? value : defaultValue) ?? throw new Sys.InvalidOperationException();
+	}
 
 	public NonNullableStructPositionalArgument( BaseArgumentParser argumentParser, string name, StructCodec<T> codec, string? description, T? defaultValue )
 		: base( argumentParser, name, description, isRequired: defaultValue is null )

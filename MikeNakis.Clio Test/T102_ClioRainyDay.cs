@@ -377,5 +377,34 @@ public sealed class T102_ClioRainyDay
 
 		static string fileReader( string filename ) => throw new SysIo.FileNotFoundException( "file-reader-message", filename );
 	}
+
+	[VSTesting.TestMethod]
+	public void T228_Single_Letter_Name_H_Is_Reserved_For_Help()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		argumentParser.AddSwitch( "hotel", 'h' );
+		var exception = Catch<DuplicateArgumentSingleLetterNameException>( () => //
+				argumentParser.Parse( [] ) );
+		Assert( exception.ArgumentShortFormName == 'h' );
+	}
+
+	[VSTesting.TestMethod]
+	public void T229_Single_Letter_Names_Of_An_Argument_Must_Be_Unique()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		var exception = Catch<DuplicateArgumentSingleLetterNameException>( () => //
+				argumentParser.AddSwitch( "alpha", ['a', 'a'] ) );
+		Assert( exception.ArgumentShortFormName == 'a' );
+	}
+
+	[VSTesting.TestMethod]
+	public void T230_Single_Letter_Names_Must_Be_Unique_Across_All_Arguments()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		argumentParser.AddSwitch( "alpha", ['a', 'x'] );
+		var exception = Catch<DuplicateArgumentSingleLetterNameException>( () => //
+				argumentParser.AddSwitch( "bravo", ['b', 'x'] ) );
+		Assert( exception.ArgumentShortFormName == 'x' );
+	}
 }
 

@@ -39,7 +39,8 @@ public interface IArgument<T> : IArgument
 ///otherwise.</remarks>
 public interface ISwitchArgument : IArgument<bool>
 {
-	char? SingleLetterName { get; }
+	///<summary>The single-letter names of the switch; empty if it has none.</summary>
+	IReadOnlyList<char> SingleLetterNames { get; }
 }
 
 ///<summary>Represents an option argument.</summary>
