@@ -507,4 +507,22 @@ public sealed class T102_ClioSunnyDay
 		ISwitchArgument verbose = argumentParser.AddSwitch( "verbose", ['v', 'V'] );
 		Assert( verbose.SingleLetterNames.SequenceEqual( ['v', 'V'] ) );
 	}
+
+	[VSTesting.TestMethod]
+	public void T178_Name_That_Is_A_Prefix_Of_Another_Name_Does_Not_Match_The_Other_Name()
+	{
+		test( "--dry-run", expectedDry: false, expectedDryRun: true );
+		test( "--dry", expectedDry: true, expectedDryRun: false );
+		return;
+
+		static void test( string token, bool expectedDry, bool expectedDryRun )
+		{
+			ArgumentParser argumentParser = newArgumentParser();
+			ISwitchArgument dry = argumentParser.AddSwitch( "dry" );
+			ISwitchArgument dryRun = argumentParser.AddSwitch( "dry-run" );
+			parse( argumentParser, token );
+			Assert( dry.Value == expectedDry );
+			Assert( dryRun.Value == expectedDryRun );
+		}
+	}
 }

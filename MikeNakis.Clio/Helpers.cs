@@ -13,6 +13,7 @@ static partial class Helpers
 	static readonly RegEx.Regex optionParameterNameValidationRegex = new( "^[a-zA-Z0-9-]+$", RegEx.RegexOptions.CultureInvariant );
 	static readonly RegEx.Regex parameterNameValidationRegex = new( "^[a-zA-Z][a-zA-Z0-9-]+$", RegEx.RegexOptions.CultureInvariant );
 	static readonly RegEx.Regex verbNameValidationRegex = new( "^[a-zA-Z0-9-]+$", RegEx.RegexOptions.CultureInvariant );
+	static readonly RegEx.Regex namedArgumentNameCharacterRegex = new( "^[a-zA-Z0-9-]$", RegEx.RegexOptions.CultureInvariant );
 
 	internal const string DefaultDescription = "See user's manual";
 
@@ -65,6 +66,8 @@ static partial class Helpers
 
 	internal static bool IsTerminator( char c ) => !singleLetterNameValidationRegex.IsMatch( new string( c, 1 ) );
 
+	static bool isNamedArgumentNameCharacter( char c ) => namedArgumentNameCharacterRegex.IsMatch( new string( c, 1 ) );
+
 	internal static bool ArgumentMustPrecedeVerbAssertion( BaseArgumentParser argumentParser, string name )
 	{
 		Assert( argumentParser.Arguments.OfType<VerbArgument>().FirstOrDefault(), //
@@ -96,7 +99,7 @@ static partial class Helpers
 			return 0;
 		if( !token[2..].StartsWith( name, Sys.StringComparison.Ordinal ) )
 			return 0;
-		if( token.Length > 2 + name.Length && !IsTerminator( token[2 + name.Length] ) )
+		if( token.Length > 2 + name.Length && isNamedArgumentNameCharacter( token[2 + name.Length] ) )
 			return 0;
 		return 2 + name.Length;
 	}
