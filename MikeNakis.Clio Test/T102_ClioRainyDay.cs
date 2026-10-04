@@ -429,5 +429,25 @@ public sealed class T102_ClioRainyDay
 				argumentParser.Parse( ["-ab=5"] ) );
 		Assert( exception.Token == "-ab=5" );
 	}
+
+	[VSTesting.TestMethod]
+	public void T233_Enum_Option_Accepts_Only_Names_Of_Enum_Members()
+	{
+		test( "999" );
+		test( "1" );
+		test( "Value1,Value2" );
+		test( " Value1" );
+		return;
+
+		static void test( string value )
+		{
+			ArgumentParser argumentParser = newArgumentParser();
+			argumentParser.AddOption( "alpha", EnumCodec<Enum1>.Instance );
+			var exception = Catch<UnparsableValueException>( () => //
+					argumentParser.Parse( [$"--alpha={value}"] ) );
+			Assert( exception.ArgumentName == "alpha" );
+			Assert( exception.Token == value );
+		}
+	}
 }
 

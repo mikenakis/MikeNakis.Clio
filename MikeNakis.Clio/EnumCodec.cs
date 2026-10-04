@@ -22,9 +22,10 @@ public sealed class EnumCodec<T> : StructCodec<T> where T : struct, Sys.Enum
 
 	public override T ValueFromText( string text )
 	{
-		if( !Sys.Enum.TryParse( text, out T value ) )
+		//PEARL: Enum.TryParse() also accepts numbers, comma-separated names, and surrounding whitespace, so we require an exact name.
+		if( !Sys.Enum.IsDefined( enumType, text ) )
 			throw new Sys.FormatException( $"Expected one of ({string.Join( ", ", enumType.GetEnumNames() )}), found '{text}'" );
-		return value;
+		return (T)Sys.Enum.Parse( enumType, text );
 	}
 
 	public override string TextFromValue( T value ) => enumType.GetEnumName( value ).OrThrow();
