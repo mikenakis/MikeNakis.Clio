@@ -292,10 +292,10 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		argumentParser.AddSwitch( "alpha" );
-		List<string> outputLines = new();
-		bool result = argumentParser.TryParse( [""], outputLines.Add );
-		Assert( !result );
-		Assert( outputLines.Count > 0 );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.Parse( [""] ) );
+		var exception = (UnexpectedTokenException)caughtException.OrThrow();
+		Assert( exception.Token == "" );
 	}
 
 	[VSTesting.TestMethod]
@@ -304,10 +304,11 @@ public sealed class T102_ClioRainyDay
 		const string responseFilename = "missing.txt";
 		ArgumentParser argumentParser = newArgumentParser( fileReader );
 		argumentParser.AddSwitch( "alpha" );
-		List<string> outputLines = new();
-		bool result = argumentParser.TryParse( [$"@{responseFilename}"], outputLines.Add );
-		Assert( !result );
-		Assert( outputLines.Any( line => line.Contains( responseFilename, Sys.StringComparison.Ordinal ) ) );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.Parse( [$"@{responseFilename}"] ) );
+		var exception = (ResponseFileUnreadableException)caughtException.OrThrow();
+		Assert( exception.FileName == responseFilename );
+		Assert( exception.InnerException is SysIo.FileNotFoundException );
 		return;
 
 		static string fileReader( string filename ) => throw new SysIo.FileNotFoundException( $"Could not find file '{filename}'.", filename );
@@ -321,11 +322,11 @@ public sealed class T102_ClioRainyDay
 		int invocationCount = 0;
 		ArgumentParser argumentParser = newArgumentParser( fileReader );
 		argumentParser.AddSwitch( "alpha" );
-		List<string> outputLines = new();
-		bool result = argumentParser.TryParse( [$"@{responseFilename}"], outputLines.Add );
-		Assert( invocationCount < maxInvocationCount );
-		Assert( !result );
-		Assert( outputLines.Count > 0 );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.Parse( [$"@{responseFilename}"] ) );
+		var exception = (ResponseFileIncludedMoreThanOnceException)caughtException.OrThrow();
+		Assert( exception.FileName == responseFilename );
+		Assert( invocationCount == 1 );
 		return;
 
 		string fileReader( string filename )
@@ -341,11 +342,9 @@ public sealed class T102_ClioRainyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser( fileReader );
 		argumentParser.AddSwitch( "alpha" );
-		List<string> outputLines = new();
-		bool result = argumentParser.TryParse( ["@"], outputLines.Add );
-		Assert( !result );
-		Assert( outputLines.Count > 0 );
-		Assert( outputLines[0] == "Expected a file name after '@'." );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.Parse( ["@"] ) );
+		Assert( caughtException.OrThrow() is ResponseFileNameExpectedException );
 		return;
 
 		static string fileReader( string filename ) => throw new Sys.InvalidOperationException( "The file reader should not have been invoked." );
@@ -371,12 +370,11 @@ public sealed class T102_ClioRainyDay
 				argumentParser.AddSwitch( "alpha" );
 				argumentParser.TryParse();
 			} );
-		List<string> outputLines = new();
-		bool result = argumentParser.TryParse( [$"@{responseFilename}", "bravo", $"@{responseFilename}"], outputLines.Add );
-		Assert( !result );
+		Sys.Exception? caughtException = TryCatch( () => //
+				argumentParser.Parse( [$"@{responseFilename}", "bravo", $"@{responseFilename}"] ) );
+		var exception = (ResponseFileIncludedMoreThanOnceException)caughtException.OrThrow();
+		Assert( exception.FileName == responseFilename );
 		Assert( invocationCount == 1 );
-		Assert( outputLines.Count > 0 );
-		Assert( outputLines[0] == $"Response file '{responseFilename}' is included more than once." );
 		return;
 
 		string fileReader( string filename )
@@ -384,6 +382,23 @@ public sealed class T102_ClioRainyDay
 			invocationCount++;
 			return "--alpha";
 		}
+	}
+
+	[VSTesting.TestMethod]
+	public void T227_TryParse_Outputs_Message_Causes_And_Hint()
+	{
+		ArgumentParser argumentParser = newArgumentParser( fileReader );
+		argumentParser.AddSwitch( "alpha" );
+		List<string> outputLines = new();
+		bool result = argumentParser.TryParse( ["@missing.txt"], outputLines.Add );
+		Assert( !result );
+		Assert( outputLines.SequenceEqual( [ //
+				"Could not read response file 'missing.txt'.",
+				"Because: file-reader-message",
+				"Try 'TestApp --help' for more information."] ) );
+		return;
+
+		static string fileReader( string filename ) => throw new SysIo.FileNotFoundException( "file-reader-message", filename );
 	}
 }
 

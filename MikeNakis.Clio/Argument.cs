@@ -2,7 +2,8 @@ namespace MikeNakis.Clio;
 
 using System.Collections.Generic;
 using System.Linq;
-using static MikeNakis.Clio.Statics;
+using MikeNakis.Clio.Internal;
+using static MikeNakis.Clio.Internal.Statics;
 using Sys = System;
 using SysDiag = System.Diagnostics;
 

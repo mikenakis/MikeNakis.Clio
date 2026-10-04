@@ -1,4 +1,4 @@
-namespace MikeNakis.Clio;
+namespace MikeNakis.Clio.Internal;
 
 using Sys = System;
 using SysDiag = System.Diagnostics;

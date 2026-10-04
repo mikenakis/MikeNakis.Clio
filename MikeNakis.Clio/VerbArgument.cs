@@ -2,7 +2,7 @@ namespace MikeNakis.Clio;
 
 using System.Collections.Generic;
 using System.Linq;
-using static MikeNakis.Clio.Statics;
+using static MikeNakis.Clio.Internal.Statics;
 using SysDiag = System.Diagnostics;
 
 [SysDiag.DebuggerDisplay( "{ToString(),nq}" )]

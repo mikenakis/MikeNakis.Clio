@@ -1,5 +1,6 @@
 namespace MikeNakis.Clio;
 
+using MikeNakis.Clio.Internal;
 using Sys = System;
 using SysDiag = System.Diagnostics;
 using SysReflect = System.Reflection;

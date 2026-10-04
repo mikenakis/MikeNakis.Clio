@@ -1,7 +1,7 @@
 namespace MikeNakis.Clio;
 
 using System.Collections.Generic;
-using static MikeNakis.Clio.Statics;
+using static MikeNakis.Clio.Internal.Statics;
 
 sealed class SwitchArgument : NamedArgument, ISwitchArgument
 {

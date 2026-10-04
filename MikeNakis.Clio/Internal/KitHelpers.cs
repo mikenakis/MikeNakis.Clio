@@ -1,8 +1,8 @@
-namespace MikeNakis.Clio;
+namespace MikeNakis.Clio.Internal;
 
 using System.Collections.Generic;
 using System.Linq;
-using static MikeNakis.Clio.Statics;
+using static MikeNakis.Clio.Internal.Statics;
 using LegacyCollections = System.Collections;
 using Sys = System;
 using SysCompiler = System.Runtime.CompilerServices;

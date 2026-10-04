@@ -1,7 +1,7 @@
 namespace MikeNakis.Clio;
 
 using System.Linq;
-using static MikeNakis.Clio.Statics;
+using static MikeNakis.Clio.Internal.Statics;
 
 abstract class NamedArgument : Argument
 {

@@ -1,7 +1,8 @@
 namespace MikeNakis.Clio;
 
 using System.Collections.Generic;
-using static Clio.Statics;
+using MikeNakis.Clio.Internal;
+using static MikeNakis.Clio.Internal.Statics;
 using Sys = System;
 using SysText = System.Text;
 

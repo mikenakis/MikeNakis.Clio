@@ -40,6 +40,12 @@
 	</Target>
 
 	<ItemGroup>
+		<!-- Allows the test project to access the user exception classes, which are internal, so that rainy-day tests
+		     can examine the exceptions thrown by ArgumentParser.Parse(). -->
+		<InternalsVisibleTo Include="MikeNakis.Clio Test" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<!-- PEARL: Visual Studio will show these items in "Solution Explorer", as if they are in the project directory,
 		    even though they are NOT. The "Visuble=false" magical incantation is necessary to prevent this. -->
 		<None Include="..\LICENSE.md" Pack="True" PackagePath="/" Visible="false" />

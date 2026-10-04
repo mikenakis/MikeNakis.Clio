@@ -2,7 +2,7 @@ namespace MikeNakis.Clio;
 
 using System.Collections.Generic;
 using System.Linq;
-using static MikeNakis.Clio.Statics;
+using static MikeNakis.Clio.Internal.Statics;
 using RegEx = System.Text.RegularExpressions;
 using Sys = System;
 using SysIo = System.IO;
