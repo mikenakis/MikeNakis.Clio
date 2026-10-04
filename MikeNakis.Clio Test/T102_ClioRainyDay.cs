@@ -19,19 +19,6 @@ public sealed class T102_ClioRainyDay
 		return new ArgumentParser( "TestApp", null, null, testingOptions );
 	}
 
-	static string[] split( string commandLine ) => commandLine.Split( ' ', Sys.StringSplitOptions.RemoveEmptyEntries | Sys.StringSplitOptions.TrimEntries );
-
-	static bool tryParse( ArgumentParser argumentParser, string commandLine )
-	{
-		string[] tokens = split( commandLine );
-		return argumentParser.TryParse( tokens, lineOutputConsumer );
-	}
-
-	static void lineOutputConsumer( string text )
-	{
-		Assert( false ); //we do not expect the line-output-consumer to ever be invoked.
-	}
-
 	enum Enum1
 	{
 		Value1,
@@ -116,6 +103,20 @@ public sealed class T102_ClioRainyDay
 		Sys.Exception? caughtException = TryCatch( () => //
 				argumentParser.AddRequiredStringPositional( "alpha" ) );
 		var exception = (CommandLineHasAlreadyBeenParsedException)caughtException.OrThrow();
+		return;
+
+		static string[] split( string commandLine ) => commandLine.Split( ' ', Sys.StringSplitOptions.RemoveEmptyEntries | Sys.StringSplitOptions.TrimEntries );
+
+		static bool tryParse( ArgumentParser argumentParser, string commandLine )
+		{
+			string[] tokens = split( commandLine );
+			return argumentParser.TryParse( tokens, lineOutputConsumer );
+		}
+
+		static void lineOutputConsumer( string text )
+		{
+			Assert( false ); //we do not expect the line-output-consumer to ever be invoked.
+		}
 	}
 
 	[VSTesting.TestMethod]
