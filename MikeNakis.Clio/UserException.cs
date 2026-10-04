@@ -4,9 +4,17 @@ using Sys = System;
 
 public abstract class UserException( Sys.Exception? cause = null ) : Sys.Exception( "", cause );
 
-sealed class HelpException( BaseArgumentParser argumentParser ) : UserException
+public sealed class HelpException : UserException
 {
-	internal BaseArgumentParser ArgumentParser => argumentParser;
+	internal BaseArgumentParser ArgumentParser { get; }
+
+	internal HelpException( BaseArgumentParser argumentParser )
+	{
+		ArgumentParser = argumentParser;
+	}
+
+	public void OutputHelp( Sys.Action<string> lineOutputConsumer ) => ArgumentParser.OutputHelp( lineOutputConsumer );
+	public override string Message => "Help requested.";
 }
 
 sealed class ArgumentSuppliedMoreThanOnceException( string argumentName ) : UserException

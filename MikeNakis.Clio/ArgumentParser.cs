@@ -58,7 +58,7 @@ public sealed class ArgumentParser : BaseArgumentParser
 		}
 		catch( HelpException helpException )
 		{
-			helpException.ArgumentParser.OutputHelp( lineOutputConsumer );
+			helpException.OutputHelp( lineOutputConsumer );
 			return false;
 		}
 		catch( UserException userException )
