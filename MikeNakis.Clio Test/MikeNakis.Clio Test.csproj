@@ -4,6 +4,8 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<LangVersion>13</LangVersion>
 		<IsTestProject>True</IsTestProject>
+		<!-- TODO: perhaps move GenerateProgramFile into TestProjects.proj.xml and have it supply a standard 'main' for tests -->
+		<GenerateProgramFile>False</GenerateProgramFile>
 		<Configurations>Debug</Configurations>
 	</PropertyGroup>
 
