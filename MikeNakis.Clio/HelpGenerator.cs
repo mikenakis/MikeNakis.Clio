@@ -98,7 +98,7 @@ static class HelpGenerator
 		static void outputInformationalMessageAboutCombiningSingleLetters( Sys.Action<string> lineOutputConsumer, IEnumerable<Argument> arguments )
 		{
 			//TODO: recursively search for single-letter switches in verbs
-			IReadOnlyList<NamedArgument> singleLetterSwitches = arguments.OfType<NamedArgument>().Where( argument => argument.SingleLetterName is not null and not 'h' ).ToArray();
+			IReadOnlyList<NamedArgument> singleLetterSwitches = arguments.OfType<NamedArgument>().Where( argument => argument.SingleLetterName is not null and not '?' ).ToArray();
 			if( singleLetterSwitches.Count > 1 )
 			{
 				char a = singleLetterSwitches[0].SingleLetterName!.Value;

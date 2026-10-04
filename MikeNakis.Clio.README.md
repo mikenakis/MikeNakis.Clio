@@ -105,7 +105,7 @@ class Program
   - By default, the user must follow an option with an equals-sign and then a value. 
   - The programmer can specify that an option has a preset value, in which case the user may supply the option without an equals-sign and a value. In this case, the option will receive its preset value.
 - Fully automated usage help.
-  - Clio has a built-in `-h`, `--help` switch which displays extensive automatically generated usage help text, using descriptions supplied by the programmer.
+  - Clio has a built-in `-?`, `--help` switch which displays extensive automatically generated usage help text, using descriptions supplied by the programmer.
   - If using verbs, then each verb has its own `--help` switch which displays help specifically for that verb.
 - Adjustable help output width.
   - When showing usage help, Clio performs line-wrapping with word-break on the 120th column by default, but the programmer can specify a different column number to wrap at.
@@ -179,7 +179,7 @@ _**Argument**_: A programmatic construct that describes part of the syntax of th
 
 _**Default (value)**_: A value that will be used for an option or a positional if the user omits supplying that argument. Note that a default value can be specified only for optional arguments.
 
-_**Named argument**_: An argument that is identified in the command-line by either a dash followed by a single-letter name, or a double dash followed by a (long) name. For example: `-h`, `--help`.
+_**Named argument**_: An argument that is identified in the command-line by either a dash followed by a single-letter name, or a double dash followed by a (long) name. For example: `-?`, `--help`.
 
 _**Nullable**_: An argument which is of a nullable type. A value of `null` indicates that the argument was not supplied. Required arguments are of course non-nullable, but note that optional arguments with a default, are also non-nullable. Thus, the programmatic term _**nullable**_ is not synonymous with _**optional**_, which is a user-experience term.
 

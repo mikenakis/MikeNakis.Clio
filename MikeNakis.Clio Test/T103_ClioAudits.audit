@@ -56,7 +56,6 @@ Options:
                                              If supplied without a value, the
                                              preset is "this is mike-preset".
     -?, --help                               Display this help.
-Single-letter arguments can be combined. For example, -a -? can be replaced with -a?.
 
 --------------------------------------------------------------------------------
 T104_Root_With_Verbs_Help_Audit
@@ -70,7 +69,6 @@ Where <subcommand> is one of:
     juliett     This is the description of juliett.
     kilo        This is the description of kilo.
 Try 'TestApp <subcommand> --help' for more information on a specific subcommand.
-Single-letter arguments can be combined. For example, -a -? can be replaced with -a?.
 
 --------------------------------------------------------------------------------
 T105_Verb_Help_Audit
