@@ -407,6 +407,6 @@ public abstract class BaseArgumentParser
 
 	static bool isSingleLetterArgumentGroup( string token )
 	{
-		return token.Length > 2 && token[0] == '-' && token[1] != '-' && token[2] != '=';
+		return token.Length > 2 && token[0] == '-' && token.Skip( 1 ).All( c => !Helpers.IsTerminator( c ) );
 	}
 }

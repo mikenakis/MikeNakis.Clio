@@ -406,5 +406,28 @@ public sealed class T102_ClioRainyDay
 				argumentParser.AddSwitch( "bravo", ['b', 'x'] ) );
 		Assert( exception.ArgumentShortFormName == 'x' );
 	}
+
+	[VSTesting.TestMethod]
+	public void T231_Dash_After_Single_Letter_Name_Is_Not_A_Single_Letter_Group()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		argumentParser.AddSwitch( "alpha", 'a' );
+		argumentParser.AddStringPositional( "positional" );
+		var exception = Catch<UnexpectedCharactersAfterNamedArgumentException>( () => //
+				argumentParser.Parse( ["-a-", "value"] ) );
+		Assert( exception.ArgumentName == "alpha" );
+		Assert( exception.UnexpectedCharacters == "-" );
+	}
+
+	[VSTesting.TestMethod]
+	public void T232_Equals_Sign_After_Single_Letter_Names_Is_Not_A_Single_Letter_Group()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		argumentParser.AddSwitch( "alpha", 'a' );
+		argumentParser.AddStringOption( "bravo", 'b' );
+		var exception = Catch<UnexpectedTokenException>( () => //
+				argumentParser.Parse( ["-ab=5"] ) );
+		Assert( exception.Token == "-ab=5" );
+	}
 }
 
