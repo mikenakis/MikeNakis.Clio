@@ -32,11 +32,11 @@ sealed class SwitchArgument : NamedArgument, ISwitchArgument
 		if( skip == 0 )
 			return tokenIndex;
 		if( supplied )
-			throw new ArgumentSuppliedMoreThanOnceException( Name );
+			throw new ArgumentSuppliedMoreThanOnceUserException( Name );
 		supplied = true;
 		string remainder = token[skip..];
 		if( remainder != "" )
-			throw new UnexpectedCharactersAfterNamedArgumentException( Name, remainder );
+			throw new UnexpectedCharactersAfterNamedArgumentUserException( Name, remainder );
 		return tokenIndex + 1;
 	}
 }

@@ -93,7 +93,7 @@ abstract class Argument : IArgument
 
 	private protected Argument( BaseArgumentParser argumentParser, string name, string? description, bool isRequired )
 	{
-		Assert( !argumentParser.Arguments.Where( argument => argument.Name == name ).Any(), () => throw new DuplicateArgumentNameException( name ) );
+		Assert( !argumentParser.Arguments.Where( argument => argument.Name == name ).Any(), () => throw new DuplicateArgumentNameProgrammerException( name ) );
 		ArgumentParser = argumentParser;
 		Name = name;
 		Description = description;
@@ -120,7 +120,7 @@ abstract class Argument : IArgument
 
 	private protected bool HasBeenParsedAssertion()
 	{
-		Assert( ArgumentParser.HasBeenParsed, () => throw new CommandLineHasNotBeenParsedException() );
+		Assert( ArgumentParser.HasBeenParsed, () => throw new CommandLineHasNotBeenParsedProgrammerException() );
 		return true;
 	}
 }

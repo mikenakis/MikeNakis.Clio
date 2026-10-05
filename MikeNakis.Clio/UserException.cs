@@ -4,11 +4,11 @@ using Sys = System;
 
 public abstract class UserException( Sys.Exception? cause = null ) : Sys.Exception( "", cause );
 
-public sealed class HelpException : UserException
+public sealed class HelpUserException : UserException
 {
 	internal BaseArgumentParser ArgumentParser { get; }
 
-	internal HelpException( BaseArgumentParser argumentParser )
+	internal HelpUserException( BaseArgumentParser argumentParser )
 	{
 		ArgumentParser = argumentParser;
 	}
@@ -17,82 +17,82 @@ public sealed class HelpException : UserException
 	public override string Message => "Help requested.";
 }
 
-sealed class ArgumentSuppliedMoreThanOnceException( string argumentName ) : UserException
+sealed class ArgumentSuppliedMoreThanOnceUserException( string argumentName ) : UserException
 {
 	public string ArgumentName => argumentName;
 	public override string Message => $"Argument '{argumentName}' supplied more than once.";
 }
 
-sealed class UnexpectedCharactersAfterNamedArgumentException( string argumentName, string unexpectedCharacters ) : UserException
+sealed class UnexpectedCharactersAfterNamedArgumentUserException( string argumentName, string unexpectedCharacters ) : UserException
 {
 	public string ArgumentName => argumentName;
 	public string UnexpectedCharacters => unexpectedCharacters;
 	public override string Message => $"Unexpected characters found after '{argumentName}' : '{unexpectedCharacters}'.";
 }
 
-sealed class EqualsSignExpectedException( string argumentName ) : UserException
+sealed class EqualsSignExpectedUserException( string argumentName ) : UserException
 {
 	public string ArgumentName => argumentName;
 	public override string Message => $"Argument '{argumentName}' must be followed by an equals sign ('=').";
 }
 
-sealed class MetaOptionNameExpectedException( string argumentName ) : UserException
+sealed class MetaOptionNameExpectedUserException( string argumentName ) : UserException
 {
 	public string ArgumentName => argumentName;
 	public override string Message => $"Argument '{argumentName}' must be followed by a colon (':') and a name.";
 }
 
-sealed class MetaOptionValueExpectedException( string argumentName, string metaOptionName ) : UserException
+sealed class MetaOptionValueExpectedUserException( string argumentName, string metaOptionName ) : UserException
 {
 	public string ArgumentName => argumentName;
 	public string MetaOptionName => metaOptionName;
 	public override string Message => $"Name '{metaOptionName}' of argument '{argumentName}' must be followed by an equals sign ('=') and a value.";
 }
 
-sealed class MetaOptionNameSuppliedMoreThanOnceException( string argumentName, string metaOptionName ) : UserException
+sealed class MetaOptionNameSuppliedMoreThanOnceUserException( string argumentName, string metaOptionName ) : UserException
 {
 	public string ArgumentName => argumentName;
 	public string MetaOptionName => metaOptionName;
 	public override string Message => $"Name '{metaOptionName}' of argument '{argumentName}' supplied more than once.";
 }
 
-sealed class RequiredArgumentNotSuppliedException( string argumentName ) : UserException
+sealed class RequiredArgumentNotSuppliedUserException( string argumentName ) : UserException
 {
 	public string ArgumentName => argumentName;
 	public override string Message => $"Required argument '{argumentName}' was not supplied.";
 }
 
-sealed class UnexpectedTokenException( string token ) : UserException
+sealed class UnexpectedTokenUserException( string token ) : UserException
 {
 	public string Token => token;
 	public override string Message => $"Unexpected token: '{token}'.";
 }
 
-sealed class UnparsableValueException( string argumentName, string token, Sys.Exception? cause = null ) : UserException( cause )
+sealed class UnparsableValueUserException( string argumentName, string token, Sys.Exception? cause = null ) : UserException( cause )
 {
 	public string ArgumentName => argumentName;
 	public string Token => token;
 	public override string Message => $"'{token}' is not a valid value for argument '{argumentName}'.";
 }
 
-sealed class VerbExpectedException( string verbTerm ) : UserException
+sealed class VerbExpectedUserException( string verbTerm ) : UserException
 {
 	public string VerbTerm => verbTerm;
 	public override string Message => $"Expected a {verbTerm}.";
 }
 
-sealed class ResponseFileNameExpectedException() : UserException
+sealed class ResponseFileNameExpectedUserException() : UserException
 {
 	public override string Message => "Expected a file name after '@'.";
 }
 
-sealed class ResponseFileUnreadableException( string fileName, Sys.Exception cause ) : UserException( cause )
+sealed class ResponseFileUnreadableUserException( string fileName, Sys.Exception cause ) : UserException( cause )
 {
 	public string FileName => fileName;
 	public override string Message => $"Could not read response file '{fileName}'.";
 }
 
-sealed class ResponseFileIncludedMoreThanOnceException( string fileName ) : UserException
+sealed class ResponseFileIncludedMoreThanOnceUserException( string fileName ) : UserException
 {
 	public string FileName => fileName;
 	public override string Message => $"Response file '{fileName}' is included more than once.";

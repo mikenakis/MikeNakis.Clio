@@ -59,20 +59,20 @@ abstract class OptionArgument : NamedArgument
 		if( remainder.Length == 0 )
 		{
 			if( !hasPreset )
-				throw new EqualsSignExpectedException( Name );
+				throw new EqualsSignExpectedUserException( Name );
 			RealizePreset(); //value = presetValue;
 		}
 		else
 		{
 			if( remainder[0] != '=' )
-				throw new UnexpectedCharactersAfterNamedArgumentException( Name, remainder );
+				throw new UnexpectedCharactersAfterNamedArgumentUserException( Name, remainder );
 			try
 			{
 				RealizeStringValue( remainder[1..] );
 			}
 			catch( Sys.Exception exception )
 			{
-				throw new UnparsableValueException( Name, remainder[1..], exception );
+				throw new UnparsableValueUserException( Name, remainder[1..], exception );
 			}
 		}
 		return tokenIndex + 1;
@@ -101,7 +101,7 @@ sealed class NullableStructOption<T> : OptionArgument, IOptionArgument<T?> where
 	void realizeValue( T value )
 	{
 		if( this.value != null )
-			throw new ArgumentSuppliedMoreThanOnceException( Name );
+			throw new ArgumentSuppliedMoreThanOnceUserException( Name );
 		this.value = value;
 	}
 
@@ -139,7 +139,7 @@ sealed class NullableClassOption<T> : OptionArgument, IOptionArgument<T?> where 
 	void realizeValue( T value )
 	{
 		if( this.value != null )
-			throw new ArgumentSuppliedMoreThanOnceException( Name );
+			throw new ArgumentSuppliedMoreThanOnceUserException( Name );
 		this.value = value;
 	}
 
@@ -177,7 +177,7 @@ sealed class NonNullableStructOption<T> : OptionArgument, IOptionArgument<T> whe
 	void realizeValue( T value )
 	{
 		if( this.value != null )
-			throw new ArgumentSuppliedMoreThanOnceException( Name );
+			throw new ArgumentSuppliedMoreThanOnceUserException( Name );
 		this.value = value;
 	}
 
@@ -215,7 +215,7 @@ sealed class NonNullableClassOption<T> : OptionArgument, IOptionArgument<T> wher
 	void realizeValue( T value )
 	{
 		if( this.value != null )
-			throw new ArgumentSuppliedMoreThanOnceException( Name );
+			throw new ArgumentSuppliedMoreThanOnceUserException( Name );
 		this.value = value;
 	}
 

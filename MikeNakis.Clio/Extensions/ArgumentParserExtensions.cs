@@ -373,7 +373,7 @@ public static class ArgumentParserExtensions
 			self.Parse( arrayOfToken );
 			return true;
 		}
-		catch( HelpException helpException )
+		catch( HelpUserException helpException )
 		{
 			helpException.OutputHelp( lineOutputConsumer );
 			return false;

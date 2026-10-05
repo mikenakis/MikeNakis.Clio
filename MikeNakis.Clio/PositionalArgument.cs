@@ -22,7 +22,7 @@ abstract class PositionalArgument : Argument
 		if( !IsOptional )
 			Assert( argumentParser.Arguments.OfType<PositionalArgument>().Where( positionalArgument => positionalArgument.IsOptional ).FirstOrDefault(), //
 				optionalPositionalArgument => optionalPositionalArgument == null, //
-				optionalPositionalArgument => throw new InvalidArgumentOrderingException( ArgumentOrderingRule.RequiredPositionalMustPrecedeOptionalPositional, Name, optionalPositionalArgument!.Name ) );
+				optionalPositionalArgument => throw new InvalidArgumentOrderingProgrammerException( ArgumentOrderingRule.RequiredPositionalMustPrecedeOptionalPositional, Name, optionalPositionalArgument!.Name ) );
 	}
 
 	public sealed override int OnTryParse( int tokenIndex, List<string> tokens )
@@ -37,7 +37,7 @@ abstract class PositionalArgument : Argument
 		}
 		catch( Sys.Exception exception )
 		{
-			throw new UnparsableValueException( Name, valueToken, exception );
+			throw new UnparsableValueUserException( Name, valueToken, exception );
 		}
 		return tokenIndex + 1;
 	}

@@ -21,16 +21,16 @@ sealed class VerbArgument : Argument, IVerbArgument
 		Assert( Helpers.VerbNameIsValidAssertion( name ) );
 		Assert( argumentParser.Arguments.OfType<PositionalArgument>().FirstOrDefault(), //
 			positionalArgument => positionalArgument == null, //
-			positionalArgument => throw new InvalidArgumentOrderingException( ArgumentOrderingRule.VerbMayNotBePrecededByPositionalArgument, name, positionalArgument!.Name ) );
+			positionalArgument => throw new InvalidArgumentOrderingProgrammerException( ArgumentOrderingRule.VerbMayNotBePrecededByPositionalArgument, name, positionalArgument!.Name ) );
 		Assert( argumentParser.Arguments.Where( argument => argument.IsRequired ).FirstOrDefault(), //
 			requiredArgument => requiredArgument == null, //
-			requiredArgument => throw new InvalidArgumentOrderingException( ArgumentOrderingRule.VerbMayNotBePrecededByRequiredArgument, name, requiredArgument!.Name ) );
+			requiredArgument => throw new InvalidArgumentOrderingProgrammerException( ArgumentOrderingRule.VerbMayNotBePrecededByRequiredArgument, name, requiredArgument!.Name ) );
 		this.verbHandler = verbHandler;
 		if( DebugMode )
 		{
 			VerbInitializationArgumentParser verbInitializationArgumentParser = new( argumentParser, name );
 			verbHandler.Invoke( verbInitializationArgumentParser );
-			Assert( verbInitializationArgumentParser.TryParseWasInvoked, () => throw new VerbHandlerDidNotInvokeTryParseMethodException( Name ) );
+			Assert( verbInitializationArgumentParser.TryParseWasInvoked, () => throw new VerbHandlerDidNotInvokeTryParseMethodProgrammerException( Name ) );
 		}
 	}
 
@@ -55,7 +55,7 @@ sealed class VerbArgument : Argument, IVerbArgument
 
 		public override bool TryParse()
 		{
-			Assert( !TryParseWasInvoked, () => throw new TryParseInvokedMoreThanOnceException( Name ) );
+			Assert( !TryParseWasInvoked, () => throw new TryParseInvokedMoreThanOnceProgrammerException( Name ) );
 			TryParseWasInvoked = true;
 			return false;
 		}

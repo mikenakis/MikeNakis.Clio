@@ -15,7 +15,7 @@ abstract class NamedArgument : Argument
 		Assert( Helpers.ArgumentMustPrecedeVerbAssertion( argumentParser, name ) );
 		Assert( argumentParser.Arguments.OfType<PositionalArgument>().FirstOrDefault(), //
 			positionalArgument => positionalArgument == null, //
-			positionalArgument => throw new InvalidArgumentOrderingException( ArgumentOrderingRule.NamedArgumentMustPrecedePositional, name, positionalArgument!.Name ) );
+			positionalArgument => throw new InvalidArgumentOrderingProgrammerException( ArgumentOrderingRule.NamedArgumentMustPrecedePositional, name, positionalArgument!.Name ) );
 		Assert( singleLetterNamesAreUniqueAssertion( argumentParser, this, singleLetterNames ) );
 		SingleLetterNames = singleLetterNames.ToArray();
 		return;
@@ -32,10 +32,10 @@ abstract class NamedArgument : Argument
 			for( int i = 0; i < singleLetterNames.Count; i++ )
 			{
 				char singleLetterName = singleLetterNames[i];
-				Assert( !singleLetterNames.Take( i ).Contains( singleLetterName ), () => throw new DuplicateArgumentSingleLetterNameException( singleLetterName ) );
+				Assert( !singleLetterNames.Take( i ).Contains( singleLetterName ), () => throw new DuplicateArgumentSingleLetterNameProgrammerException( singleLetterName ) );
 				Assert( argumentParser.Arguments.OfType<NamedArgument>().FirstOrDefault( existingArgument => existingArgument != self && existingArgument.SingleLetterNames.Contains( singleLetterName ) ), //
 					existingArgument => existingArgument == null, //
-					existingArgument => throw new DuplicateArgumentSingleLetterNameException( singleLetterName ) );
+					existingArgument => throw new DuplicateArgumentSingleLetterNameProgrammerException( singleLetterName ) );
 			}
 			return true;
 		}

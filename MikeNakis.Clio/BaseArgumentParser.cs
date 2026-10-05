@@ -99,7 +99,7 @@ public abstract class BaseArgumentParser
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
 	{
 		//A null default value would silently make the option required.
-		Assert( defaultValue is not null, () => throw new NullDefaultValueException( name ) );
+		Assert( defaultValue is not null, () => throw new NullDefaultValueProgrammerException( name ) );
 		return new NonNullableClassOption<T>( this, name, singleLetterNames ?? [], parameterName, codec, description, presetValue, defaultValue );
 	}
 
@@ -241,7 +241,7 @@ public abstract class BaseArgumentParser
 	public IPositionalArgument<T> AddPositionalWithDefault<T>( string name, ClassCodec<T> codec, T defaultValue, string? description = null ) where T : class
 	{
 		//A null default value would silently make the positional argument required.
-		Assert( defaultValue is not null, () => throw new NullDefaultValueException( name ) );
+		Assert( defaultValue is not null, () => throw new NullDefaultValueProgrammerException( name ) );
 		return new NonNullableClassPositionalArgument<T>( this, name, codec, description, defaultValue );
 	}
 
@@ -267,7 +267,7 @@ public abstract class BaseArgumentParser
 
 	internal void AddArgument( Argument argument )
 	{
-		Assert( !HasBeenParsed, () => throw new CommandLineHasAlreadyBeenParsedException() );
+		Assert( !HasBeenParsed, () => throw new CommandLineHasAlreadyBeenParsedProgrammerException() );
 		if( helpSwitch == null && argument is not NamedArgument )
 			addHelpSwitch();
 		arguments.Add( argument );
@@ -291,7 +291,7 @@ public abstract class BaseArgumentParser
 	void reportAnyMissingRequiredArguments()
 	{
 		foreach( Argument argument in arguments.Where( argument => argument.IsRequired && !argument.IsSupplied ) )
-			throw new RequiredArgumentNotSuppliedException( argument.Name );
+			throw new RequiredArgumentNotSuppliedUserException( argument.Name );
 	}
 
 	protected void Parse( List<string> tokens, int tokenIndex )
@@ -353,17 +353,17 @@ public abstract class BaseArgumentParser
 				}
 			}
 
-			throw new UnexpectedTokenException( tokens[tokenIndex] );
+			throw new UnexpectedTokenUserException( tokens[tokenIndex] );
 		}
 
 		if( helpSwitch.Value )
-			throw new HelpException( this );
+			throw new HelpUserException( this );
 		reportAnyMissingRequiredArguments();
 
 		if( verbArguments.Length > 0 )
 		{
 			if( foundVerbArgument == null )
-				throw new VerbExpectedException( GetRootArgumentParser().VerbTerm );
+				throw new VerbExpectedUserException( GetRootArgumentParser().VerbTerm );
 			else
 			{
 				int newTokenIndex = foundVerbArgument.TryParse( tokenIndex, tokens );
@@ -383,7 +383,7 @@ public abstract class BaseArgumentParser
 		{
 			string fileName = tokens[tokenIndex][1..];
 			if( string.IsNullOrWhiteSpace( fileName ) )
-				throw new ResponseFileNameExpectedException();
+				throw new ResponseFileNameExpectedUserException();
 
 			string fullPath;
 			try
@@ -393,13 +393,13 @@ public abstract class BaseArgumentParser
 			catch( Sys.Exception exception ) when( exception is Sys.ArgumentException or Sys.NotSupportedException //
 				or Sys.IO.IOException or Sys.Security.SecurityException )
 			{
-				throw new ResponseFileUnreadableException( fileName, exception );
+				throw new ResponseFileUnreadableUserException( fileName, exception );
 			}
 
 			//A response file which includes itself would cause an endless loop, so we forbid reading any response file
 			//more than once.
 			if( !rootArgumentParser.ResponseFilesRead.Add( fullPath ) )
-				throw new ResponseFileIncludedMoreThanOnceException( fileName );
+				throw new ResponseFileIncludedMoreThanOnceUserException( fileName );
 
 			IReadOnlyList<string> lines;
 			try
@@ -409,7 +409,7 @@ public abstract class BaseArgumentParser
 			catch( Sys.Exception exception ) when( exception is Sys.IO.IOException or Sys.UnauthorizedAccessException //
 				or Sys.Security.SecurityException )
 			{
-				throw new ResponseFileUnreadableException( fileName, exception );
+				throw new ResponseFileUnreadableUserException( fileName, exception );
 			}
 
 			tokens.RemoveAt( tokenIndex );

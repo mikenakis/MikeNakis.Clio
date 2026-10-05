@@ -466,14 +466,14 @@ public sealed class T102_ClioSunnyDay
 	public void T173_Help_Is_Requested_With_Dash_Question_Mark()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
-		Catch<HelpException>( () => parse( argumentParser, "-?" ) );
+		Catch<HelpUserException>( () => parse( argumentParser, "-?" ) );
 	}
 
 	[VSTesting.TestMethod]
 	public void T174_Help_Is_Requested_With_Dash_H()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
-		Catch<HelpException>( () => parse( argumentParser, "-h" ) );
+		Catch<HelpUserException>( () => parse( argumentParser, "-h" ) );
 	}
 
 	[VSTesting.TestMethod]
@@ -481,7 +481,7 @@ public sealed class T102_ClioSunnyDay
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		argumentParser.AddSwitch( "alpha", 'a' );
-		Catch<HelpException>( () => parse( argumentParser, "-ah" ) );
+		Catch<HelpUserException>( () => parse( argumentParser, "-ah" ) );
 	}
 
 	[VSTesting.TestMethod]

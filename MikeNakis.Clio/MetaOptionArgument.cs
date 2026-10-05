@@ -53,17 +53,17 @@ abstract class MetaOptionArgument : NamedArgument
 			return tokenIndex;
 		string remainder = token[skip..];
 		if( remainder.Length == 0 || remainder[0] != ':' )
-			throw new MetaOptionNameExpectedException( Name );
+			throw new MetaOptionNameExpectedUserException( Name );
 		int equalsSignIndex = remainder.IndexOf( '=' );
 		string metaOptionName = equalsSignIndex == -1 ? remainder[1..] : remainder[1..equalsSignIndex];
 		if( metaOptionName.Length == 0 )
-			throw new MetaOptionNameExpectedException( Name );
+			throw new MetaOptionNameExpectedUserException( Name );
 		if( ContainsMetaOptionName( metaOptionName ) )
-			throw new MetaOptionNameSuppliedMoreThanOnceException( Name, metaOptionName );
+			throw new MetaOptionNameSuppliedMoreThanOnceUserException( Name, metaOptionName );
 		if( equalsSignIndex == -1 )
 		{
 			if( !hasPreset )
-				throw new MetaOptionValueExpectedException( Name, metaOptionName );
+				throw new MetaOptionValueExpectedUserException( Name, metaOptionName );
 			RealizePreset( metaOptionName );
 		}
 		else
@@ -75,7 +75,7 @@ abstract class MetaOptionArgument : NamedArgument
 			}
 			catch( Sys.Exception exception )
 			{
-				throw new UnparsableValueException( Name, stringValue, exception );
+				throw new UnparsableValueUserException( Name, stringValue, exception );
 			}
 		}
 		return tokenIndex + 1;

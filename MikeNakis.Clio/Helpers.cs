@@ -55,7 +55,7 @@ static partial class Helpers
 
 	static bool nameIsValidAssertion( string name, RegEx.Regex regex )
 	{
-		Assert( nameIsValid( name, regex ), () => throw new InvalidArgumentNameException( name ) );
+		Assert( nameIsValid( name, regex ), () => throw new InvalidArgumentNameProgrammerException( name ) );
 		return true;
 	}
 
@@ -72,7 +72,7 @@ static partial class Helpers
 	{
 		Assert( argumentParser.Arguments.OfType<VerbArgument>().FirstOrDefault(), //
 			verb => verb == null, //
-			verb => throw new InvalidArgumentOrderingException( ArgumentOrderingRule.ArgumentMustPrecedeVerb, name, verb!.Name ) );
+			verb => throw new InvalidArgumentOrderingProgrammerException( ArgumentOrderingRule.ArgumentMustPrecedeVerb, name, verb!.Name ) );
 		return true;
 	}
 
