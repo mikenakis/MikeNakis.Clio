@@ -210,7 +210,6 @@ _**Verb**_: A special kind of argument which is identified by a word and has an 
 - TODO: Remove the requirement for no positional arguments before verbs.
 - TODO: Add help message about response files.
 - TODO: Add support for including some free text in usage help: a short help prefix and a number of help footnotes.
-- TODO: Remove all strictly-speaking-unnecessary functionality from the Clio interface, move it to extension methods.
 - TODO: Add more functionality for creating enum arguments.
 - TODO: Clarify the message about combining short-form options into one argument by mentioning that it applies to switches and to options with a preset. Give a correct example by searching for either switches or options with a preset.  (As it stands, the example will include any named options with a short-form name, and this may include an option without a preset, which cannot really be combined.)
 - TODO: Improve user-exception messages.

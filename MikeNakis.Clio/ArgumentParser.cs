@@ -42,35 +42,6 @@ public sealed class ArgumentParser : BaseArgumentParser
 	}
 
 	/// <summary>Parses an array of command-line tokens, stores values in arguments, invokes verb handlers, etc.</summary>
-	/// <remarks>If something goes wrong, (or if the `--help` option is supplied,) it displays all necessary messages
-	/// and returns <c>false</c>, meaning that the current process should terminate.</remarks>
-	/// <param name="arrayOfToken">The command-line tokens to parse.</param>
-	/// <param name="lineOutputConsumer">A consumer for text output. Defaults to the <see cref="Sys.IO.TextWriter.WriteLine( string )"/> method of <see cref="Sys.Console.Error"/>.</param>
-	/// <returns><c>true</c> if successful; <c>false</c> otherwise.</returns>
-	public bool TryParse( string[] arrayOfToken, Sys.Action<string>? lineOutputConsumer = null )
-	{
-		lineOutputConsumer ??= Sys.Console.Error.WriteLine;
-		List<string> tokens = new( arrayOfToken );
-		try
-		{
-			Parse( tokens, 0 );
-			return true;
-		}
-		catch( HelpException helpException )
-		{
-			helpException.OutputHelp( lineOutputConsumer );
-			return false;
-		}
-		catch( UserException userException )
-		{
-			Helpers.OutputExceptionMessage( userException, lineOutputConsumer );
-			string fullName = GetFullName();
-			lineOutputConsumer.Invoke( $"Try '{fullName} --help' for more information." );
-			return false;
-		}
-	}
-
-	/// <summary>Parses an array of command-line tokens, stores values in arguments, invokes verb handlers, etc.</summary>
 	/// <remarks>If something goes wrong, an exception is thrown.</remarks>
 	/// <param name="arrayOfToken">The command-line tokens to parse.</param>
 	public void Parse( string[] arrayOfToken )
