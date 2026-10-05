@@ -180,7 +180,7 @@ Options:
 --------------------------------------------------------------------------------
 T118_Meta_Option_Name_Supplied_More_Than_Once_Is_Caught
 
-Name 'alpha' of argument 'define' supplied more than once.
+Argument 'define:alpha' supplied more than once.
 Try 'TestApp --help' for more information.
 
 --------------------------------------------------------------------------------
@@ -192,5 +192,12 @@ Try 'TestApp --help' for more information.
 --------------------------------------------------------------------------------
 T120_Meta_Option_Value_Not_Supplied_Is_Caught
 
-Name 'alpha' of argument 'define' must be followed by an equals sign ('=') and a value.
+Argument 'define:alpha' must be followed by an equals sign ('=') and a value.
+Try 'TestApp --help' for more information.
+
+--------------------------------------------------------------------------------
+T121_Unparsable_Meta_Option_Value_Is_Caught
+
+'x' is not a valid value for argument 'define:alpha'.
+Because: Expected an integer, found 'x'
 Try 'TestApp --help' for more information.

@@ -393,4 +393,16 @@ public sealed class T103_ClioAudits
 			Assert( !ok );
 		} );
 	}
+
+	[VSTesting.TestMethod]
+	public void T121_Unparsable_Meta_Option_Value_Is_Caught()
+	{
+		Audit.With( lineOutputConsumer =>
+		{
+			ArgumentParser argumentParser = newArgumentParser();
+			argumentParser.AddMetaOption( "define", IntCodec.Instance );
+			bool ok = tryParse( argumentParser, "--define:alpha=x", lineOutputConsumer: lineOutputConsumer );
+			Assert( !ok );
+		} );
+	}
 }

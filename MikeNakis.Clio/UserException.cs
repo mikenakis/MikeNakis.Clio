@@ -46,14 +46,14 @@ sealed class MetaOptionValueExpectedUserException( string argumentName, string m
 {
 	public string ArgumentName => argumentName;
 	public string MetaOptionName => metaOptionName;
-	public override string Message => $"Name '{metaOptionName}' of argument '{argumentName}' must be followed by an equals sign ('=') and a value.";
+	public override string Message => $"Argument '{argumentName}:{metaOptionName}' must be followed by an equals sign ('=') and a value.";
 }
 
 sealed class MetaOptionNameSuppliedMoreThanOnceUserException( string argumentName, string metaOptionName ) : UserException
 {
 	public string ArgumentName => argumentName;
 	public string MetaOptionName => metaOptionName;
-	public override string Message => $"Name '{metaOptionName}' of argument '{argumentName}' supplied more than once.";
+	public override string Message => $"Argument '{argumentName}:{metaOptionName}' supplied more than once.";
 }
 
 sealed class RequiredArgumentNotSuppliedUserException( string argumentName ) : UserException

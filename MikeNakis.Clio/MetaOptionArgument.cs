@@ -75,7 +75,7 @@ abstract class MetaOptionArgument : NamedArgument
 			}
 			catch( Sys.Exception exception )
 			{
-				throw new UnparsableValueUserException( Name, stringValue, exception );
+				throw new UnparsableValueUserException( $"{Name}:{metaOptionName}", stringValue, exception );
 			}
 		}
 		return tokenIndex + 1;

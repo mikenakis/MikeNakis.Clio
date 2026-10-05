@@ -516,7 +516,7 @@ public sealed class T102_ClioRainyDay
 		argumentParser.AddMetaOption( "define", IntCodec.Instance );
 		var exception = Catch<UnparsableValueUserException>( () => //
 				argumentParser.Parse( ["--define:alpha=x"] ) );
-		Assert( exception.ArgumentName == "define" );
+		Assert( exception.ArgumentName == "define:alpha" );
 		Assert( exception.Token == "x" );
 	}
 }
