@@ -8,14 +8,6 @@ using SysText = System.Text;
 
 abstract class OptionArgument : NamedArgument
 {
-	internal OptionArgument( BaseArgumentParser argumentParser, string name, IReadOnlyList<char> singleLetterNames, string? parameterName, string? description, bool isRequired )
-			: base( argumentParser, name, singleLetterNames, description, isRequired )
-	{
-		Assert( Helpers.OptionNameIsValidAssertion( name ) );
-		Assert( parameterName == null || Helpers.OptionParameterNameIsValidAssertion( parameterName ) );
-		this.parameterName = parameterName;
-	}
-
 	readonly string? parameterName;
 	string effectiveParameterName => $"<{parameterName ?? TypeName}>";
 	private protected abstract string TypeName { get; }
@@ -24,6 +16,14 @@ abstract class OptionArgument : NamedArgument
 	internal bool HasDefault => RawDefaultValue != null;
 	private protected abstract object? RawPresetValue { get; }
 	bool hasPreset => RawPresetValue != null;
+
+	internal OptionArgument( BaseArgumentParser argumentParser, string name, IReadOnlyList<char> singleLetterNames, string? parameterName, string? description, bool isRequired )
+			: base( argumentParser, name, singleLetterNames, description, isRequired )
+	{
+		Assert( Helpers.OptionNameIsValidAssertion( name ) );
+		Assert( parameterName == null || Helpers.OptionParameterNameIsValidAssertion( parameterName ) );
+		this.parameterName = parameterName;
+	}
 
 	string buildShortUsage()
 	{
