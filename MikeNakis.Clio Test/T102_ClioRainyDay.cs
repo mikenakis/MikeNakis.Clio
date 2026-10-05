@@ -447,5 +447,23 @@ public sealed class T102_ClioRainyDay
 			Assert( exception.Token == value );
 		}
 	}
+
+	[VSTesting.TestMethod]
+	public void T234_Default_Value_Of_Option_Must_Not_Be_Null()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		var exception = Catch<NullDefaultValueException>( () => //
+				argumentParser.AddStringOptionWithDefault( "alpha", null! ) );
+		Assert( exception.ArgumentName == "alpha" );
+	}
+
+	[VSTesting.TestMethod]
+	public void T235_Default_Value_Of_Positional_Must_Not_Be_Null()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		var exception = Catch<NullDefaultValueException>( () => //
+				argumentParser.AddStringPositionalWithDefault( "alpha", null! ) );
+		Assert( exception.ArgumentName == "alpha" );
+	}
 }
 

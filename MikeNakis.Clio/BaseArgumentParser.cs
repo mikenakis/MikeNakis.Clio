@@ -98,6 +98,8 @@ public abstract class BaseArgumentParser
 	public IOptionArgument<T> AddOptionWithDefault<T>( string name, ClassCodec<T> codec, T defaultValue, IReadOnlyList<char>? singleLetterNames = null, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
 	{
+		//A null default value would silently make the option required.
+		Assert( defaultValue is not null, () => throw new NullDefaultValueException( name ) );
 		return new NonNullableClassOption<T>( this, name, singleLetterNames ?? [], parameterName, codec, description, presetValue, defaultValue );
 	}
 
@@ -202,6 +204,8 @@ public abstract class BaseArgumentParser
 	///if the argument is not supplied.</param>
 	public IPositionalArgument<T> AddPositionalWithDefault<T>( string name, ClassCodec<T> codec, T defaultValue, string? description = null ) where T : class
 	{
+		//A null default value would silently make the positional argument required.
+		Assert( defaultValue is not null, () => throw new NullDefaultValueException( name ) );
 		return new NonNullableClassPositionalArgument<T>( this, name, codec, description, defaultValue );
 	}
 

@@ -27,6 +27,12 @@ public sealed class InvalidArgumentNameException( string argumentName ) : Progra
 	public string ArgumentName => argumentName;
 }
 
+/// <summary>Thrown when an attempt is made to add an argument with a default value of <c>null</c>.</summary>
+public sealed class NullDefaultValueException( string argumentName ) : ProgrammerException
+{
+	public string ArgumentName => argumentName;
+}
+
 public enum ArgumentOrderingRule
 {
 	NamedArgumentMustPrecedePositional,
