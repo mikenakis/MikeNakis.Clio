@@ -465,5 +465,59 @@ public sealed class T102_ClioRainyDay
 				argumentParser.AddStringPositionalWithDefault( "alpha", null! ) );
 		Assert( exception.ArgumentName == "alpha" );
 	}
+
+	[VSTesting.TestMethod]
+	public void T236_Meta_Option_Requires_Colon_And_Name()
+	{
+		test( "--define" );
+		test( "--define=alpha" );
+		test( "--define:" );
+		test( "--define:=alpha-value" );
+		test( "-D" );
+		test( "-D=alpha" );
+		return;
+
+		static void test( string token )
+		{
+			ArgumentParser argumentParser = newArgumentParser();
+			argumentParser.AddMetaOption( "define", StringCodec.Instance, 'D', presetValue: "define-preset" );
+			var exception = Catch<MetaOptionNameExpectedException>( () => //
+					argumentParser.Parse( [token] ) );
+			Assert( exception.ArgumentName == "define" );
+		}
+	}
+
+	[VSTesting.TestMethod]
+	public void T237_Meta_Option_Name_Must_Not_Be_Supplied_More_Than_Once()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		argumentParser.AddMetaOption( "define", StringCodec.Instance, 'D' );
+		var exception = Catch<MetaOptionNameSuppliedMoreThanOnceException>( () => //
+				argumentParser.Parse( ["--define:alpha=1", "-D:alpha=2"] ) );
+		Assert( exception.ArgumentName == "define" );
+		Assert( exception.MetaOptionName == "alpha" );
+	}
+
+	[VSTesting.TestMethod]
+	public void T238_Meta_Option_Without_Preset_Requires_Value()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		argumentParser.AddMetaOption( "define", StringCodec.Instance );
+		var exception = Catch<MetaOptionValueExpectedException>( () => //
+				argumentParser.Parse( ["--define:alpha"] ) );
+		Assert( exception.ArgumentName == "define" );
+		Assert( exception.MetaOptionName == "alpha" );
+	}
+
+	[VSTesting.TestMethod]
+	public void T239_Unparsable_Meta_Option_Value_Is_Reported_As_User_Error()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		argumentParser.AddMetaOption( "define", IntCodec.Instance );
+		var exception = Catch<UnparsableValueException>( () => //
+				argumentParser.Parse( ["--define:alpha=x"] ) );
+		Assert( exception.ArgumentName == "define" );
+		Assert( exception.Token == "x" );
+	}
 }
 

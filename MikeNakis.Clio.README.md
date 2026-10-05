@@ -120,6 +120,13 @@ class Program
   - The programmer can specify that an option is repeatable. A repeatable option of type `T` has a value of type
 	`IEnumerable<T>`. The user can supply the option multiple times in the command-line, as in `Program1 --option1=<value1> --option1=<value2>`
 	and the option will contain all supplied values.
+- Meta-options.
+  - A meta-option supplies a value for a name, as in `Program1 --define:<name>=<value>`. The user can supply the
+	meta-option multiple times, each time with a different name. A meta-option of type `T` has a value of type
+	`IReadOnlyDictionary<string,T>`, which maps each supplied name to its value.
+  - The colon introduces the name, and the equals sign introduces the value, just as with options.
+  - If the meta-option has a preset value, the user can supply a name without an equals sign and a value, as in
+	`Program1 --define:<name>`, and the name will receive the preset value.
 - ...and more.
 
 ## Limitations
@@ -127,9 +134,6 @@ class Program
 - No support for repeatable switches, as in `Program1 --switch1 --switch1`. Every switch can be supplied at most once.
   - **Workaround:** Turn the switch into an option of type `int`, with a default of `0` so that it can be omitted, and a preset of `1` so that `--switch1` can be used instead of `--switch1=1`.
   - Support for repeatable switches will be added in the future.
-- No support for meta-options, for example `--option1=<name>=<value>`.
-  - **Workaround:** In the "description" of the option, explain that the value of the option is a `;`-separated list of `name=value` pairs, and do the splitting and the parsing yourself.
-  - Support for meta-options will be added in the future.
 - No support for invertable switches. For example, `git config` has options like `--[no-]global`, which means that either `--global` or `--no-global` can be used. Other utilities allow prefixing switch names with either `-` or `+`, which inverts the effect of the switch.
   - **Workaround:** Specify each option and its inverse option separately.
   - Support for invertable switches and options will be added in the future.
@@ -179,6 +183,8 @@ _**Argument**_: A programmatic construct that describes part of the syntax of th
 
 _**Default (value)**_: A value that will be used for an option or a positional if the user omits supplying that argument. Note that a default value can be specified only for optional arguments.
 
+_**Meta-option**_: A named argument which supplies a value for a name. For example: `Program1 --define:DEBUG=1`.
+
 _**Named argument**_: An argument that is identified in the command-line by either a dash followed by a single-letter name, or a double dash followed by a (long) name. For example: `-?`, `--help`.
 
 _**Nullable**_: An argument which is of a nullable type. A value of `null` indicates that the argument was not supplied. Required arguments are of course non-nullable, but note that optional arguments with a default, are also non-nullable. Thus, the programmatic term _**nullable**_ is not synonymous with _**optional**_, which is a user-experience term.
@@ -216,7 +222,6 @@ _**Verb**_: A special kind of argument which is identified by a word and has an 
 - TODO: Rewrite the argument name validation functions to _not_ work with regular expressions and add more exceptions that give more detailed explanations as to what is wrong with an invalid argument name.
 - TODO: Introduce invertable options, as in `--[no-]option` and as in `-o|+o` or possibly `-o-|-o+`.
 - TODO: Introduce repeatable switches, whose type is `int` instead of `bool`.
-- TODO: Introduce meta-options, as in `--option=<name>=<value>`, whose type is `IReadOnlyDictionary<K,V>`.
 - TODO: Introduce greedy parameters. A greedy parameter consumes all remaining non-named arguments in the command-line, and its value is of type `IReadOnlyList<T>` instead of `T`.
 - TODO: Introduce a number-only option, as per `grep` option `-NUM` which is the same as `--context=NUM`.
 - TODO: Introduce hidden arguments. (Arguments which are excluded from help.)

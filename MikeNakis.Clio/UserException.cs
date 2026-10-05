@@ -36,6 +36,26 @@ sealed class EqualsSignExpectedException( string argumentName ) : UserException
 	public override string Message => $"Argument '{argumentName}' must be followed by an equals sign ('=').";
 }
 
+sealed class MetaOptionNameExpectedException( string argumentName ) : UserException
+{
+	public string ArgumentName => argumentName;
+	public override string Message => $"Argument '{argumentName}' must be followed by a colon (':') and a name.";
+}
+
+sealed class MetaOptionValueExpectedException( string argumentName, string metaOptionName ) : UserException
+{
+	public string ArgumentName => argumentName;
+	public string MetaOptionName => metaOptionName;
+	public override string Message => $"Name '{metaOptionName}' of argument '{argumentName}' must be followed by an equals sign ('=') and a value.";
+}
+
+sealed class MetaOptionNameSuppliedMoreThanOnceException( string argumentName, string metaOptionName ) : UserException
+{
+	public string ArgumentName => argumentName;
+	public string MetaOptionName => metaOptionName;
+	public override string Message => $"Name '{metaOptionName}' of argument '{argumentName}' supplied more than once.";
+}
+
 sealed class RequiredArgumentNotSuppliedException( string argumentName ) : UserException
 {
 	public string ArgumentName => argumentName;

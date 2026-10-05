@@ -525,4 +525,77 @@ public sealed class T102_ClioSunnyDay
 			Assert( dryRun.Value == expectedDryRun );
 		}
 	}
+
+	[VSTesting.TestMethod]
+	public void T179_Class_Meta_Option_Works()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IMetaOptionArgument<string> define = argumentParser.AddMetaOption( "define", StringCodec.Instance, 'D' );
+		parse( argumentParser, "--define:alpha=alpha-value", "-D:bravo=bravo-value" );
+		Assert( define.IsSupplied );
+		Assert( define.Value.Count == 2 );
+		Assert( define.Value["alpha"] == "alpha-value" );
+		Assert( define.Value["bravo"] == "bravo-value" );
+	}
+
+	[VSTesting.TestMethod]
+	public void T180_Struct_Meta_Option_Works()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IMetaOptionArgument<int> define = argumentParser.AddMetaOption( "define", IntCodec.Instance, 'D' );
+		parse( argumentParser, "--define:alpha=42", "-D:bravo=43" );
+		Assert( define.IsSupplied );
+		Assert( define.Value.Count == 2 );
+		Assert( define.Value["alpha"] == 42 );
+		Assert( define.Value["bravo"] == 43 );
+	}
+
+	[VSTesting.TestMethod]
+	public void T181_Meta_Option_May_Be_Omitted()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IMetaOptionArgument<string> define = argumentParser.AddMetaOption( "define", StringCodec.Instance );
+		parse( argumentParser );
+		Assert( !define.IsRequired );
+		Assert( !define.IsSupplied );
+		Assert( define.Value.Count == 0 );
+	}
+
+	[VSTesting.TestMethod]
+	public void T182_Class_Meta_Option_With_Preset_Receives_Preset_When_Supplied_Without_Value()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IMetaOptionArgument<string> define = argumentParser.AddMetaOption( "define", StringCodec.Instance, presetValue: "define-preset" );
+		parse( argumentParser, "--define:alpha", "--define:bravo=bravo-value" );
+		Assert( define.Value["alpha"] == "define-preset" );
+		Assert( define.Value["bravo"] == "bravo-value" );
+	}
+
+	[VSTesting.TestMethod]
+	public void T183_Struct_Meta_Option_With_Preset_Receives_Preset_When_Supplied_Without_Value()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IMetaOptionArgument<int> define = argumentParser.AddMetaOption( "define", IntCodec.Instance, presetValue: 1 );
+		parse( argumentParser, "--define:alpha", "--define:bravo=42" );
+		Assert( define.Value["alpha"] == 1 );
+		Assert( define.Value["bravo"] == 42 );
+	}
+
+	[VSTesting.TestMethod]
+	public void T184_Meta_Option_Value_May_Contain_Equals_Signs_And_Colons()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IMetaOptionArgument<string> define = argumentParser.AddMetaOption( "define", StringCodec.Instance );
+		parse( argumentParser, "--define:alpha=a=b:c" );
+		Assert( define.Value["alpha"] == "a=b:c" );
+	}
+
+	[VSTesting.TestMethod]
+	public void T185_Meta_Option_Value_Can_Be_Empty()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		IMetaOptionArgument<string> define = argumentParser.AddMetaOption( "define", StringCodec.Instance );
+		parse( argumentParser, "--define:alpha=" );
+		Assert( define.Value["alpha"] == "" );
+	}
 }

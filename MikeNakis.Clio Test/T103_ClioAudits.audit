@@ -165,3 +165,32 @@ T116_Missing_Verb_Is_Caught
 
 Expected a subcommand.
 Try 'TestApp --help' for more information.
+
+--------------------------------------------------------------------------------
+T117_Meta_Option_Help_Audit
+
+Usage:
+    TestApp [<option>...]
+Options:
+    -D, --define:<name>=<string>       This is the description of define.
+    --level:<name>[=<level-parameter>] This is the description of level.
+                                       If a name is supplied without a value, the preset is 1.
+    -?, -h, --help                     Display this help.
+
+--------------------------------------------------------------------------------
+T118_Meta_Option_Name_Supplied_More_Than_Once_Is_Caught
+
+Name 'alpha' of argument 'define' supplied more than once.
+Try 'TestApp --help' for more information.
+
+--------------------------------------------------------------------------------
+T119_Meta_Option_Name_Not_Supplied_Is_Caught
+
+Argument 'define' must be followed by a colon (':') and a name.
+Try 'TestApp --help' for more information.
+
+--------------------------------------------------------------------------------
+T120_Meta_Option_Value_Not_Supplied_Is_Caught
+
+Name 'alpha' of argument 'define' must be followed by an equals sign ('=') and a value.
+Try 'TestApp --help' for more information.

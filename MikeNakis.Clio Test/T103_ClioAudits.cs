@@ -344,4 +344,53 @@ public sealed class T103_ClioAudits
 			Assert( !ok );
 		} );
 	}
+
+	[VSTesting.TestMethod]
+	public void T117_Meta_Option_Help_Audit()
+	{
+		Audit.With( lineOutputConsumer =>
+		{
+			ArgumentParser argumentParser = newArgumentParser();
+			argumentParser.AddMetaOption( "define", StringCodec.Instance, 'D', "This is the description of define" );
+			argumentParser.AddMetaOption( "level", IntCodec.Instance, description: "This is the description of level", parameterName: "level-parameter", presetValue: 1 );
+			bool ok = tryParse( argumentParser, "--help", lineOutputConsumer: lineOutputConsumer );
+			Assert( !ok ); //because help was requested.
+		} );
+	}
+
+	[VSTesting.TestMethod]
+	public void T118_Meta_Option_Name_Supplied_More_Than_Once_Is_Caught()
+	{
+		Audit.With( lineOutputConsumer =>
+		{
+			ArgumentParser argumentParser = newArgumentParser();
+			argumentParser.AddMetaOption( "define", StringCodec.Instance );
+			bool ok = tryParse( argumentParser, "--define:alpha=1 --define:alpha=2", lineOutputConsumer: lineOutputConsumer );
+			Assert( !ok );
+		} );
+	}
+
+	[VSTesting.TestMethod]
+	public void T119_Meta_Option_Name_Not_Supplied_Is_Caught()
+	{
+		Audit.With( lineOutputConsumer =>
+		{
+			ArgumentParser argumentParser = newArgumentParser();
+			argumentParser.AddMetaOption( "define", StringCodec.Instance );
+			bool ok = tryParse( argumentParser, "--define=alpha", lineOutputConsumer: lineOutputConsumer );
+			Assert( !ok );
+		} );
+	}
+
+	[VSTesting.TestMethod]
+	public void T120_Meta_Option_Value_Not_Supplied_Is_Caught()
+	{
+		Audit.With( lineOutputConsumer =>
+		{
+			ArgumentParser argumentParser = newArgumentParser();
+			argumentParser.AddMetaOption( "define", StringCodec.Instance );
+			bool ok = tryParse( argumentParser, "--define:alpha", lineOutputConsumer: lineOutputConsumer );
+			Assert( !ok );
+		} );
+	}
 }

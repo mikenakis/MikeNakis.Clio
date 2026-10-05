@@ -50,8 +50,16 @@ public interface IOptionArgument<T> : IArgument<T>
 }
 
 ///<summary>Represents a repeated option argument.</summary>
-///<remarks>A repeated option may appear many times in the command-line. It is represented as an <c><b>IEnumerable{T}</b></c>.</remarks>
+///<remarks>A repeated option may appear many times in the command-line. It is represented as an <c><b>IEnumerable&lt;T&gt;</b></c>.</remarks>
 public interface IRepeatedOptionArgument<T> : IArgument<IEnumerable<T>>
+{
+}
+
+///<summary>Represents a meta-option argument.</summary>
+///<remarks>A meta-option is a named argument which supplies a value for a name, e.g.
+///<c>Acme.Cli --define:name=value</c>. It may appear many times in the command-line, each time with a different name.
+///It is represented as an <c><b>IReadOnlyDictionary&lt;string,T&gt;</b></c>.</remarks>
+public interface IMetaOptionArgument<T> : IArgument<IReadOnlyDictionary<string, T>>
 {
 }
 

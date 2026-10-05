@@ -163,6 +163,42 @@ public abstract class BaseArgumentParser
 		return new RepeatedClassOption<T>( this, name, singleLetterNames ?? [], parameterName, codec, description, presetValue );
 	}
 
+	///<summary>Adds a meta-option.</summary>
+	///<remarks>A meta-option supplies a value for a name, e.g. <c>AcmeCli --define:name=value</c>. It may be supplied
+	///many times, each time with a different name. The value of a meta-option is a dictionary of names to values,
+	///which is empty if the meta-option is not supplied.</remarks>
+	///<param name="name">The name of the meta-option.</param>
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the meta-option; specifies how to convert between string
+	///and the actual type of the values of the meta-option.</param>
+	///<param name="singleLetterNames">The (optional) single-letter names for the meta-option.</param>
+	///<param name="description">The description of the meta-option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the value parameter of the meta-option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the meta-option, which will be the value for a name if
+	///the name is supplied without an equals-sign and a value.</param>
+	public IMetaOptionArgument<T> AddMetaOption<T>( string name, StructCodec<T> codec, IReadOnlyList<char>? singleLetterNames = null, //
+		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
+	{
+		return new StructMetaOptionArgument<T>( this, name, singleLetterNames ?? [], parameterName, codec, description, presetValue );
+	}
+
+	///<summary>Adds a meta-option.</summary>
+	///<remarks>A meta-option supplies a value for a name, e.g. <c>AcmeCli --define:name=value</c>. It may be supplied
+	///many times, each time with a different name. The value of a meta-option is a dictionary of names to values,
+	///which is empty if the meta-option is not supplied.</remarks>
+	///<param name="name">The name of the meta-option.</param>
+	///<param name="codec">The <see cref="ClassCodec{T}"/> of the meta-option; specifies how to convert between string
+	///and the actual type of the values of the meta-option.</param>
+	///<param name="singleLetterNames">The (optional) single-letter names for the meta-option.</param>
+	///<param name="description">The description of the meta-option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the value parameter of the meta-option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the meta-option, which will be the value for a name if
+	///the name is supplied without an equals-sign and a value.</param>
+	public IMetaOptionArgument<T> AddMetaOption<T>( string name, ClassCodec<T> codec, IReadOnlyList<char>? singleLetterNames = null, //
+		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
+	{
+		return new ClassMetaOptionArgument<T>( this, name, singleLetterNames ?? [], parameterName, codec, description, presetValue );
+	}
+
 	///<summary>Adds a positional argument.</summary>
 	///<param name="name">The name of the positional argument, for use in response files, and when displaying help.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the positional argument; provides conversions between

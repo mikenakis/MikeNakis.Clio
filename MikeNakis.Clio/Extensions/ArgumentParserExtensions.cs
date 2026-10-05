@@ -326,6 +326,38 @@ public static class ArgumentParserExtensions
 		return self.AddRepeatedOption( name, codec, [singleLetterName], description, parameterName, presetValue );
 	}
 
+	///<summary>Adds a meta-option.</summary>
+	///<param name="self">The <see cref="ArgumentParser" />.</param>
+	///<param name="name">The name of the meta-option.</param>
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the meta-option; specifies how to convert between string
+	///and the actual type of the values of the meta-option.</param>
+	///<param name="singleLetterName">The single-letter name for the meta-option.</param>
+	///<param name="description">The description of the meta-option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the value parameter of the meta-option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the meta-option, which will be the value for a name if
+	///the name is supplied without an equals-sign and a value.</param>
+	public static IMetaOptionArgument<T> AddMetaOption<T>( this BaseArgumentParser self, string name, StructCodec<T> codec, char singleLetterName, //
+		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
+	{
+		return self.AddMetaOption( name, codec, [singleLetterName], description, parameterName, presetValue );
+	}
+
+	///<summary>Adds a meta-option.</summary>
+	///<param name="self">The <see cref="ArgumentParser" />.</param>
+	///<param name="name">The name of the meta-option.</param>
+	///<param name="codec">The <see cref="ClassCodec{T}"/> of the meta-option; specifies how to convert between string
+	///and the actual type of the values of the meta-option.</param>
+	///<param name="singleLetterName">The single-letter name for the meta-option.</param>
+	///<param name="description">The description of the meta-option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the value parameter of the meta-option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the meta-option, which will be the value for a name if
+	///the name is supplied without an equals-sign and a value.</param>
+	public static IMetaOptionArgument<T> AddMetaOption<T>( this BaseArgumentParser self, string name, ClassCodec<T> codec, char singleLetterName, //
+		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
+	{
+		return self.AddMetaOption( name, codec, [singleLetterName], description, parameterName, presetValue );
+	}
+
 	/// <summary>Parses an array of command-line tokens, stores values in arguments, invokes verb handlers, etc.</summary>
 	/// <remarks>If something goes wrong, (or if the `--help` option is supplied,) it displays all necessary messages
 	/// and returns <c>false</c>, meaning that the current process should terminate.</remarks>
