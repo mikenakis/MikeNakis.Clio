@@ -22,9 +22,9 @@ sealed class VerbArgument : Argument, IVerbArgument
 		Assert( argumentParser.Arguments.OfType<PositionalArgument>().FirstOrDefault(), //
 			positionalArgument => positionalArgument == null, //
 			positionalArgument => throw new InvalidArgumentOrderingProgrammerException( ArgumentOrderingRule.VerbMayNotBePrecededByPositionalArgument, name, positionalArgument!.Name ) );
-		Assert( argumentParser.Arguments.Where( argument => argument.IsRequired ).FirstOrDefault(), //
-			requiredArgument => requiredArgument == null, //
-			requiredArgument => throw new InvalidArgumentOrderingProgrammerException( ArgumentOrderingRule.VerbMayNotBePrecededByRequiredArgument, name, requiredArgument!.Name ) );
+		//Assert( argumentParser.Arguments.Where( argument => argument.IsRequired ).FirstOrDefault(), //
+		//	requiredArgument => requiredArgument == null, //
+		//	requiredArgument => throw new InvalidArgumentOrderingProgrammerException( ArgumentOrderingRule.VerbMayNotBePrecededByRequiredArgument, name, requiredArgument!.Name ) );
 		this.verbHandler = verbHandler;
 		if( DebugMode )
 		{

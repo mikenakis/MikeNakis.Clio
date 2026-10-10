@@ -213,6 +213,7 @@ _**Verb**_: A special kind of argument which is identified by a word and has an 
 
 ## To do:
 
+- TODO: Required arguments before verbs are now allowed; see what ramifications this has for the rest of the code and documentation, and update accordingly. Also remove commented-out test, and add tests ensuring that this works as intended.
 - TODO: Remove the requirement for no positional arguments before verbs.
 - TODO: Add help message about response files.
 - TODO: Add support for including some free text in usage help: a short help prefix and a number of help footnotes.

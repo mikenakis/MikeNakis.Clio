@@ -215,17 +215,17 @@ public sealed class T102_ClioRainyDay
 		Assert( exception.PrecedingArgumentName == "alpha" );
 	}
 
-	[VSTesting.TestMethod]
-	public void T217_Verb_May_Not_Be_Preceded_By_Required_Argument()
-	{
-		ArgumentParser argumentParser = newArgumentParser();
-		argumentParser.AddRequiredStringOption( "alpha" );
-		var exception = Catch<InvalidArgumentOrderingProgrammerException>( () => //
-				argumentParser.AddVerb( "bravo", "bravo-description", emptyVerbHandler ) );
-		Assert( exception.ArgumentOrderingRule == ArgumentOrderingRule.VerbMayNotBePrecededByRequiredArgument );
-		Assert( exception.ViolatingArgumentName == "bravo" );
-		Assert( exception.PrecedingArgumentName == "alpha" );
-	}
+	//[VSTesting.TestMethod]
+	//public void T217_Verb_May_Not_Be_Preceded_By_Required_Argument()
+	//{
+	//	ArgumentParser argumentParser = newArgumentParser();
+	//	argumentParser.AddRequiredStringOption( "alpha" );
+	//	var exception = Catch<InvalidArgumentOrderingProgrammerException>( () => //
+	//			argumentParser.AddVerb( "bravo", "bravo-description", emptyVerbHandler ) );
+	//	Assert( exception.ArgumentOrderingRule == ArgumentOrderingRule.VerbMayNotBePrecededByRequiredArgument );
+	//	Assert( exception.ViolatingArgumentName == "bravo" );
+	//	Assert( exception.PrecedingArgumentName == "alpha" );
+	//}
 
 	[VSTesting.TestMethod]
 	public void T218_Switch_Name_Must_Be_Longer_Than_One_Character()
