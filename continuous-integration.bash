@@ -48,8 +48,7 @@ function do_publish()
 			dotnet nuget push "$package_pathname" --source https://nuget.pkg.github.com/MikeNakis/index.json --api-key "$github_packages_nuget_api_key"
 			;;
 		"nuget-org")
-			# The nuget.org API key is only available when publishing to nuget.org; see the "NuGet login" step in
-			# continuous-integration.yml.
+			# NuGet "Trusted Publishing"; see the "NuGet login" step in continuous-integration.yml.
 			if [ -z "$nuget_org_nuget_api_key" ]; then
 				error "Missing argument: '--nuget-org-nuget-api-key'"
 				exit 1
