@@ -470,18 +470,11 @@ public sealed class T102_ClioSunnyDay
 	}
 
 	[VSTesting.TestMethod]
-	public void T174_Help_Is_Requested_With_Dash_H()
-	{
-		ArgumentParser argumentParser = newArgumentParser();
-		Catch<HelpUserException>( () => parse( argumentParser, "-h" ) );
-	}
-
-	[VSTesting.TestMethod]
-	public void T175_Help_Is_Requested_With_Dash_H_In_Single_Letter_Group()
+	public void T175_Help_Is_Requested_With_Dash_Questionmark_In_Single_Letter_Group()
 	{
 		ArgumentParser argumentParser = newArgumentParser();
 		argumentParser.AddSwitch( "alpha", 'a' );
-		Catch<HelpUserException>( () => parse( argumentParser, "-ah" ) );
+		Catch<HelpUserException>( () => parse( argumentParser, "-a?" ) );
 	}
 
 	[VSTesting.TestMethod]
@@ -597,5 +590,13 @@ public sealed class T102_ClioSunnyDay
 		IMetaOptionArgument<string> define = argumentParser.AddMetaOption( "define", StringCodec.Instance );
 		parse( argumentParser, "--define:alpha=" );
 		Assert( define.Value["alpha"] == "" );
+	}
+
+	[VSTesting.TestMethod]
+	public void T228_Single_Letter_Name_H_Is_NOT_Reserved_For_Help()
+	{
+		ArgumentParser argumentParser = newArgumentParser();
+		argumentParser.AddSwitch( "hotel", 'h' );
+		parse( argumentParser, "-h" );
 	}
 }

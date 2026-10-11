@@ -376,16 +376,6 @@ public sealed class T102_ClioRainyDay
 	}
 
 	[VSTesting.TestMethod]
-	public void T228_Single_Letter_Name_H_Is_Reserved_For_Help()
-	{
-		ArgumentParser argumentParser = newArgumentParser();
-		argumentParser.AddSwitch( "hotel", 'h' );
-		var exception = Catch<DuplicateArgumentSingleLetterNameProgrammerException>( () => //
-				argumentParser.Parse( [] ) );
-		Assert( exception.ArgumentShortFormName == 'h' );
-	}
-
-	[VSTesting.TestMethod]
 	public void T229_Single_Letter_Names_Of_An_Argument_Must_Be_Unique()
 	{
 		ArgumentParser argumentParser = newArgumentParser();

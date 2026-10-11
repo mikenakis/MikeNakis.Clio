@@ -8,14 +8,13 @@ public static class ArgumentParserExtensions
 	///<summary>Adds an option of type <c>string</c>.</summary>
 	///<param name="self">The <see cref="ArgumentParser" />.</param>
 	///<param name="name">The name of the option.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the option.</param>
+	///<param name="singleLetterNames">The single-letter names for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
 	///option is specified without an equals-sign and a value.</param>
-	public static IOptionArgument<string?> AddStringOption( this BaseArgumentParser self, string name, //
-		IReadOnlyList<char>? singleLetterNames = null, string? description = null, string? parameterName = null, //
-		string? presetValue = null )
+	public static IOptionArgument<string?> AddStringOption( this BaseArgumentParser self, string name, IReadOnlyList<char> singleLetterNames, //
+		string? description = null, string? parameterName = null, string? presetValue = null )
 	{
 		return self.AddOption( name, StringCodec.Instance, singleLetterNames, description, parameterName, presetValue );
 	}
@@ -28,11 +27,23 @@ public static class ArgumentParserExtensions
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
 	///option is specified without an equals-sign and a value.</param>
-	public static IOptionArgument<string?> AddStringOption( this BaseArgumentParser self, string name, //
-		char singleLetterName, string? description = null, string? parameterName = null, //
-		string? presetValue = null )
+	public static IOptionArgument<string?> AddStringOption( this BaseArgumentParser self, string name, char singleLetterName, //
+		string? description = null, string? parameterName = null, string? presetValue = null )
 	{
-		return self.AddStringOption( name, [singleLetterName], description, parameterName, presetValue );
+		return self.AddOption( name, StringCodec.Instance, [singleLetterName], description, parameterName, presetValue );
+	}
+
+	///<summary>Adds an option of type <c>string</c>.</summary>
+	///<param name="self">The <see cref="ArgumentParser" />.</param>
+	///<param name="name">The name of the option.</param>
+	///<param name="description">The description of the option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
+	///option is specified without an equals-sign and a value.</param>
+	public static IOptionArgument<string?> AddStringOption( this BaseArgumentParser self, string name, //
+		string? description = null, string? parameterName = null, string? presetValue = null )
+	{
+		return self.AddOption( name, StringCodec.Instance, [], description, parameterName, presetValue );
 	}
 
 	///<summary>Adds an option of type <c>string</c> with a default value.</summary>
@@ -40,14 +51,13 @@ public static class ArgumentParserExtensions
 	///<param name="name">The name of the option.</param>
 	///<param name="defaultValue">The default value for the option, which will be the value of the option if the option
 	///is not supplied.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the option.</param>
+	///<param name="singleLetterNames">The single-letter names for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
 	///option is supplied without an equals-sign and a value.</param>
-	public static IOptionArgument<string> AddStringOptionWithDefault( this BaseArgumentParser self, string name, //
-		string defaultValue, IReadOnlyList<char>? singleLetterNames = null, string? description = null, string? parameterName = null, //
-		string? presetValue = null )
+	public static IOptionArgument<string> AddStringOptionWithDefault( this BaseArgumentParser self, string name, string defaultValue, IReadOnlyList<char> singleLetterNames, //
+		string? description = null, string? parameterName = null, string? presetValue = null )
 	{
 		return self.AddOptionWithDefault( name, StringCodec.Instance, defaultValue, singleLetterNames, description, parameterName, presetValue );
 	}
@@ -62,24 +72,37 @@ public static class ArgumentParserExtensions
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
 	///option is supplied without an equals-sign and a value.</param>
-	public static IOptionArgument<string> AddStringOptionWithDefault( this BaseArgumentParser self, string name, //
-		string defaultValue, char singleLetterName, string? description = null, string? parameterName = null, //
-		string? presetValue = null )
+	public static IOptionArgument<string> AddStringOptionWithDefault( this BaseArgumentParser self, string name, string defaultValue, char singleLetterName, //
+		string? description = null, string? parameterName = null, string? presetValue = null )
 	{
 		return self.AddStringOptionWithDefault( name, defaultValue, [singleLetterName], description, parameterName, presetValue );
+	}
+
+	///<summary>Adds an option of type <c>string</c> with a default value.</summary>
+	///<param name="self">The <see cref="ArgumentParser" />.</param>
+	///<param name="name">The name of the option.</param>
+	///<param name="defaultValue">The default value for the option, which will be the value of the option if the option
+	///is not supplied.</param>
+	///<param name="description">The description of the option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
+	///option is supplied without an equals-sign and a value.</param>
+	public static IOptionArgument<string> AddStringOptionWithDefault( this BaseArgumentParser self, string name, string defaultValue, //
+		string? description = null, string? parameterName = null, string? presetValue = null )
+	{
+		return self.AddStringOptionWithDefault( name, defaultValue, [], description, parameterName, presetValue );
 	}
 
 	///<summary>Adds a required option of type <c>string</c>.</summary>
 	///<param name="self">The <see cref="ArgumentParser" />.</param>
 	///<param name="name">The name of the option.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the option.</param>
+	///<param name="singleLetterNames">The single-letter names for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
 	///option is supplied without an equals-sign and a value.</param>
-	public static IOptionArgument<string> AddRequiredStringOption( this BaseArgumentParser self, string name, //
-		IReadOnlyList<char>? singleLetterNames = null, string? description = null, string? parameterName = null, //
-		string? presetValue = null )
+	public static IOptionArgument<string> AddRequiredStringOption( this BaseArgumentParser self, string name, IReadOnlyList<char> singleLetterNames, //
+		string? description = null, string? parameterName = null, string? presetValue = null )
 	{
 		return self.AddRequiredOption( name, StringCodec.Instance, singleLetterNames, description, parameterName, presetValue );
 	}
@@ -92,22 +115,34 @@ public static class ArgumentParserExtensions
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
 	///option is supplied without an equals-sign and a value.</param>
-	public static IOptionArgument<string> AddRequiredStringOption( this BaseArgumentParser self, string name, //
-		char singleLetterName, string? description = null, string? parameterName = null, //
-		string? presetValue = null )
+	public static IOptionArgument<string> AddRequiredStringOption( this BaseArgumentParser self, string name, char singleLetterName, //
+		string? description = null, string? parameterName = null, string? presetValue = null )
 	{
 		return self.AddRequiredStringOption( name, [singleLetterName], description, parameterName, presetValue );
+	}
+
+	///<summary>Adds a required option of type <c>string</c>.</summary>
+	///<param name="self">The <see cref="ArgumentParser" />.</param>
+	///<param name="name">The name of the option.</param>
+	///<param name="description">The description of the option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
+	///option is supplied without an equals-sign and a value.</param>
+	public static IOptionArgument<string> AddRequiredStringOption( this BaseArgumentParser self, string name, //
+		string? description = null, string? parameterName = null, string? presetValue = null )
+	{
+		return self.AddRequiredStringOption( name, [], description, parameterName, presetValue );
 	}
 
 	///<summary>Adds an option of type <c>int</c>.</summary>
 	///<param name="self">The <see cref="ArgumentParser" />.</param>
 	///<param name="name">The name of the option.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the option.</param>
+	///<param name="singleLetterNames">The single-letter names for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
 	///option is specified without an equals-sign and a value.</param>
-	public static IOptionArgument<int?> AddIntOption( this BaseArgumentParser self, string name, IReadOnlyList<char>? singleLetterNames = null, //
+	public static IOptionArgument<int?> AddIntOption( this BaseArgumentParser self, string name, IReadOnlyList<char> singleLetterNames, //
 		string? description = null, string? parameterName = null, int? presetValue = null )
 	{
 		return self.AddOption( name, IntCodec.Instance, singleLetterNames, description, parameterName, presetValue );
@@ -127,14 +162,27 @@ public static class ArgumentParserExtensions
 		return self.AddIntOption( name, [singleLetterName], description, parameterName, presetValue );
 	}
 
+	///<summary>Adds an option of type <c>int</c>.</summary>
+	///<param name="self">The <see cref="ArgumentParser" />.</param>
+	///<param name="name">The name of the option.</param>
+	///<param name="description">The description of the option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
+	///option is specified without an equals-sign and a value.</param>
+	public static IOptionArgument<int?> AddIntOption( this BaseArgumentParser self, string name, //
+		string? description = null, string? parameterName = null, int? presetValue = null )
+	{
+		return self.AddIntOption( name, [], description, parameterName, presetValue );
+	}
+
 	///<summary>Adds an option of type <c>int</c> with a default value.</summary>
 	///<param name="self">The <see cref="ArgumentParser" />.</param>
 	///<param name="name">The name of the option.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the option.</param>
+	///<param name="singleLetterNames">The single-letter names for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="defaultValue">The default value, which will be the value of the option if the option is omitted.</param>
-	public static IOptionArgument<int> AddIntOptionWithDefault( this BaseArgumentParser self, string name, int defaultValue, IReadOnlyList<char>? singleLetterNames = null, //
+	public static IOptionArgument<int> AddIntOptionWithDefault( this BaseArgumentParser self, string name, int defaultValue, IReadOnlyList<char> singleLetterNames, //
 		string? description = null, string? parameterName = null )
 	{
 		return self.AddOptionWithDefault( name, IntCodec.Instance, defaultValue, singleLetterNames, description, parameterName );
@@ -151,6 +199,18 @@ public static class ArgumentParserExtensions
 		string? description = null, string? parameterName = null )
 	{
 		return self.AddIntOptionWithDefault( name, defaultValue, [singleLetterName], description, parameterName );
+	}
+
+	///<summary>Adds an option of type <c>int</c> with a default value.</summary>
+	///<param name="self">The <see cref="ArgumentParser" />.</param>
+	///<param name="name">The name of the option.</param>
+	///<param name="description">The description of the option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
+	///<param name="defaultValue">The default value, which will be the value of the option if the option is omitted.</param>
+	public static IOptionArgument<int> AddIntOptionWithDefault( this BaseArgumentParser self, string name, int defaultValue, //
+		string? description = null, string? parameterName = null )
+	{
+		return self.AddIntOptionWithDefault( name, defaultValue, [], description, parameterName );
 	}
 
 	///<summary>Adds a positional argument of type <c>string</c>.</summary>
@@ -194,6 +254,33 @@ public static class ArgumentParserExtensions
 		return self.AddSwitch( name, [singleLetterName], description );
 	}
 
+	///<summary>Adds a switch.</summary>
+	///<remarks>A switch is a named argument without a parameter, e.g. <c>AcmeCli --verbose</c>. The value of a
+	/// switch is of type <c>bool</c>, indicating whether the switch was supplied or not.</remarks>
+	///<param name="self">The <see cref="ArgumentParser" />.</param>
+	///<param name="name">The name of the switch.</param>
+	///<param name="description">The description of the switch, for use when displaying help.</param>
+	public static ISwitchArgument AddSwitch( this BaseArgumentParser self, string name, string? description = null )
+	{
+		return self.AddSwitch( name, [], description );
+	}
+
+	///<summary>Adds an option.</summary>
+	///<param name="self">The <see cref="ArgumentParser" />.</param>
+	///<param name="name">The name of the option.</param>
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between string and
+	///the actual type of the option.</param>
+	///<param name="singleLetterNames">The single-letter names for the option.</param>
+	///<param name="description">The description of the option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
+	///option is specified without an equals-sign and a value.</param>
+	public static IOptionArgument<T?> AddOption<T>( this BaseArgumentParser self, string name, StructCodec<T> codec, IReadOnlyList<char> singleLetterNames, //
+		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
+	{
+		return self.AddOption( name, codec, singleLetterNames, description, parameterName, presetValue );
+	}
+
 	///<summary>Adds an option.</summary>
 	///<param name="self">The <see cref="ArgumentParser" />.</param>
 	///<param name="name">The name of the option.</param>
@@ -208,6 +295,21 @@ public static class ArgumentParserExtensions
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
 	{
 		return self.AddOption( name, codec, [singleLetterName], description, parameterName, presetValue );
+	}
+
+	///<summary>Adds an option.</summary>
+	///<param name="self">The <see cref="ArgumentParser" />.</param>
+	///<param name="name">The name of the option.</param>
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between string and
+	///the actual type of the option.</param>
+	///<param name="description">The description of the option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
+	///option is specified without an equals-sign and a value.</param>
+	public static IOptionArgument<T?> AddOption<T>( this BaseArgumentParser self, string name, StructCodec<T> codec, //
+		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
+	{
+		return self.AddOption( name, codec, [], description, parameterName, presetValue );
 	}
 
 	///<summary>Adds an option.</summary>
@@ -251,6 +353,23 @@ public static class ArgumentParserExtensions
 	///<c>string</c> and the actual type of the option.</param>
 	///<param name="defaultValue">The default value for the option, which will be the value of the option if the option
 	///is not supplied.</param>
+	///<param name="description">The description of the option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
+	///option is supplied without an equals-sign and a value.</param>
+	public static IOptionArgument<T> AddOptionWithDefault<T>( this BaseArgumentParser self, string name, StructCodec<T> codec, T defaultValue, //
+		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
+	{
+		return self.AddOptionWithDefault( name, codec, defaultValue, [], description, parameterName, presetValue );
+	}
+
+	///<summary>Adds an option with a default value.</summary>
+	///<param name="self">The <see cref="ArgumentParser" />.</param>
+	///<param name="name">The name of the option.</param>
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between
+	///<c>string</c> and the actual type of the option.</param>
+	///<param name="defaultValue">The default value for the option, which will be the value of the option if the option
+	///is not supplied.</param>
 	///<param name="singleLetterName">The single-letter name for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
@@ -283,6 +402,21 @@ public static class ArgumentParserExtensions
 	///<param name="name">The name of the option.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between
 	///<c>string</c> and the actual type of the option.</param>
+	///<param name="description">The description of the option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
+	///option is supplied without an equals-sign and a value.</param>
+	public static IOptionArgument<T> AddRequiredOption<T>( this BaseArgumentParser self, string name, StructCodec<T> codec, //
+		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
+	{
+		return self.AddRequiredOption( name, codec, [], description, parameterName, presetValue );
+	}
+
+	///<summary>Adds a required option.</summary>
+	///<param name="self">The <see cref="ArgumentParser" />.</param>
+	///<param name="name">The name of the option.</param>
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between
+	///<c>string</c> and the actual type of the option.</param>
 	///<param name="singleLetterName">The single-letter name for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
@@ -292,6 +426,21 @@ public static class ArgumentParserExtensions
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
 	{
 		return self.AddRequiredOption( name, codec, [singleLetterName], description, parameterName, presetValue );
+	}
+
+	///<summary>Adds a required option.</summary>
+	///<param name="self">The <see cref="ArgumentParser" />.</param>
+	///<param name="name">The name of the option.</param>
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between
+	///<c>string</c> and the actual type of the option.</param>
+	///<param name="description">The description of the option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
+	///option is supplied without an equals-sign and a value.</param>
+	public static IOptionArgument<T> AddRequiredOption<T>( this BaseArgumentParser self, string name, ClassCodec<T> codec, //
+		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
+	{
+		return self.AddRequiredOption( name, codec, [], description, parameterName, presetValue );
 	}
 
 	///<summary>Adds a repeated option.</summary>
@@ -345,6 +494,21 @@ public static class ArgumentParserExtensions
 	///<summary>Adds a meta-option.</summary>
 	///<param name="self">The <see cref="ArgumentParser" />.</param>
 	///<param name="name">The name of the meta-option.</param>
+	///<param name="codec">The <see cref="StructCodec{T}"/> of the meta-option; specifies how to convert between string
+	///and the actual type of the values of the meta-option.</param>
+	///<param name="description">The description of the meta-option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the value parameter of the meta-option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the meta-option, which will be the value for a name if
+	///the name is supplied without an equals-sign and a value.</param>
+	public static IMetaOptionArgument<T> AddMetaOption<T>( this BaseArgumentParser self, string name, StructCodec<T> codec, //
+		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
+	{
+		return self.AddMetaOption( name, codec, [], description, parameterName, presetValue );
+	}
+
+	///<summary>Adds a meta-option.</summary>
+	///<param name="self">The <see cref="ArgumentParser" />.</param>
+	///<param name="name">The name of the meta-option.</param>
 	///<param name="codec">The <see cref="ClassCodec{T}"/> of the meta-option; specifies how to convert between string
 	///and the actual type of the values of the meta-option.</param>
 	///<param name="singleLetterName">The single-letter name for the meta-option.</param>
@@ -356,6 +520,21 @@ public static class ArgumentParserExtensions
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
 	{
 		return self.AddMetaOption( name, codec, [singleLetterName], description, parameterName, presetValue );
+	}
+
+	///<summary>Adds a meta-option.</summary>
+	///<param name="self">The <see cref="ArgumentParser" />.</param>
+	///<param name="name">The name of the meta-option.</param>
+	///<param name="codec">The <see cref="ClassCodec{T}"/> of the meta-option; specifies how to convert between string
+	///and the actual type of the values of the meta-option.</param>
+	///<param name="description">The description of the meta-option, for use when displaying help.</param>
+	///<param name="parameterName">The name of the value parameter of the meta-option, for use when displaying help.</param>
+	///<param name="presetValue">The (optional) preset value of the meta-option, which will be the value for a name if
+	///the name is supplied without an equals-sign and a value.</param>
+	public static IMetaOptionArgument<T> AddMetaOption<T>( this BaseArgumentParser self, string name, ClassCodec<T> codec, //
+		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
+	{
+		return self.AddMetaOption( name, codec, [], description, parameterName, presetValue );
 	}
 
 	/// <summary>Parses an array of command-line tokens, stores values in arguments, invokes verb handlers, etc.</summary>

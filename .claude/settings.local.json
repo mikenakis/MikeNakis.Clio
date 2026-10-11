@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(sed -E 's/ \\\\[[^]]*\\\\]$//')",
+      "Bash(grep -i -E \"readme|todo|\\\\.md$\")",
+      "Bash(unix2dos -q MikeNakis.Clio/MetaOptionArgument.cs)",
+      "Bash(git merge *)",
+      "mcp__visualize__read_me",
+      "mcp__visualize__show_widget"
+    ]
+  }
+}

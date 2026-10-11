@@ -30,41 +30,41 @@ public abstract class BaseArgumentParser
 	///<remarks>A switch is a named argument without a parameter, e.g. <c>AcmeCli --verbose</c>. The value of a
 	/// switch is of type <c>bool</c>, indicating whether the switch was supplied or not.</remarks>
 	///<param name="name">The name of the switch.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the switch.</param>
+	///<param name="singleLetterNames">The single-letter names for the switch.</param>
 	///<param name="description">The description of the switch, for use when displaying help.</param>
-	public ISwitchArgument AddSwitch( string name, IReadOnlyList<char>? singleLetterNames = null, string? description = null )
+	public ISwitchArgument AddSwitch( string name, IReadOnlyList<char> singleLetterNames, string? description = null )
 	{
-		return new SwitchArgument( this, name, singleLetterNames ?? [], description );
+		return new SwitchArgument( this, name, singleLetterNames, description );
 	}
 
 	///<summary>Adds an option.</summary>
 	///<param name="name">The name of the option.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between string and
 	///the actual type of the option.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the option.</param>
+	///<param name="singleLetterNames">The single-letter names for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
 	///option is specified without an equals-sign and a value.</param>
-	public IOptionArgument<T?> AddOption<T>( string name, StructCodec<T> codec, IReadOnlyList<char>? singleLetterNames = null, //
+	public IOptionArgument<T?> AddOption<T>( string name, StructCodec<T> codec, IReadOnlyList<char> singleLetterNames, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
 	{
-		return new NullableStructOption<T>( this, name, singleLetterNames ?? [], parameterName, description, codec, presetValue );
+		return new NullableStructOption<T>( this, name, singleLetterNames, parameterName, description, codec, presetValue );
 	}
 
 	///<summary>Adds an option.</summary>
 	///<param name="name">The name of the option.</param>
-	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between string and
+	///<param name="codec">The <see cref="ClassCodec{T}"/> of the option; specifies how to convert between string and
 	///the actual type of the option.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the option.</param>
+	///<param name="singleLetterNames">The single-letter names for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
 	///option is specified without an equals-sign and a value.</param>
-	public IOptionArgument<T?> AddOption<T>( string name, ClassCodec<T> codec, IReadOnlyList<char>? singleLetterNames = null, //
+	public IOptionArgument<T?> AddOption<T>( string name, ClassCodec<T> codec, IReadOnlyList<char> singleLetterNames, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
 	{
-		return new NullableClassOption<T>( this, name, singleLetterNames ?? [], parameterName, description, codec, presetValue );
+		return new NullableClassOption<T>( this, name, singleLetterNames, parameterName, description, codec, presetValue );
 	}
 
 	///<summary>Adds an option with a default value.</summary>
@@ -73,15 +73,15 @@ public abstract class BaseArgumentParser
 	///<c>string</c> and the actual type of the option.</param>
 	///<param name="defaultValue">The default value for the option, which will be the value of the option if the option
 	///is not supplied.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the option.</param>
+	///<param name="singleLetterNames">The single-letter names for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
 	///option is supplied without an equals-sign and a value.</param>
-	public IOptionArgument<T> AddOptionWithDefault<T>( string name, StructCodec<T> codec, T defaultValue, IReadOnlyList<char>? singleLetterNames = null, //
+	public IOptionArgument<T> AddOptionWithDefault<T>( string name, StructCodec<T> codec, T defaultValue, IReadOnlyList<char> singleLetterNames, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
 	{
-		return new NonNullableStructOption<T>( this, name, singleLetterNames ?? [], parameterName, codec, description, presetValue, defaultValue );
+		return new NonNullableStructOption<T>( this, name, singleLetterNames, parameterName, codec, description, presetValue, defaultValue );
 	}
 
 	///<summary>Adds an option with a default value.</summary>
@@ -90,77 +90,77 @@ public abstract class BaseArgumentParser
 	///<c>string</c> and the actual type of the option.</param>
 	///<param name="defaultValue">The default value for the option, which will be the value of the option if the option
 	///is not supplied.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the option.</param>
+	///<param name="singleLetterNames">The single-letter names for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
 	///option is supplied without an equals-sign and a value.</param>
-	public IOptionArgument<T> AddOptionWithDefault<T>( string name, ClassCodec<T> codec, T defaultValue, IReadOnlyList<char>? singleLetterNames = null, //
+	public IOptionArgument<T> AddOptionWithDefault<T>( string name, ClassCodec<T> codec, T defaultValue, IReadOnlyList<char> singleLetterNames, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
 	{
 		//A null default value would silently make the option required.
 		Assert( defaultValue is not null, () => throw new NullDefaultValueProgrammerException( name ) );
-		return new NonNullableClassOption<T>( this, name, singleLetterNames ?? [], parameterName, codec, description, presetValue, defaultValue );
+		return new NonNullableClassOption<T>( this, name, singleLetterNames, parameterName, codec, description, presetValue, defaultValue );
 	}
 
 	///<summary>Adds a required option.</summary>
 	///<param name="name">The name of the option.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between
 	///<c>string</c> and the actual type of the option.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the option.</param>
+	///<param name="singleLetterNames">The single-letter names for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
 	///option is supplied without an equals-sign and a value.</param>
-	public IOptionArgument<T> AddRequiredOption<T>( string name, StructCodec<T> codec, IReadOnlyList<char>? singleLetterNames = null, //
+	public IOptionArgument<T> AddRequiredOption<T>( string name, StructCodec<T> codec, IReadOnlyList<char> singleLetterNames, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
 	{
-		return new NonNullableStructOption<T>( this, name, singleLetterNames ?? [], parameterName, codec, description, presetValue, default );
+		return new NonNullableStructOption<T>( this, name, singleLetterNames, parameterName, codec, description, presetValue, default );
 	}
 
 	///<summary>Adds a required option.</summary>
 	///<param name="name">The name of the option.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between
 	///<c>string</c> and the actual type of the option.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the option.</param>
+	///<param name="singleLetterNames">The single-letter names for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
 	///option is supplied without an equals-sign and a value.</param>
-	public IOptionArgument<T> AddRequiredOption<T>( string name, ClassCodec<T> codec, IReadOnlyList<char>? singleLetterNames = null, //
+	public IOptionArgument<T> AddRequiredOption<T>( string name, ClassCodec<T> codec, IReadOnlyList<char> singleLetterNames, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
 	{
-		return new NonNullableClassOption<T>( this, name, singleLetterNames ?? [], parameterName, codec, description, presetValue, default );
+		return new NonNullableClassOption<T>( this, name, singleLetterNames, parameterName, codec, description, presetValue, default );
 	}
 
 	///<summary>Adds a repeated option.</summary>
 	///<param name="name">The name of the option.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between string and
 	///the actual type of the option.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the option.</param>
+	///<param name="singleLetterNames">The single-letter names for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
 	///option is specified without an equals-sign and a value.</param>
-	public IRepeatedOptionArgument<T> AddRepeatedOption<T>( string name, StructCodec<T> codec, IReadOnlyList<char>? singleLetterNames = null, //
+	public IRepeatedOptionArgument<T> AddRepeatedOption<T>( string name, StructCodec<T> codec, IReadOnlyList<char> singleLetterNames, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
 	{
-		return new RepeatedStructOption<T>( this, name, singleLetterNames ?? [], parameterName, codec, description, presetValue );
+		return new RepeatedStructOption<T>( this, name, singleLetterNames, parameterName, codec, description, presetValue );
 	}
 
 	///<summary>Adds a repeated option.</summary>
 	///<param name="name">The name of the option.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the option; specifies how to convert between string and
 	///the actual type of the option.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the option.</param>
+	///<param name="singleLetterNames">The single-letter names for the option.</param>
 	///<param name="description">The description of the option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the parameter of the option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the option, which will be the value of the option if the
 	///option is specified without an equals-sign and a value.</param>
-	public IRepeatedOptionArgument<T> AddRepeatedOption<T>( string name, ClassCodec<T> codec, IReadOnlyList<char>? singleLetterNames = null, //
+	public IRepeatedOptionArgument<T> AddRepeatedOption<T>( string name, ClassCodec<T> codec, IReadOnlyList<char> singleLetterNames, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
 	{
-		return new RepeatedClassOption<T>( this, name, singleLetterNames ?? [], parameterName, codec, description, presetValue );
+		return new RepeatedClassOption<T>( this, name, singleLetterNames, parameterName, codec, description, presetValue );
 	}
 
 	///<summary>Adds a meta-option.</summary>
@@ -170,15 +170,15 @@ public abstract class BaseArgumentParser
 	///<param name="name">The name of the meta-option.</param>
 	///<param name="codec">The <see cref="StructCodec{T}"/> of the meta-option; specifies how to convert between string
 	///and the actual type of the values of the meta-option.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the meta-option.</param>
+	///<param name="singleLetterNames">The single-letter names for the meta-option.</param>
 	///<param name="description">The description of the meta-option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the value parameter of the meta-option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the meta-option, which will be the value for a name if
 	///the name is supplied without an equals-sign and a value.</param>
-	public IMetaOptionArgument<T> AddMetaOption<T>( string name, StructCodec<T> codec, IReadOnlyList<char>? singleLetterNames = null, //
+	public IMetaOptionArgument<T> AddMetaOption<T>( string name, StructCodec<T> codec, IReadOnlyList<char> singleLetterNames, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : struct
 	{
-		return new StructMetaOptionArgument<T>( this, name, singleLetterNames ?? [], parameterName, codec, description, presetValue );
+		return new StructMetaOptionArgument<T>( this, name, singleLetterNames, parameterName, codec, description, presetValue );
 	}
 
 	///<summary>Adds a meta-option.</summary>
@@ -188,15 +188,15 @@ public abstract class BaseArgumentParser
 	///<param name="name">The name of the meta-option.</param>
 	///<param name="codec">The <see cref="ClassCodec{T}"/> of the meta-option; specifies how to convert between string
 	///and the actual type of the values of the meta-option.</param>
-	///<param name="singleLetterNames">The (optional) single-letter names for the meta-option.</param>
+	///<param name="singleLetterNames">The single-letter names for the meta-option.</param>
 	///<param name="description">The description of the meta-option, for use when displaying help.</param>
 	///<param name="parameterName">The name of the value parameter of the meta-option, for use when displaying help.</param>
 	///<param name="presetValue">The (optional) preset value of the meta-option, which will be the value for a name if
 	///the name is supplied without an equals-sign and a value.</param>
-	public IMetaOptionArgument<T> AddMetaOption<T>( string name, ClassCodec<T> codec, IReadOnlyList<char>? singleLetterNames = null, //
+	public IMetaOptionArgument<T> AddMetaOption<T>( string name, ClassCodec<T> codec, IReadOnlyList<char> singleLetterNames, //
 		string? description = null, string? parameterName = null, T? presetValue = default ) where T : class
 	{
-		return new ClassMetaOptionArgument<T>( this, name, singleLetterNames ?? [], parameterName, codec, description, presetValue );
+		return new ClassMetaOptionArgument<T>( this, name, singleLetterNames, parameterName, codec, description, presetValue );
 	}
 
 	///<summary>Adds a positional argument.</summary>
@@ -284,7 +284,7 @@ public abstract class BaseArgumentParser
 	ISwitchArgument addHelpSwitch()
 	{
 		Assert( helpSwitch == null );
-		helpSwitch = AddSwitch( "help", ['?', 'h'], "Display this help" );
+		helpSwitch = AddSwitch( "help", ['?'], "Display this help" );
 		return helpSwitch;
 	}
 

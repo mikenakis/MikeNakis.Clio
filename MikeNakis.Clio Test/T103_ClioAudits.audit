@@ -2,10 +2,10 @@
 T101_No_Optional_Named_Arguments_Help_Audit
 
 Usage:
-    TestApp [-?, -h, --help] <india>
+    TestApp [-?, --help] <india>
 Options:
-    -?, -h, --help Display this help.
-    <india>        This is the description of india.
+    -?, --help Display this help.
+    <india>    This is the description of india.
 
 --------------------------------------------------------------------------------
 T102_Simple_Help_Audit
@@ -32,7 +32,7 @@ Options:
     --oscar[=<string>]                This is the description of oscar.
                                       If omitted, the default is "oscar-default".
                                       If supplied without a value, the preset is "oscar-preset".
-    -?, -h, --help                    Display this help.
+    -?, --help                        Display this help.
     <india>                           This is the description of india.
     <juliett>                         This is the description of juliett.
     <papa>                            This is the description of papa.
@@ -55,7 +55,7 @@ Options:
                                              mike-default".
                                              If supplied without a value, the
                                              preset is "this is mike-preset".
-    -?, -h, --help                           Display this help.
+    -?, --help                               Display this help.
 
 --------------------------------------------------------------------------------
 T104_Root_With_Verbs_Help_Audit
@@ -63,11 +63,11 @@ T104_Root_With_Verbs_Help_Audit
 Usage:
     TestApp [<option>...] <subcommand>...
 Options:
-    -a, --alpha    This is the description of alpha.
-    -?, -h, --help Display this help.
+    -a, --alpha This is the description of alpha.
+    -?, --help  Display this help.
 Where <subcommand> is one of:
-    juliett        This is the description of juliett.
-    kilo           This is the description of kilo.
+    juliett     This is the description of juliett.
+    kilo        This is the description of kilo.
 Try 'TestApp <subcommand> --help' for more information on a specific subcommand.
 
 --------------------------------------------------------------------------------
@@ -76,9 +76,9 @@ T105_Verb_Help_Audit
 Usage:
     TestApp juliett [<option>...] [<papa>]
 Options:
-    --lima         This is the description of lima.
-    -?, -h, --help Display this help.
-    <papa>         This is the description of papa.
+    --lima     This is the description of lima.
+    -?, --help Display this help.
+    <papa>     This is the description of papa.
 
 --------------------------------------------------------------------------------
 T106_Argument_Dump_Audit
@@ -175,7 +175,7 @@ Options:
     -D, --define:<name>=<string>       This is the description of define.
     --level:<name>[=<level-parameter>] This is the description of level.
                                        If a name is supplied without a value, the preset is 1.
-    -?, -h, --help                     Display this help.
+    -?, --help                         Display this help.
 
 --------------------------------------------------------------------------------
 T118_Meta_Option_Name_Supplied_More_Than_Once_Is_Caught

@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<LangVersion>13</LangVersion>
+		<LangVersion>Default</LangVersion>
 		<Configurations>Debug;Optimized;Release;Develop</Configurations>
 		<!-- AssemblyName: The default is $(MSBuildProjectName) -->
 		<AssemblyName>$(MSBuildProjectName)-$(Configuration)</AssemblyName>
@@ -47,7 +47,7 @@
 
 	<ItemGroup>
 		<!-- PEARL: Visual Studio will show these items in "Solution Explorer", as if they are in the project directory,
-		    even though they are NOT. The "Visuble=false" magical incantation is necessary to prevent this. -->
+		    even though they are NOT. The "Visible=false" magical incantation is necessary to prevent this. -->
 		<None Include="..\LICENSE.md" Pack="True" PackagePath="/" Visible="false" />
 		<None Include="..\MikeNakis.Clio-Logo.png" Pack="True" PackagePath="/" Visible="False" />
 		<None Include="..\README-for-nuget.md" Pack="True" PackagePath="/README.md" Visible="False" />
