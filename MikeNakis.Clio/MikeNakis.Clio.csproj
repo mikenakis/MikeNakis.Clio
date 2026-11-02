@@ -18,7 +18,6 @@
 		<Description>A library for parsing command-line arguments.</Description>
 		<Copyright>Copyright © Mike Nakis. All rights reserved.</Copyright>
 		<!-- PEARL: "GitHub Packages" ignores the "PackageIcon" tag and displays a generic nuget package icon instead; there is nothing we can do about that. -->
-		<PackageIcon>MikeNakis.Clio-Logo.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/mikenakis/MikeNakis.Clio.git</RepositoryUrl>
 		<PublishRepositoryUrl>True</PublishRepositoryUrl>
@@ -49,7 +48,6 @@
 		<!-- PEARL: Visual Studio will show these items in "Solution Explorer", as if they are in the project directory,
 		    even though they are NOT. The "Visible=false" magical incantation is necessary to prevent this. -->
 		<None Include="..\LICENSE.md" Pack="True" PackagePath="/" Visible="false" />
-		<None Include="..\MikeNakis.Clio-Logo.png" Pack="True" PackagePath="/" Visible="False" />
 		<None Include="..\README-for-nuget.md" Pack="True" PackagePath="/README.md" Visible="False" />
 	</ItemGroup>
 

@@ -1,7 +1,7 @@
 # Clio<br><sub><sup>A dotnet library for parsing command-line arguments.</sub></sup>
 
 <p align="center">
-  <img title="MikeNakis.Clio logo" src="MikeNakis.Clio-Logo.svg" width="256" />
+  <img title="MikeNakis.Clio logo" src="MikeNakis.Clio/MikeNakis.Clio-icon.svg" width="256" />
 </p>
 
 [![Build](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/mikenakis/MikeNakis.Clio/actions/workflows/continuous-integration.yml)

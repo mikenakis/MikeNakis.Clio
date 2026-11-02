@@ -9,7 +9,6 @@
     <File Path=".github/workflows/continuous-integration.yml" />
     <File Path=".gitignore" />
     <File Path="LICENSE.md" />
-    <File Path="MikeNakis.Clio-Logo.svg" />
     <File Path="README.md" />
   </Folder>
   <Project Path="MikeNakis.Clio Test/MikeNakis.Clio Test.csproj" />
